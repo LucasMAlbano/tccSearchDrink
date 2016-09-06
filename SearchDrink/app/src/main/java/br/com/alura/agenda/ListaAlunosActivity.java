@@ -50,7 +50,7 @@ public class ListaAlunosActivity extends AppCompatActivity {
         novoAluno.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ListaAlunosActivity.this, FormularioActivity.class);
+                Intent intent = new Intent(ListaAlunosActivity.this, CadastroActivity.class);
                 startActivity(intent);
             }
         });
@@ -61,7 +61,7 @@ public class ListaAlunosActivity extends AppCompatActivity {
 
                 Bar bar = (Bar) lista.getItemAtPosition(position);
 
-                Intent intent = new Intent(ListaAlunosActivity.this, FormularioActivity.class);
+                Intent intent = new Intent(ListaAlunosActivity.this, CadastroActivity.class);
                 intent.putExtra("bar", bar);
                 startActivity(intent);
             }

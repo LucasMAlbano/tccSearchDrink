@@ -11,30 +11,32 @@ import br.com.alura.agenda.modelo.Bar;
 /**
  * Created by Birbara on 20/07/2016.
  */
-public class FormularioHelper {
+public class CadastroHelper {
 
     private final EditText campoNome;
     private final EditText campoEndereco;
     private final EditText campoTelefone;
     private final EditText campoSite;
+    private final EditText campoSenha;
     private final RatingBar campoNota;
     private final ImageView campoFoto;
     private Bar bar;
 
-    public FormularioHelper(FormularioActivity activity) {
+    public CadastroHelper(CadastroActivity activity) {
 
         this.bar = new Bar();
 
-        this.campoNome = (EditText) activity.findViewById(R.id.formulario_nome);
-        this.campoEndereco = (EditText) activity.findViewById(R.id.formulario_endereco);
-        this.campoTelefone = (EditText) activity.findViewById(R.id.formulario_telefone);
-        this.campoSite = (EditText) activity.findViewById(R.id.formulario_site);
-        this.campoNota = (RatingBar) activity.findViewById(R.id.formulario_nota);
-        this.campoFoto = (ImageView) activity.findViewById(R.id.formulario_foto);
+        this.campoNome = (EditText) activity.findViewById(R.id.cadastro_nome);
+        this.campoEndereco = (EditText) activity.findViewById(R.id.cadastro_endereco);
+        this.campoTelefone = (EditText) activity.findViewById(R.id.cadastro_telefone);
+        this.campoSite = (EditText) activity.findViewById(R.id.cadastro_site);
+        this.campoSenha = (EditText) activity.findViewById(R.id.cadastro_senha);
+        this.campoNota = (RatingBar) activity.findViewById(R.id.cadastro_nota);
+        this.campoFoto = (ImageView) activity.findViewById(R.id.cadastro_foto);
 
     }
 
-    public Bar pegaAluno() {
+    public Bar pegaBar() {
 
         bar.setNome(campoNome.getText().toString());
         bar.setEndereco(campoEndereco.getText().toString());
@@ -52,6 +54,7 @@ public class FormularioHelper {
         campoEndereco.setText(bar.getEndereco());
         campoTelefone.setText(bar.getTelefone());
         campoSite.setText(bar.getSite());
+
         campoNota.setRating((float) bar.getNota());
 
         if (bar.getCaminhoFoto() != null){
