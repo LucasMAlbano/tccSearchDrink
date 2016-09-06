@@ -22,7 +22,7 @@ import java.util.List;
 
 import br.com.alura.agenda.EnviaDadosServidor;
 import br.com.alura.agenda.R;
-import br.com.alura.agenda.adapter.AlunosAdapter;
+import br.com.alura.agenda.adapter.BarAdapter;
 import br.com.alura.agenda.dao.BarDAO;
 import br.com.alura.agenda.modelo.Bar;
 
@@ -179,12 +179,12 @@ public class PerfilActivity extends AppCompatActivity {
     private void carregaLista() {
         //        String[] bars = {"Daniel", "Ronaldo", "Jeferson", "Felipe"};
         BarDAO dao = new BarDAO(this);
-        List<Bar> bars = dao.buscaAlunos();
+        List<Bar> bares = dao.buscaAlunos();
         dao.close();
 
-        AlunosAdapter adapter = new AlunosAdapter(this, bars);
+        BarAdapter adapter = new BarAdapter(this, bares);
 
         listaAlunos.setAdapter(adapter);
     }
-    }
+
 }

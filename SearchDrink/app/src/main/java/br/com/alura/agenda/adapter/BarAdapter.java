@@ -18,12 +18,12 @@ import br.com.alura.agenda.modelo.Bar;
 /**
  * Created by Birbara on 04/08/2016.
  */
-public class AlunosAdapter extends BaseAdapter {
+public class BarAdapter extends BaseAdapter {
 
     private final List<Bar> bars;
     private final Context context;
 
-    public AlunosAdapter(Context context, List<Bar> bars){
+    public BarAdapter(Context context, List<Bar> bars){
         this.context = context;
         this.bars = bars;
     }

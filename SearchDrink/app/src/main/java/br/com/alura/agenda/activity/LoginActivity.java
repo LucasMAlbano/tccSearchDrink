@@ -25,9 +25,17 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 BarDAO dao = new BarDAO(LoginActivity.this);
-                if (dao.ehCadastrado(usuario.toString(), senha.toString()){
+                if (dao.ehCadastrado(usuario.toString(), senha.toString())){
                     Intent vaiParaPerfil = new Intent(LoginActivity.this, PerfilActivity.class);
                     startActivity(vaiParaPerfil);
+                }
+                else{
+                    AlertDialog.Builder builder =
+                            new AlertDialog.Builder(CarregarImagemUrl.this).
+                                    setTitle("Erro").
+                                    setMessage("Email ou Senha inválido!").
+                                    setPositiveButton("OK", null);
+                    builder.create().show();
                 }
             }
         });

@@ -16,7 +16,6 @@ public class Bar implements Serializable{
     private double nota;
     private String caminhoFoto;
     private String email;
-
     private String senha;
 
     private List<Bebida> bebidas;
