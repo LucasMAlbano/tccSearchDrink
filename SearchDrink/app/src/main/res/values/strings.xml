@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Search Drink</string>
+
+    <string name="campo_nome">Nome</string>
+    <string name="campo_endereco">Endereço</string>
+    <string name="campo_telefone">Telefone</string>
+    <string name="campo_site">Site</string>
+
+    <string name="title_activity_formulario">Formulário</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_maps">Map</string>
+</resources>
