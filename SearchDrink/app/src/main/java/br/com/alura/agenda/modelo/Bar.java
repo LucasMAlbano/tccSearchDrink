@@ -15,6 +15,9 @@ public class Bar implements Serializable{
     private String site;
     private double nota;
     private String caminhoFoto;
+    private String email;
+
+    private String senha;
 
     private List<Bebida> bebidas;
 
@@ -92,6 +95,23 @@ public class Bar implements Serializable{
     public void setNota(double nota) {
         this.nota = nota;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
 
     @Override
     public String toString() {

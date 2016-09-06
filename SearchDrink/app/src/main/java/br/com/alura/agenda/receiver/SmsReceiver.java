@@ -1,18 +1,14 @@
 package br.com.alura.agenda.receiver;
 
-import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
-import android.net.Uri;
-import android.support.v4.app.ActivityCompat;
 import android.telephony.SmsMessage;
 import android.widget.Toast;
 
 import br.com.alura.agenda.R;
-import br.com.alura.agenda.dao.AlunoDAO;
+import br.com.alura.agenda.dao.BarDAO;
 
 /**
  * Created by Birbara on 08/08/2016.
@@ -33,9 +29,9 @@ public class SmsReceiver extends BroadcastReceiver {
         }
         String telefone = message.getOriginatingAddress();
 
-        AlunoDAO dao = new AlunoDAO(context);
+        BarDAO dao = new BarDAO(context);
 
-        if(dao.ehAluno(telefone)) {
+        if(dao.ehBar(telefone)) {
             Toast.makeText(context, "SMS recebido!", Toast.LENGTH_SHORT).show();
 
             MediaPlayer mp = MediaPlayer.create(context, R.raw.msg);

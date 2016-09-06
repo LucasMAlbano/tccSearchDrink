@@ -1,4 +1,4 @@
-package br.com.alura.agenda;
+package br.com.alura.agenda.activity;
 
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -6,6 +6,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import br.com.alura.agenda.DetalhesProvaFragment;
+import br.com.alura.agenda.ListaProvasFragment;
+import br.com.alura.agenda.R;
 import br.com.alura.agenda.modelo.Prova;
 
 public class ProvasActivity extends AppCompatActivity {

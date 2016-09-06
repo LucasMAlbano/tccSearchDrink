@@ -1,4 +1,4 @@
-package br.com.alura.agenda;
+package br.com.alura.agenda.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,7 +12,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import br.com.alura.agenda.dao.AlunoDAO;
+import br.com.alura.agenda.CadastroHelper;
+import br.com.alura.agenda.R;
+import br.com.alura.agenda.dao.BarDAO;
 import br.com.alura.agenda.modelo.Bar;
 
 public class CadastroActivity extends AppCompatActivity {
@@ -62,14 +64,14 @@ public class CadastroActivity extends AppCompatActivity {
 
         if (resultCode == Activity.RESULT_OK && requestCode == CODIGO_CAMERA){
             //imagem da camera
-                helper.carregaFoto(caminhoFoto);
+            helper.carregaFoto(caminhoFoto);
         }
 
         else if(requestCode == CODIGO_GALERIA && resultCode == RESULT_OK){
-            //imagem veio da galeria
+            //imagem da galeria
             Uri selectedImage = data.getData();
             helper.carregaFoto(selectedImage.toString());
-            Toast.makeText(getApplicationContext(), selectedImage.toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), selectedImage.toString(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -89,7 +91,7 @@ public class CadastroActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.menu_formulario_ok:
                 Bar bar = helper.pegaBar();
-                AlunoDAO dao = new AlunoDAO(this);
+                BarDAO dao = new BarDAO(this);
 
                 if(bar.getId() == 0) {
                     dao.insere(bar);

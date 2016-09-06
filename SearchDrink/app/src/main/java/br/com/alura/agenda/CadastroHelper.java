@@ -6,6 +6,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 
+import br.com.alura.agenda.activity.CadastroActivity;
 import br.com.alura.agenda.modelo.Bar;
 
 /**
@@ -44,6 +45,7 @@ public class CadastroHelper {
         bar.setSite(campoSite.getText().toString());
         bar.setNota(Double.valueOf(campoNota.getRating()));
         bar.setCaminhoFoto((String)campoFoto.getTag());
+        bar.setSenha(campoSenha.getText().toString());
         return bar;
     }
 
@@ -54,8 +56,8 @@ public class CadastroHelper {
         campoEndereco.setText(bar.getEndereco());
         campoTelefone.setText(bar.getTelefone());
         campoSite.setText(bar.getSite());
-
         campoNota.setRating((float) bar.getNota());
+        campoSenha.setText(bar.getSenha());
 
         if (bar.getCaminhoFoto() != null){
             carregaFoto(bar.getCaminhoFoto());
@@ -65,11 +67,18 @@ public class CadastroHelper {
     public void carregaFoto(String caminhoFoto) {
 
         if(caminhoFoto != null) {
-            Bitmap bitmap = BitmapFactory.decodeFile(caminhoFoto);
-            bitmap = Bitmap.createScaledBitmap(bitmap, 300, 300, true);
+
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+
+            Bitmap bitmap = BitmapFactory.decodeFile(caminhoFoto, options);
+
+//            Bitmap bitmap = BitmapFactory.decodeFile(caminhoFoto);
+
+//            bitmap = Bitmap.createScaledBitmap(bitmap, 300, 300, true);
             campoFoto.setImageBitmap(bitmap);
-            campoFoto.setScaleType(ImageView.ScaleType.FIT_XY);
-            campoFoto.setTag(caminhoFoto);
+//            campoFoto.setScaleType(ImageView.ScaleType.FIT_XY);
+//            campoFoto.setTag(caminhoFoto);
         }
     }
 }

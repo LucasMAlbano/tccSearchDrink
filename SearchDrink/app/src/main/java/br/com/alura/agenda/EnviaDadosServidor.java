@@ -8,7 +8,7 @@ import android.widget.Toast;
 import java.util.List;
 
 import br.com.alura.agenda.converter.AlunoConverter;
-import br.com.alura.agenda.dao.AlunoDAO;
+import br.com.alura.agenda.dao.BarDAO;
 import br.com.alura.agenda.modelo.Bar;
 
 /**
@@ -36,7 +36,7 @@ public class EnviaDadosServidor extends AsyncTask<Void, Void, String> {
 
         WebClient webClient = new WebClient();
         AlunoConverter converter = new AlunoConverter();
-        AlunoDAO dao = new AlunoDAO(context);
+        BarDAO dao = new BarDAO(context);
         List<Bar> bars = dao.buscaAlunos();
         dao.close();
         String json = converter.toJson(bars);

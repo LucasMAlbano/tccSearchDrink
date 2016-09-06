@@ -1,4 +1,4 @@
-package br.com.alura.agenda;
+package br.com.alura.agenda.activity;
 
 import android.Manifest;
 import android.content.Intent;
@@ -21,8 +21,10 @@ import android.widget.Toast;
 import java.util.List;
 
 
+import br.com.alura.agenda.EnviaDadosServidor;
+import br.com.alura.agenda.R;
 import br.com.alura.agenda.adapter.AlunosAdapter;
-import br.com.alura.agenda.dao.AlunoDAO;
+import br.com.alura.agenda.dao.BarDAO;
 import br.com.alura.agenda.modelo.Bar;
 
 public class ListaAlunosActivity extends AppCompatActivity {
@@ -129,7 +131,7 @@ public class ListaAlunosActivity extends AppCompatActivity {
         itemDeletar.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                AlunoDAO dao = new AlunoDAO(ListaAlunosActivity.this);
+                BarDAO dao = new BarDAO(ListaAlunosActivity.this);
                 dao.deleta(bar);
                 dao.close();
 
@@ -177,7 +179,7 @@ public class ListaAlunosActivity extends AppCompatActivity {
 
     private void carregaLista() {
         //        String[] bars = {"Daniel", "Ronaldo", "Jeferson", "Felipe"};
-        AlunoDAO dao = new AlunoDAO(this);
+        BarDAO dao = new BarDAO(this);
         List<Bar> bars = dao.buscaAlunos();
         dao.close();
 

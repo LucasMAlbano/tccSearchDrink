@@ -15,7 +15,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.IOException;
 import java.util.List;
 
-import br.com.alura.agenda.dao.AlunoDAO;
+import br.com.alura.agenda.dao.BarDAO;
 import br.com.alura.agenda.modelo.Bar;
 
 /**
@@ -44,7 +44,7 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
         }
 
         //adiciona local do aluno
-        AlunoDAO dao = new AlunoDAO(getContext());
+        BarDAO dao = new BarDAO(getContext());
         for(Bar bar : dao.buscaAlunos()){
             LatLng coordenada = pegaCoordenadaDoEndereco(bar.getEndereco());
             if(coordenada != null) {

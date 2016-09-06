@@ -1,4 +1,4 @@
-package br.com.alura.agenda;
+package br.com.alura.agenda.activity;
 
 import android.Manifest;
 import android.content.Intent;
@@ -13,6 +13,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+
+import br.com.alura.agenda.Localizador;
+import br.com.alura.agenda.MapaFragment;
+import br.com.alura.agenda.R;
 
 //import com.google.android.gms.maps.SupportMapFragment;
 
