@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="br.com.alura.agenda">
+    package="br.com.alura.searchdrink">
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
@@ -21,21 +21,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.ListaAlunosActivity"
+            android:name="br.com.alura.searchdrink.activity.ListaAlunosActivity"
             android:label="@string/app_name" />
         <activity
-            android:name=".activity.CadastroActivity"
+            android:name="br.com.alura.searchdrink.activity.CadastroActivity"
             android:label="@string/title_activity_formulario" />
 
         <receiver
-            android:name=".receiver.SmsReceiver"
+            android:name="br.com.alura.searchdrink.receiver.SmsReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activity.ProvasActivity" />
+        <activity android:name="br.com.alura.searchdrink.activity.ProvasActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -48,15 +48,15 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".activity.MapaBarActivity">
+        <activity android:name="br.com.alura.searchdrink.activity.MapaBarActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.LoginActivity" />
-        <activity android:name=".activity.PerfilActivity"></activity>
+        <activity android:name="br.com.alura.searchdrink.activity.LoginActivity" />
+        <activity android:name="br.com.alura.searchdrink.activity.PerfilActivity"></activity>
     </application>
 
 </manifest>

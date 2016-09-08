@@ -1,4 +1,4 @@
-package br.com.alura.agenda;
+package br.com.alura.searchdrink;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -6,8 +6,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 
-import br.com.alura.agenda.activity.CadastroActivity;
-import br.com.alura.agenda.modelo.Bar;
+import br.com.alura.searchdrink.activity.CadastroActivity;
+import br.com.alura.searchdrink.modelo.Bar;
 
 /**
  * Created by Birbara on 20/07/2016.

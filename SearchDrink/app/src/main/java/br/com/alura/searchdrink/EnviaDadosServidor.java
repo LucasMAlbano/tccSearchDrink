@@ -1,4 +1,4 @@
-package br.com.alura.agenda;
+package br.com.alura.searchdrink;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -7,9 +7,9 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import br.com.alura.agenda.converter.AlunoConverter;
-import br.com.alura.agenda.dao.BarDAO;
-import br.com.alura.agenda.modelo.Bar;
+import br.com.alura.searchdrink.converter.AlunoConverter;
+import br.com.alura.searchdrink.dao.BarDAO;
+import br.com.alura.searchdrink.modelo.Bar;
 
 /**
  * Created by Birbara on 24/08/2016.

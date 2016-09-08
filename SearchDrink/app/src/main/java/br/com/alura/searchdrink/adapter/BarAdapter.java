@@ -1,4 +1,4 @@
-package br.com.alura.agenda.adapter;
+package br.com.alura.searchdrink.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import br.com.alura.agenda.R;
-import br.com.alura.agenda.modelo.Bar;
+import br.com.alura.searchdrink.R;
+import br.com.alura.searchdrink.modelo.Bar;
 
 /**
  * Created by Birbara on 04/08/2016.

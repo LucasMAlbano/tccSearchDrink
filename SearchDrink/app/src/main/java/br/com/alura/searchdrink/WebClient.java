@@ -1,10 +1,9 @@
-package br.com.alura.agenda;
+package br.com.alura.searchdrink;
 
 import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
-import java.util.concurrent.Exchanger;
 
 /**
  * Created by Birbara on 24/08/2016.

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "219218275260",
+    "firebase_url": "https://wazebar.firebaseio.com",
+    "project_id": "wazebar",
+    "storage_bucket": "wazebar.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:219218275260:android:c6c2049e0fd3d6f3",
+        "android_client_info": {
+          "package_name": "br.com.tcc.searchdrink"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "219218275260-ml4rk8vag05fg0ql89d5bmepljuq2k6u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDiZ2-HsZWqBIpTkxaFIUg5tD2tTjzPyl8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,4 +1,4 @@
-package br.com.alura.agenda;
+package br.com.alura.searchdrink;
 
 
 import android.os.Bundle;
@@ -14,8 +14,8 @@ import android.widget.Toast;
 import java.util.Arrays;
 import java.util.List;
 
-import br.com.alura.agenda.activity.ProvasActivity;
-import br.com.alura.agenda.modelo.Prova;
+import br.com.alura.searchdrink.activity.ProvasActivity;
+import br.com.alura.searchdrink.modelo.Prova;
 
 
 /**

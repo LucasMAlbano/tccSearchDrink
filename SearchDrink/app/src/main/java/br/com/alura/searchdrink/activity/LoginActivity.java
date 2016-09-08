@@ -1,5 +1,6 @@
-package br.com.alura.agenda.activity;
+package br.com.alura.searchdrink.activity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,8 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import br.com.alura.agenda.R;
-import br.com.alura.agenda.dao.BarDAO;
+import br.com.alura.searchdrink.R;
+import br.com.alura.searchdrink.dao.BarDAO;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -31,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 else{
                     AlertDialog.Builder builder =
-                            new AlertDialog.Builder(CarregarImagemUrl.this).
+                            new AlertDialog.Builder(LoginActivity.this).
                                     setTitle("Erro").
                                     setMessage("Email ou Senha inválido!").
                                     setPositiveButton("OK", null);

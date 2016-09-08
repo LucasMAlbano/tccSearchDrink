@@ -1,11 +1,11 @@
-package br.com.alura.agenda.converter;
+package br.com.alura.searchdrink.converter;
 
 import org.json.JSONException;
 import org.json.JSONStringer;
 
 import java.util.List;
 
-import br.com.alura.agenda.modelo.Bar;
+import br.com.alura.searchdrink.modelo.Bar;
 
 /**
  * Created by Birbara on 24/08/2016.

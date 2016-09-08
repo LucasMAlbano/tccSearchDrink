@@ -1,4 +1,4 @@
-package br.com.alura.agenda.dao;
+package br.com.alura.searchdrink.dao;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,7 +10,7 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.alura.agenda.modelo.Bar;
+import br.com.alura.searchdrink.modelo.Bar;
 
 /**
  * Created by Birbara on 20/07/2016.

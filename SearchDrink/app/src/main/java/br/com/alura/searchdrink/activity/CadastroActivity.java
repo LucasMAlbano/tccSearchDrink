@@ -1,4 +1,4 @@
-package br.com.alura.agenda.activity;
+package br.com.alura.searchdrink.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,10 +12,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import br.com.alura.agenda.CadastroHelper;
-import br.com.alura.agenda.R;
-import br.com.alura.agenda.dao.BarDAO;
-import br.com.alura.agenda.modelo.Bar;
+import br.com.alura.searchdrink.CadastroHelper;
+import br.com.alura.searchdrink.R;
+import br.com.alura.searchdrink.dao.BarDAO;
+import br.com.alura.searchdrink.modelo.Bar;
 
 public class CadastroActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package br.com.alura.agenda.modelo;
+package br.com.alura.searchdrink.modelo;
 
 /**
  * Created by Birbara on 05/09/2016.

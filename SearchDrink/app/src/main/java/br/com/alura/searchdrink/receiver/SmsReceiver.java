@@ -1,4 +1,4 @@
-package br.com.alura.agenda.receiver;
+package br.com.alura.searchdrink.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,8 +7,8 @@ import android.media.MediaPlayer;
 import android.telephony.SmsMessage;
 import android.widget.Toast;
 
-import br.com.alura.agenda.R;
-import br.com.alura.agenda.dao.BarDAO;
+import br.com.alura.searchdrink.R;
+import br.com.alura.searchdrink.dao.BarDAO;
 
 /**
  * Created by Birbara on 08/08/2016.

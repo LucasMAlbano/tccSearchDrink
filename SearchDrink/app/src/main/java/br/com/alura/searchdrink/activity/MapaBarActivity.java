@@ -1,4 +1,4 @@
-package br.com.alura.agenda.activity;
+package br.com.alura.searchdrink.activity;
 
 import android.Manifest;
 import android.content.Intent;
@@ -14,9 +14,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import br.com.alura.agenda.Localizador;
-import br.com.alura.agenda.MapaFragment;
-import br.com.alura.agenda.R;
+import br.com.alura.searchdrink.Localizador;
+import br.com.alura.searchdrink.MapaFragment;
+import br.com.alura.searchdrink.R;
 
 //import com.google.android.gms.maps.SupportMapFragment;
 

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="br.com.alura.agenda.DetalhesProvaFragment"
+    tools:context="br.com.alura.searchdrink.DetalhesProvaFragment"
     app:cardCornerRadius="8dp"
     app:cardElevation="10dp"
     app:cardUseCompatPadding="true">

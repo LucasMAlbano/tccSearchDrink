@@ -1,4 +1,4 @@
-package br.com.alura.agenda.modelo;
+package br.com.alura.searchdrink.modelo;
 
 import java.io.Serializable;
 import java.util.List;

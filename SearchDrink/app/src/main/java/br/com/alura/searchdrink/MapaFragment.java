@@ -1,4 +1,4 @@
-package br.com.alura.agenda;
+package br.com.alura.searchdrink;
 
 import android.location.Address;
 import android.location.Geocoder;
@@ -15,8 +15,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.IOException;
 import java.util.List;
 
-import br.com.alura.agenda.dao.BarDAO;
-import br.com.alura.agenda.modelo.Bar;
+import br.com.alura.searchdrink.dao.BarDAO;
+import br.com.alura.searchdrink.modelo.Bar;
 
 /**
  * Created by Birbara on 31/08/2016.

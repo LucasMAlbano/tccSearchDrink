@@ -1,4 +1,4 @@
-package br.com.alura.agenda.activity;
+package br.com.alura.searchdrink.activity;
 
 import android.Manifest;
 import android.content.Intent;
@@ -20,13 +20,14 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import br.com.alura.agenda.EnviaDadosServidor;
-import br.com.alura.agenda.R;
-import br.com.alura.agenda.adapter.BarAdapter;
-import br.com.alura.agenda.dao.BarDAO;
-import br.com.alura.agenda.modelo.Bar;
 
-public class PerfilActivity extends AppCompatActivity {
+import br.com.alura.searchdrink.EnviaDadosServidor;
+import br.com.alura.searchdrink.R;
+import br.com.alura.searchdrink.adapter.BarAdapter;
+import br.com.alura.searchdrink.dao.BarDAO;
+import br.com.alura.searchdrink.modelo.Bar;
+
+public class ListaAlunosActivity extends AppCompatActivity {
 
     private static final int CODIGO_LIGACAO = 123;
     private static final int CODIGO_SMS = 124;
@@ -36,7 +37,7 @@ public class PerfilActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_perfil);
+        setContentView(R.layout.activity_lista_alunos);
 
         //verifica permissão recebimento de SMS
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -51,7 +52,7 @@ public class PerfilActivity extends AppCompatActivity {
         novoAluno.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(PerfilActivity.this, CadastroActivity.class);
+                Intent intent = new Intent(ListaAlunosActivity.this, CadastroActivity.class);
                 startActivity(intent);
             }
         });
@@ -62,7 +63,7 @@ public class PerfilActivity extends AppCompatActivity {
 
                 Bar bar = (Bar) lista.getItemAtPosition(position);
 
-                Intent intent = new Intent(PerfilActivity.this, CadastroActivity.class);
+                Intent intent = new Intent(ListaAlunosActivity.this, CadastroActivity.class);
                 intent.putExtra("bar", bar);
                 startActivity(intent);
             }
@@ -101,9 +102,9 @@ public class PerfilActivity extends AppCompatActivity {
         itemLigar.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                if (ActivityCompat.checkSelfPermission(PerfilActivity.this, Manifest.permission.CALL_PHONE)
+                if (ActivityCompat.checkSelfPermission(ListaAlunosActivity.this, Manifest.permission.CALL_PHONE)
                         != PackageManager.PERMISSION_GRANTED){
-                    ActivityCompat.requestPermissions(PerfilActivity.this, new String []{Manifest.permission.CALL_PHONE}, CODIGO_LIGACAO);
+                    ActivityCompat.requestPermissions(ListaAlunosActivity.this, new String []{Manifest.permission.CALL_PHONE}, CODIGO_LIGACAO);
                 } else{
                     Intent intentLigar = new Intent(Intent.ACTION_CALL);
                     intentLigar.setData(Uri.parse("tel:" + bar.getTelefone()));
@@ -130,11 +131,11 @@ public class PerfilActivity extends AppCompatActivity {
         itemDeletar.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                BarDAO dao = new BarDAO(PerfilActivity.this);
+                BarDAO dao = new BarDAO(ListaAlunosActivity.this);
                 dao.deleta(bar);
                 dao.close();
 
-                Toast.makeText(PerfilActivity.this, bar.getNome() + "removido(a)", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ListaAlunosActivity.this, bar.getNome() + "removido(a)", Toast.LENGTH_SHORT).show();
 
                 carregaLista();
 
@@ -179,12 +180,11 @@ public class PerfilActivity extends AppCompatActivity {
     private void carregaLista() {
         //        String[] bars = {"Daniel", "Ronaldo", "Jeferson", "Felipe"};
         BarDAO dao = new BarDAO(this);
-        List<Bar> bares = dao.buscaAlunos();
+        List<Bar> bars = dao.buscaAlunos();
         dao.close();
 
-        BarAdapter adapter = new BarAdapter(this, bares);
+        BarAdapter adapter = new BarAdapter(this, bars);
 
         listaAlunos.setAdapter(adapter);
     }
-
 }

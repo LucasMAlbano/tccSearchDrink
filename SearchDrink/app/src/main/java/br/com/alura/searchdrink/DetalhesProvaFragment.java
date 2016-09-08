@@ -1,4 +1,4 @@
-package br.com.alura.agenda;
+package br.com.alura.searchdrink;
 
 
 import android.os.Bundle;
@@ -10,7 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import br.com.alura.agenda.modelo.Prova;
+import br.com.alura.searchdrink.modelo.Prova;
 
 
 /**
