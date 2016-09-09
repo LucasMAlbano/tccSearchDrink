@@ -1,18 +1,17 @@
 package br.com.alura.searchdrink;
 
+import android.content.ContentResolver;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
-import android.widget.Toast;
 
-import java.io.File;
+import java.io.IOException;
 
 import br.com.alura.searchdrink.activity.CadastroActivity;
 import br.com.alura.searchdrink.modelo.Bar;
-
-import static br.com.alura.searchdrink.R.drawable.ic_enviar;
 
 /**
  * Created by Birbara on 20/07/2016.
@@ -65,31 +64,25 @@ public class CadastroHelper {
         campoSenha.setText(bar.getSenha());
 
         if (bar.getCaminhoFoto() != null){
-            carregaFoto(bar.getCaminhoFoto());
+//            carregaFoto(bar.getCaminhoFoto(), getContentResolver());
         }
     }
 
-    public void carregaFoto(String caminhoFoto) {
+    public void carregaFoto(Uri caminhoFoto, ContentResolver contentResolver) {
 
         if(caminhoFoto != null) {
 
-//            BitmapFactory.Options options = new BitmapFactory.Options();
-//            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(contentResolver, caminhoFoto);
+                // Log.d(TAG, String.valueOf(bitmap));
+                bitmap = Bitmap.createScaledBitmap(bitmap, 500, 500, true);
 
-//            Bitmap bitmap = BitmapFactory.decodeFile(caminhoFoto, options);
-
-            Bitmap bitmap = BitmapFactory.decodeFile(caminhoFoto);
-//            bitmap = Bitmap.createScaledBitmap(bitmap, 300, 300, true);
-            campoFoto.setImageBitmap(bitmap);
-//            campoFoto.setScaleType(ImageView.ScaleType.FIT_XY);
-//            campoFoto.setTag(caminhoFoto);
-
-//            File imgFile = new  File(caminhoFoto);
-//            if(imgFile.exists()){
-//                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-//
-//                campoFoto.setImageBitmap(myBitmap);
-
+                campoFoto.setImageBitmap(bitmap);
+                campoFoto.setScaleType(ImageView.ScaleType.FIT_XY);
+                campoFoto.setTag(caminhoFoto);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

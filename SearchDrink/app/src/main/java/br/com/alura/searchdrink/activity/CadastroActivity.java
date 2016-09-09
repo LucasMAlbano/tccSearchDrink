@@ -1,6 +1,7 @@
 package br.com.alura.searchdrink.activity;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -22,6 +23,8 @@ import android.widget.Toast;
 
 import com.google.firebase.storage.FirebaseStorage;
 
+import java.io.IOException;
+
 import br.com.alura.searchdrink.CadastroHelper;
 import br.com.alura.searchdrink.R;
 import br.com.alura.searchdrink.dao.BarDAO;
@@ -30,7 +33,7 @@ import br.com.alura.searchdrink.modelo.Bar;
 public class CadastroActivity extends AppCompatActivity {
 
     public static final int CODIGO_CAMERA = 567;
-    public static final int CODIGO_GALERIA = 1234;
+    public static final int CODIGO_GALERIA = 1;
 
     private CadastroHelper helper;
     private String caminhoFoto = "";
@@ -70,9 +73,12 @@ public class CadastroActivity extends AppCompatActivity {
 //                startActivityForResult(i, CODIGO_GALERIA);
 
 
-                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-                photoPickerIntent.setType("image/*");
-                startActivityForResult(photoPickerIntent, CODIGO_GALERIA);
+                Intent intent = new Intent();
+// Show only images, no videos or anything else
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+// Always show the chooser (if there are multiple options available)
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), CODIGO_GALERIA);
             }
         });
     }
@@ -81,55 +87,11 @@ public class CadastroActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-//        if (resultCode == Activity.RESULT_OK && requestCode == CODIGO_CAMERA){
-//            //imagem da camera
-//            helper.carregaFoto(caminhoFoto);
-//        }
+        if (requestCode == CODIGO_GALERIA && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
-        if(requestCode == CODIGO_GALERIA && resultCode == RESULT_OK){
-            //imagem da galeria
+            Uri uri = data.getData();
 
-            //1
-            Uri selectedImage = data.getData();
-            helper.carregaFoto(selectedImage.toString());
-
-            //2
-//            Uri selectedImage = data.getData();
-//            String[] filePathColumn = { MediaStore.Images.Media.DATA };
-//            Cursor cursor = getContentResolver().query(selectedImage,
-//                    filePathColumn, null, null, null);
-//            cursor.moveToFirst();
-//            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//            String picturePath = cursor.getString(columnIndex);
-//            cursor.close();
-//            ImageView imageView = (ImageView) findViewById(R.id.cadastro_foto);
-//            imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-
-            //3
-//            String[] filePathColumn = { MediaStore.Images.Media.DATA };
-//            Cursor cursor = getContentResolver().query(selectedImage,filePathColumn, null, null, null);
-//            cursor.moveToFirst();
-//            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//            String picturePath = cursor.getString(columnIndex);
-//            cursor.close();
-//            helper.carregaFoto(picturePath);
-
-
-            //4
-//            Uri photoUri = data.getData();
-//            String[] filePathColumn = {MediaStore.Images.Media.DATA};
-//            Cursor cursor = getContentResolver().query(photoUri, filePathColumn, null, null, null);
-//            cursor.moveToFirst();
-//            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//            String filePath = cursor.getString(columnIndex);
-//            cursor.close();
-//            Log.v("Load Image", "Gallery File Path=====>>>"+filePath);
-//            Log.v("Load Image", "Image List Size=====>>>"+filePath.toString());
-//            Bitmap bitmap = BitmapFactory.decodeFile(filePath.trim());
-//            bitmap = Bitmap.createScaledBitmap(bitmap,500, 500, true);
-//            Drawable d=new BitmapDrawable(bitmap);
-
-            Toast.makeText(getApplicationContext(), selectedImage.toString(), Toast.LENGTH_LONG).show();
+            helper.carregaFoto(uri, getContentResolver());
         }
     }
 
