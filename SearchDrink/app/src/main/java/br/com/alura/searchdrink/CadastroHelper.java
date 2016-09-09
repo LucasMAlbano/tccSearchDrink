@@ -5,9 +5,14 @@ import android.graphics.BitmapFactory;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.Toast;
+
+import java.io.File;
 
 import br.com.alura.searchdrink.activity.CadastroActivity;
 import br.com.alura.searchdrink.modelo.Bar;
+
+import static br.com.alura.searchdrink.R.drawable.ic_enviar;
 
 /**
  * Created by Birbara on 20/07/2016.
@@ -68,17 +73,23 @@ public class CadastroHelper {
 
         if(caminhoFoto != null) {
 
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+//            BitmapFactory.Options options = new BitmapFactory.Options();
+//            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
 
-            Bitmap bitmap = BitmapFactory.decodeFile(caminhoFoto, options);
+//            Bitmap bitmap = BitmapFactory.decodeFile(caminhoFoto, options);
 
-//            Bitmap bitmap = BitmapFactory.decodeFile(caminhoFoto);
-
+            Bitmap bitmap = BitmapFactory.decodeFile(caminhoFoto);
 //            bitmap = Bitmap.createScaledBitmap(bitmap, 300, 300, true);
             campoFoto.setImageBitmap(bitmap);
 //            campoFoto.setScaleType(ImageView.ScaleType.FIT_XY);
 //            campoFoto.setTag(caminhoFoto);
+
+//            File imgFile = new  File(caminhoFoto);
+//            if(imgFile.exists()){
+//                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+//
+//                campoFoto.setImageBitmap(myBitmap);
+
         }
     }
 }

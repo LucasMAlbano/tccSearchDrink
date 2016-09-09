@@ -7,6 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -128,6 +131,33 @@ public class BarDAO extends SQLiteOpenHelper {
 
         return count > 0;
     }
+
+    public void testeFirebase(){
+
+        // Criando instancia para firebase
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        // Points to the root reference
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://<your-bucket-name>");
+
+        // Points to "images"
+        StorageReference imagesRef = storageRef.child("images");
+
+        // Points to "images/space.jpg"
+        // Note that you can use variables to create child values
+        String fileName = "space.jpg";
+        StorageReference spaceRef = imagesRef.child(fileName);
+
+        // File path is "images/space.jpg"
+        String path = spaceRef.getPath();
+
+        // File name is "space.jpg"
+        String name = spaceRef.getName();
+
+        // Points to "images"
+        imagesRef = spaceRef.getParent();
+    }
+
 
     @NonNull
     private ContentValues pegaDadosDoAluno(Bar bar) {
