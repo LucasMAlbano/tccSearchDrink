@@ -45,13 +45,13 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
 
         //adiciona local do aluno
         BarDAO dao = new BarDAO(getContext());
-        for(Bar bar : dao.buscaAlunos()){
-            LatLng coordenada = pegaCoordenadaDoEndereco(bar.getEndereco());
+        for(Bar aluno : dao.buscaAlunos()){
+            LatLng coordenada = pegaCoordenadaDoEndereco(aluno.getEndereco());
             if(coordenada != null) {
                 MarkerOptions marcador = new MarkerOptions();
                 marcador.position(coordenada);
-                marcador.title(bar.getNome());
-                marcador.snippet(String.valueOf(bar.getNota()));
+                marcador.title(aluno.getNome());
+                marcador.snippet(String.valueOf(aluno.getNota()));
                 mapa.addMarker(marcador);
             }
         }
