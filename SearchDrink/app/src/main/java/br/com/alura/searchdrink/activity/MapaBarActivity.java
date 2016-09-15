@@ -13,9 +13,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import br.com.alura.searchdrink.Localizador;
-import br.com.alura.searchdrink.MapaFragment;
+import br.com.alura.searchdrink.fragment.MapaFragment;
 import br.com.alura.searchdrink.R;
 
 //import com.google.android.gms.maps.SupportMapFragment;
@@ -76,6 +77,8 @@ public class MapaBarActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.menu_login:
+
+                Toast.makeText(MapaBarActivity.this, "oi", Toast.LENGTH_LONG).show();
 
                 Intent vaiParaLogin = new Intent(this, LoginActivity.class);
                 startActivity(vaiParaLogin);

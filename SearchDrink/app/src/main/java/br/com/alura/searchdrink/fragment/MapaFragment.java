@@ -1,4 +1,4 @@
-package br.com.alura.searchdrink;
+package br.com.alura.searchdrink.fragment;
 
 import android.location.Address;
 import android.location.Geocoder;
@@ -9,12 +9,15 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.List;
 
+import br.com.alura.searchdrink.Localizador;
+import br.com.alura.searchdrink.R;
 import br.com.alura.searchdrink.dao.BarDAO;
 import br.com.alura.searchdrink.modelo.Bar;
 
@@ -51,11 +54,11 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
                 MarkerOptions marcador = new MarkerOptions();
                 marcador.position(coordenada);
                 marcador.title(aluno.getNome());
-                marcador.snippet(String.valueOf(aluno.getNota()));
+//                marcador.snippet(String.valueOf(aluno.getNota()));
                 mapa.addMarker(marcador);
             }
         }
-        dao.close();
+//        dao.close();
 
         new Localizador(getContext(), MapaFragment.this);
     }
@@ -82,6 +85,11 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
         if(mapa != null){
             CameraUpdate update = CameraUpdateFactory.newLatLngZoom(coordenada, 17);
             mapa.moveCamera(update);
+
+            MarkerOptions marcador = new MarkerOptions();
+            marcador.position(coordenada);
+            marcador.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_localizacao));
+            mapa.addMarker(marcador);
         }
     }
 }

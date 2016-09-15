@@ -1,4 +1,4 @@
-package br.com.alura.searchdrink;
+package br.com.alura.searchdrink.fragment;
 
 
 import android.os.Bundle;
@@ -14,6 +14,7 @@ import android.widget.Toast;
 import java.util.Arrays;
 import java.util.List;
 
+import br.com.alura.searchdrink.R;
 import br.com.alura.searchdrink.activity.ProvasActivity;
 import br.com.alura.searchdrink.modelo.Prova;
 

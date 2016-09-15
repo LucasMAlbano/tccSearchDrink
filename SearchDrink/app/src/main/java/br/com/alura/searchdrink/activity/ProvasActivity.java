@@ -5,8 +5,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import br.com.alura.searchdrink.DetalhesProvaFragment;
-import br.com.alura.searchdrink.ListaProvasFragment;
+import br.com.alura.searchdrink.fragment.DetalhesProvaFragment;
+import br.com.alura.searchdrink.fragment.ListaProvasFragment;
 import br.com.alura.searchdrink.R;
 import br.com.alura.searchdrink.modelo.Prova;
 

@@ -47,7 +47,7 @@ public class CadastroHelper {
         bar.setEndereco(campoEndereco.getText().toString());
         bar.setTelefone(campoTelefone.getText().toString());
         bar.setSite(campoSite.getText().toString());
-        bar.setNota(Double.valueOf(campoNota.getRating()));
+//        bar.setNota(Double.valueOf(campoNota.getRating()));
         bar.setCaminhoFoto((String)campoFoto.getTag());
         bar.setSenha(campoSenha.getText().toString());
         return bar;
@@ -60,7 +60,7 @@ public class CadastroHelper {
         campoEndereco.setText(bar.getEndereco());
         campoTelefone.setText(bar.getTelefone());
         campoSite.setText(bar.getSite());
-        campoNota.setRating((float) bar.getNota());
+//        campoNota.setRating((float) bar.getNota());
         campoSenha.setText(bar.getSenha());
 
         if (bar.getCaminhoFoto() != null){

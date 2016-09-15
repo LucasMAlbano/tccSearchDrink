@@ -1,4 +1,4 @@
-package br.com.alura.searchdrink;
+package br.com.alura.searchdrink.fragment;
 
 
 import android.os.Bundle;
@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import br.com.alura.searchdrink.R;
 import br.com.alura.searchdrink.modelo.Prova;
 
 

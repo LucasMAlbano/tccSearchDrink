@@ -13,7 +13,6 @@ public class Bar implements Serializable{
     private String endereco;
     private String telefone;
     private String site;
-    private double nota;
     private String caminhoFoto;
     private String email;
     private String senha;
@@ -85,14 +84,6 @@ public class Bar implements Serializable{
 
     public void setSite(String site) {
         this.site = site;
-    }
-
-    public double getNota() {
-        return nota;
-    }
-
-    public void setNota(double nota) {
-        this.nota = nota;
     }
 
     public String getEmail() {

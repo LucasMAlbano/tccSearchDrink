@@ -25,7 +25,7 @@ public class AlunoConverter {
                         .key("telefone").value(bar.getTelefone())
                         .key("endereco").value(bar.getEndereco())
                         .key("site").value(bar.getSite())
-                        .key("nota").value(bar.getNota())
+//                        .key("nota").value(bar.getNota())
                         .endObject();
             }
 

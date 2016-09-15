@@ -118,7 +118,7 @@ public class CadastroActivity extends AppCompatActivity {
                 } else{
                     dao.altera(bar);
                 }
-                dao.close();
+//                dao.close();
 
                 Toast.makeText(CadastroActivity.this, "Bar " + bar.getNome() + " salvo com sucesso!", Toast.LENGTH_SHORT).show();
                 finish();

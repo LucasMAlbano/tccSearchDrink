@@ -38,6 +38,6 @@ public class SmsReceiver extends BroadcastReceiver {
             mp.start();
         }
 
-        dao.close();
+//        dao.close();
     }
 }

@@ -133,7 +133,7 @@ public class ListaAlunosActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem menuItem) {
                 BarDAO dao = new BarDAO(ListaAlunosActivity.this);
                 dao.deleta(bar);
-                dao.close();
+//                dao.close();
 
                 Toast.makeText(ListaAlunosActivity.this, bar.getNome() + "removido(a)", Toast.LENGTH_SHORT).show();
 
@@ -181,7 +181,7 @@ public class ListaAlunosActivity extends AppCompatActivity {
         //        String[] bars = {"Daniel", "Ronaldo", "Jeferson", "Felipe"};
         BarDAO dao = new BarDAO(this);
         List<Bar> bars = dao.buscaAlunos();
-        dao.close();
+//        dao.close();
 
         BarAdapter adapter = new BarAdapter(this, bars);
 
