@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <LinearLayout
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:orientation="vertical"
+        tools:context=".activity.PerfilActivity_">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="italic"
+            android:text="Bem vindo!"
+            android:textSize="30sp"
+            android:id="@+id/perfil_bemvindo"/>
+
+        <ImageView
+            android:id="@+id/perfil_foto"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:src="@drawable/person"
+            android:background="#00A8EC"
+            android:layout_marginTop="20dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Endereco"
+            android:textSize="16sp"
+            android:id="@+id/perfil_endereco"
+            android:layout_marginTop="20dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bebidas:"
+            android:textSize="20sp"
+            android:layout_marginTop="20dp"/>
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="italic"
+            android:textSize="16sp"
+            android:id="@+id/perfil_bebidas"
+            android:layout_marginTop="5dp"/>
+
+    </LinearLayout>
+
+        <Button
+            android:id="@+id/novo_aluno"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:text="+"
+            android:textSize="40dp"
+            android:textColor="#ffffff"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/fundo"
+            android:elevation="6dp"
+            android:stateListAnimator="@null"/>
+
+    </RelativeLayout>
+</ScrollView>

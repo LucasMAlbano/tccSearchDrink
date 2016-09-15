@@ -105,6 +105,8 @@ public class LoginActivity extends BaseActivity {
                             Toast.makeText(LoginActivity.this, "Falha na Autenticação",
                                     Toast.LENGTH_SHORT).show();
                         }else{
+                            Toast.makeText(LoginActivity.this, "Usuário cadastrado com sucesso!",
+                                    Toast.LENGTH_SHORT).show();
                             Intent vaiParaPerfil = new Intent(LoginActivity.this, PerfilActivity.class);
                             startActivity(vaiParaPerfil);
                         }
@@ -132,6 +134,10 @@ public class LoginActivity extends BaseActivity {
                             Log.w(TAG, "signInWithEmail:failed", task.getException());
                             Toast.makeText(LoginActivity.this, "Falha na Autenticação",
                                     Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            Intent vaiParaPerfil = new Intent(LoginActivity.this, PerfilActivity.class);
+                            startActivity(vaiParaPerfil);
                         }
 
 
