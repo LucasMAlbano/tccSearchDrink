@@ -1,14 +1,17 @@
 package br.com.alura.searchdrink.modelo;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by Birbara on 20/07/2016.
  */
 public class Bar implements Serializable{
 
-    private long uId;
+//    private long uId;
     private String nome;
     private String endereco;
     private String telefone;
@@ -51,13 +54,13 @@ public class Bar implements Serializable{
         this.caminhoFoto = caminhoFoto;
     }
 
-    public long getuId() {
-        return uId;
-    }
+//    public long getuId() {
+//        return uId;
+//    }
 
-    public void setuId(long uId) {
-        this.uId = uId;
-    }
+//    public void setuId(long uId) {
+//        this.uId = uId;
+//    }
 
     public String getNome() {
         return nome;
@@ -108,8 +111,19 @@ public class Bar implements Serializable{
     }
 
 
+    public Map<String, Object> toMap(){
+        HashMap<String, Object> resultado = new HashMap<>();
+        resultado.put("nome", nome);
+        resultado.put("endereco", endereco);
+        resultado.put("telefone", telefone);
+        resultado.put("site", site);
+
+        return resultado;
+    }
+
     @Override
     public String toString() {
-        return getuId() + " - " + getNome();
+//        return getuId() + " - " + getNome();
+        return getNome();
     }
 }

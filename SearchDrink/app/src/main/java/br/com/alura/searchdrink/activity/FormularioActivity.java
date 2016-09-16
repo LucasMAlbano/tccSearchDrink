@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import br.com.alura.searchdrink.FormularioHelper;
@@ -35,6 +36,8 @@ public class FormularioActivity extends BaseActivity {
 
     private DatabaseReference database;
 
+    private String uId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,12 +47,20 @@ public class FormularioActivity extends BaseActivity {
 
         database = FirebaseDatabase.getInstance().getReference();
 
-        String uId = getUid();
+        uId = getUid();
 
         database.child("bares").child(uId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, String> mapBar = dataSnapshot.getValue(Map.class);
+                Map <String, String> mapBar = (Map)dataSnapshot.getValue();
+
+                String nome = mapBar.get("nome");
+                String email = mapBar.get("email");
+
+                Bar bar = new Bar(nome, email);
+
+                helper.preencheFormulario(bar);
+
             }
 
             @Override
@@ -145,21 +156,44 @@ public class FormularioActivity extends BaseActivity {
 
         switch (item.getItemId()){
             case R.id.menu_formulario_ok:
-                Bar bar = helper.pegaBar();
-                BarDAO dao = new BarDAO(this);
+                final Bar bar = helper.pegaBar();
 
-                if(bar.getuId() == 0) {
-                    dao.insere(bar);
-                } else{
-                    dao.altera(bar);
-                }
+                database.child("bares").child(uId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        enviaCadastro(bar);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+//                BarDAO dao = new BarDAO(this);
+
+//                if(bar.getuId() == 0) {
+//                    dao.insere(bar);
+//                } else{
+//                    dao.altera(bar);
+//                }
 //                dao.close();
 
-                Toast.makeText(FormularioActivity.this, "Bar " + bar.getNome() + " salvo com sucesso!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(FormularioActivity.this, "Bar " + bar.getNome() + " salvo com sucesso!", Toast.LENGTH_SHORT).show();
                 finish();
                 break;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void enviaCadastro(Bar bar) {
+
+        Map<String, Object> valoresBar = bar.toMap();
+
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("bares/" + uId + "/", valoresBar);
+
+        database.updateChildren(childUpdates);
     }
 }

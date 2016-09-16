@@ -20,7 +20,7 @@ public class AlunoConverter {
 
             for(Bar bar : bars){
                 jsonStringer.object()
-                        .key("id").value(bar.getuId())
+//                        .key("id").value(bar.getuId())
                         .key("nome").value(bar.getNome())
                         .key("telefone").value(bar.getTelefone())
                         .key("endereco").value(bar.getEndereco())
