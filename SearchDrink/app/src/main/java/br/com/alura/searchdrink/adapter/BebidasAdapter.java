@@ -14,39 +14,40 @@ import java.util.List;
 
 import br.com.alura.searchdrink.R;
 import br.com.alura.searchdrink.modelo.Bar;
+import br.com.alura.searchdrink.modelo.Bebida;
 
 /**
  * Created by Birbara on 04/08/2016.
  */
-public class BarAdapter extends BaseAdapter {
+public class BebidasAdapter extends BaseAdapter {
 
-    private final List<Bar> bars;
+    private final List<Bebida> bebidas;
     private final Context context;
 
-    public BarAdapter(Context context, List<Bar> bars){
+    public BebidasAdapter(Context context, List<Bebida> bebidas){
         this.context = context;
-        this.bars = bars;
+        this.bebidas = bebidas;
     }
 
     @Override
     public int getCount() {
-        return bars.size();
+        return bebidas.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return bars.get(position);
+        return bebidas.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return bars.get(position).getId();
+        return bebidas.get(position).getuId();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        Bar bar = bars.get(position);
+        Bebida bebida = bebidas.get(position);
 
         LayoutInflater inflater = LayoutInflater.from(context);
 
@@ -57,22 +58,22 @@ public class BarAdapter extends BaseAdapter {
         }
 
         TextView campoNome = (TextView) view.findViewById(R.id.item_nome);
-        campoNome.setText(bar.getNome());
+        campoNome.setText(bebida.getNome());
 
-        TextView campoTelefone = (TextView) view.findViewById(R.id.item_telefone);
-        campoTelefone.setText(bar.getTelefone());
+        TextView campoPreco = (TextView) view.findViewById(R.id.item_preco);
+        campoPreco.setText(String.valueOf(bebida.getPreco()));
 
         // preenchimento de modo paisagem
-        TextView campoEndereco = (TextView) view.findViewById(R.id.item_endereco);
-        TextView campoSite = (TextView) view.findViewById(R.id.item_site);
-        if (campoEndereco != null && campoSite != null){
-            campoEndereco.setText(bar.getEndereco());
-            campoSite.setText(bar.getSite());
-        }
+//        TextView campoEndereco = (TextView) view.findViewById(R.id.item_endereco);
+//        TextView campoSite = (TextView) view.findViewById(R.id.item_site);
+//        if (campoEndereco != null && campoSite != null){
+//            campoEndereco.setText(bebida.getEndereco());
+//            campoSite.setText(bebida.getSite());
+//        }
 
         ImageView campoFoto = (ImageView) view.findViewById(R.id.item_foto);
-        if(bar.getCaminhoFoto() != null) {
-            Bitmap bitmap = BitmapFactory.decodeFile(bar.getCaminhoFoto());
+        if(bebida.getCaminhoFoto() != null) {
+            Bitmap bitmap = BitmapFactory.decodeFile(bebida.getCaminhoFoto());
             bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
             campoFoto.setImageBitmap(bitmap);
             campoFoto.setScaleType(ImageView.ScaleType.FIT_XY);

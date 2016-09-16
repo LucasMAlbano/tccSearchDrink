@@ -24,7 +24,7 @@
             android:name=".activity.ListaAlunosActivity"
             android:label="@string/app_name" />
         <activity
-            android:name=".activity.CadastroActivity"
+            android:name=".activity.FormularioActivity"
             android:label="@string/title_activity_formulario" />
 
         <receiver

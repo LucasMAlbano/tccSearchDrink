@@ -1,6 +1,5 @@
 package br.com.alura.searchdrink.activity;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
@@ -17,98 +16,103 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import br.com.alura.searchdrink.R;
-import br.com.alura.searchdrink.dao.BarDAO;
+import br.com.alura.searchdrink.modelo.Bar;
 
-public class LoginActivity extends BaseActivity {
+public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String TAG = "login";
-    private FirebaseAuth auth;
 
-    private FirebaseAuth.AuthStateListener authListener;
+    private FirebaseAuth auth;
+    private DatabaseReference database;
+//    private FirebaseAuth.AuthStateListener authListener;
+
     private EditText campoEmail;
     private EditText campoSenha;
     private TextView campoStatus;
+    private static String OBRIGATORIO = "Obrigatório.";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        database = FirebaseDatabase.getInstance().getReference();
         auth = FirebaseAuth.getInstance();
 
-        authListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if(user != null){
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                }
-                else{
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                }
-            }
-        };
+//        authListener = new FirebaseAuth.AuthStateListener() {
+//            @Override
+//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+//                FirebaseUser user = firebaseAuth.getCurrentUser();
+//                if(user != null){
+//                    // User is signed in
+//                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+//                }
+//                else{
+//                    // User is signed out
+//                    Log.d(TAG, "onAuthStateChanged:signed_out");
+//                }
+//            }
+//        };
 
         campoEmail = (EditText) findViewById(R.id.login_email);
         campoSenha = (EditText) findViewById(R.id.login_senha);
         campoStatus = (TextView) findViewById(R.id.login_status);
 
         Button entrar = (Button) findViewById(R.id.login_entrar);
-        entrar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                entraConta(campoEmail.getText().toString(), campoSenha.getText().toString());
-            }
-        });
-
         Button cadastrar = (Button) findViewById(R.id.login_cadastrar);
-        cadastrar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                criaConta(campoEmail.getText().toString(), campoSenha.getText().toString());
-            }
-        });
 
+        //click
+        entrar.setOnClickListener(this);
+        cadastrar.setOnClickListener(this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        auth.addAuthStateListener(authListener);
+
+//        auth.addAuthStateListener(authListener);
+
+        if (auth.getCurrentUser() != null) {
+            onAuthSuccess(auth.getCurrentUser());
+        }
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        auth.removeAuthStateListener(authListener);
-    }
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        auth.removeAuthStateListener(authListener);
+//    }
 
-    private void criaConta(String email, String senha) {
-        Log.d(TAG, "createAccount:" + email);
+    private void entraConta() {
+        Log.d(TAG, "login");
         if (!validaCampos()) {
             return;
         }
 
         showProgressDialog();
 
-        auth.createUserWithEmailAndPassword(email, senha)
-                .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+        String email = campoEmail.getText().toString();
+        String senha = campoSenha.getText().toString();
+
+        auth.signInWithEmailAndPassword(email, senha)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
+                        Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
 
-                        if (!task.isSuccessful()) {
+                        if (task.isSuccessful()) {
+                            onAuthSuccess(task.getResult().getUser());
+                        }
+                        else{
+                            Log.w(TAG, "signInWithEmail:failed", task.getException());
                             Toast.makeText(LoginActivity.this, "Falha na Autenticação",
                                     Toast.LENGTH_SHORT).show();
-                        }else{
-                            Toast.makeText(LoginActivity.this, "Usuário cadastrado com sucesso!",
-                                    Toast.LENGTH_SHORT).show();
-                            Intent vaiParaPerfil = new Intent(LoginActivity.this, PerfilActivity.class);
-                            startActivity(vaiParaPerfil);
+                            campoStatus.setText("Falha na Autenticação");
+                            campoStatus.setVisibility(1);
                         }
 
                         hideProgressDialog();
@@ -116,34 +120,30 @@ public class LoginActivity extends BaseActivity {
                 });
     }
 
-    private void entraConta(String email, String password) {
-        Log.d(TAG, "signIn:" + email);
+    private void cadastraConta() {
+        Log.d(TAG, "cadastro");
         if (!validaCampos()) {
             return;
         }
 
         showProgressDialog();
 
-        auth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+        String email = campoEmail.getText().toString();
+        String senha = campoSenha.getText().toString();
+
+        auth.createUserWithEmailAndPassword(email, senha)
+                .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+                        Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
 
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "signInWithEmail:failed", task.getException());
+                        if (task.isSuccessful()) {
+                            onAuthSuccess(task.getResult().getUser());
+                            Toast.makeText(LoginActivity.this, "Usuário cadastrado com sucesso!",
+                                    Toast.LENGTH_SHORT).show();
+                        }else{
                             Toast.makeText(LoginActivity.this, "Falha na Autenticação",
                                     Toast.LENGTH_SHORT).show();
-                        }
-                        else{
-                            Intent vaiParaPerfil = new Intent(LoginActivity.this, PerfilActivity.class);
-                            startActivity(vaiParaPerfil);
-                        }
-
-
-                        if (!task.isSuccessful()) {
-                            campoStatus.setText("Falha na Autenticação");
-                            campoStatus.setVisibility(1);
                         }
 
                         hideProgressDialog();
@@ -156,7 +156,7 @@ public class LoginActivity extends BaseActivity {
 
         String email = campoEmail.getText().toString();
         if (TextUtils.isEmpty(email)) {
-            campoEmail.setError("Obrigatório.");
+            campoEmail.setError(OBRIGATORIO);
             validador = false;
         } else {
             campoEmail.setError(null);
@@ -164,7 +164,7 @@ public class LoginActivity extends BaseActivity {
 
         String senha = campoSenha.getText().toString();
         if (TextUtils.isEmpty(senha)) {
-            campoSenha.setError("Obrigatório.");
+            campoSenha.setError(OBRIGATORIO);
             validador = false;
         } else {
             campoSenha.setError(null);
@@ -173,4 +173,39 @@ public class LoginActivity extends BaseActivity {
         return validador;
     }
 
+    private void onAuthSuccess(FirebaseUser user) {
+        String username = usernameFromEmail(user.getEmail());
+
+        // Write new user
+        writeNewUser(user.getUid(), username, user.getEmail());
+
+        Intent vaiParaPerfil = new Intent(LoginActivity.this, PerfilActivity.class);
+        startActivity(vaiParaPerfil);
+
+        finish();
+    }
+
+    private String usernameFromEmail(String email) {
+        if (email.contains("@")) {
+            return email.split("@")[0];
+        } else {
+            return email;
+        }
+    }
+
+    private void writeNewUser(String userId, String nome, String email) {
+        Bar usuario = new Bar(nome, email);
+
+        database.child("bares").child(userId).setValue(usuario);
+    }
+
+    @Override
+    public void onClick(View view) {
+        int i = view.getId();
+        if (i == R.id.login_entrar) {
+            entraConta();
+        } else if (i == R.id.login_cadastrar) {
+            cadastraConta();
+        }
+    }
 }

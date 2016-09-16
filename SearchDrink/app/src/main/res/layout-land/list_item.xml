@@ -32,33 +32,33 @@
             android:textSize="24sp"
             android:paddingLeft="10dp"
             android:paddingTop="8dp"
-            android:id="@+id/item_telefone"/>
+            android:id="@+id/item_preco"/>
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="right"
-        android:layout_marginRight="16dp">
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:orientation="vertical"-->
+        <!--android:gravity="right"-->
+        <!--android:layout_marginRight="16dp">-->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Endereço"
-            android:textSize="24sp"
-            android:paddingTop="8dp"
-            android:id="@+id/item_endereco"/>
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Endereço"-->
+            <!--android:textSize="24sp"-->
+            <!--android:paddingTop="8dp"-->
+            <!--android:id="@+id/item_endereco"/>-->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Site"
-            android:textSize="24sp"
-            android:paddingTop="10dp"
-            android:id="@+id/item_site"/>
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Site"-->
+            <!--android:textSize="24sp"-->
+            <!--android:paddingTop="10dp"-->
+            <!--android:id="@+id/item_site"/>-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
 </LinearLayout>

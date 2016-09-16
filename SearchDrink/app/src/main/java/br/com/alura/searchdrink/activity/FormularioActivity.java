@@ -1,49 +1,84 @@
 package br.com.alura.searchdrink.activity;
 
-import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import java.io.IOException;
+import java.util.Map;
 
-import br.com.alura.searchdrink.CadastroHelper;
+import br.com.alura.searchdrink.FormularioHelper;
 import br.com.alura.searchdrink.R;
 import br.com.alura.searchdrink.dao.BarDAO;
 import br.com.alura.searchdrink.modelo.Bar;
 
-public class CadastroActivity extends AppCompatActivity {
+public class FormularioActivity extends BaseActivity {
 
     public static final int CODIGO_CAMERA = 567;
     public static final int CODIGO_GALERIA = 1;
 
-    private CadastroHelper helper;
+    private FormularioHelper helper;
     private String caminhoFoto = "";
+
+    private DatabaseReference database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cadastro);
+        setContentView(R.layout.activity_formulario);
 
-        this.helper = new CadastroHelper(this);
+        this.helper = new FormularioHelper(this);
+
+        database = FirebaseDatabase.getInstance().getReference();
+
+        String uId = getUid();
+
+        database.child("bares").child(uId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, String> mapBar = dataSnapshot.getValue(Map.class);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+//        database.child("bares").child(uId).addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                Map<String, String> mapBar = dataSnapshot.getValue(Map.class);
+//
+////                String nome = mapBar.get("nome");
+////                String endereco = mapBar.get("endereco");
+////                String telefone = mapBar.get("telefone");
+////                String site = mapBar.get("site");
+////
+////                Bar bar = new Bar(nome, endereco, telefone, site);
+////
+////                helper.preencheFormulario(bar);
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
 
 //        Intent intent = getIntent();
 //        Bar bar = (Bar) intent.getSerializableExtra("bar");
@@ -113,14 +148,14 @@ public class CadastroActivity extends AppCompatActivity {
                 Bar bar = helper.pegaBar();
                 BarDAO dao = new BarDAO(this);
 
-                if(bar.getId() == 0) {
+                if(bar.getuId() == 0) {
                     dao.insere(bar);
                 } else{
                     dao.altera(bar);
                 }
 //                dao.close();
 
-                Toast.makeText(CadastroActivity.this, "Bar " + bar.getNome() + " salvo com sucesso!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(FormularioActivity.this, "Bar " + bar.getNome() + " salvo com sucesso!", Toast.LENGTH_SHORT).show();
                 finish();
                 break;
         }

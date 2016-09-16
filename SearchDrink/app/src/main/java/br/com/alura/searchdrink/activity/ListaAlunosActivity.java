@@ -23,7 +23,7 @@ import java.util.List;
 
 import br.com.alura.searchdrink.EnviaDadosServidor;
 import br.com.alura.searchdrink.R;
-import br.com.alura.searchdrink.adapter.BarAdapter;
+import br.com.alura.searchdrink.adapter.BebidasAdapter;
 import br.com.alura.searchdrink.dao.BarDAO;
 import br.com.alura.searchdrink.modelo.Bar;
 
@@ -52,7 +52,7 @@ public class ListaAlunosActivity extends AppCompatActivity {
         novoAluno.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ListaAlunosActivity.this, CadastroActivity.class);
+                Intent intent = new Intent(ListaAlunosActivity.this, FormularioActivity.class);
                 startActivity(intent);
             }
         });
@@ -63,7 +63,7 @@ public class ListaAlunosActivity extends AppCompatActivity {
 
                 Bar bar = (Bar) lista.getItemAtPosition(position);
 
-                Intent intent = new Intent(ListaAlunosActivity.this, CadastroActivity.class);
+                Intent intent = new Intent(ListaAlunosActivity.this, FormularioActivity.class);
                 intent.putExtra("bar", bar);
                 startActivity(intent);
             }
@@ -183,8 +183,8 @@ public class ListaAlunosActivity extends AppCompatActivity {
         List<Bar> bars = dao.buscaAlunos();
 //        dao.close();
 
-        BarAdapter adapter = new BarAdapter(this, bars);
+//        BebidasAdapter adapter = new BebidasAdapter(this, bars);
 
-        listaAlunos.setAdapter(adapter);
+//        listaAlunos.setAdapter(adapter);
     }
 }

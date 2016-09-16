@@ -2,9 +2,6 @@ package br.com.alura.searchdrink.dao;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 
 import com.google.firebase.database.DatabaseReference;
@@ -15,8 +12,6 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.alura.searchdrink.activity.CadastroActivity;
-import br.com.alura.searchdrink.activity.ListaAlunosActivity;
 import br.com.alura.searchdrink.modelo.Bar;
 
 /**
@@ -50,7 +45,7 @@ public class BarDAO {
 //
 //        while (c.moveToNext()) {
 //            Bar bar = new Bar();
-//            bar.setId(c.getLong(c.getColumnIndex("id")));
+//            bar.setuId(c.getLong(c.getColumnIndex("id")));
 //            bar.setNome(c.getString(c.getColumnIndex("nome")));
 //            bar.setEndereco(c.getString(c.getColumnIndex("endereco")));
 //            bar.setTelefone(c.getString(c.getColumnIndex("telefone")));
@@ -67,13 +62,13 @@ public class BarDAO {
 
     public void deleta(Bar bar) {
 //        SQLiteDatabase db = getWritableDatabase();
-//        String[] params = {String.valueOf(bar.getId())};
+//        String[] params = {String.valueOf(bar.getuId())};
 //        db.delete("Bares", "id = ?", params);
     }
 
     public void altera(Bar bar) {
 //        SQLiteDatabase db = getWritableDatabase();
-//        String[] params = {String.valueOf(bar.getId())};
+//        String[] params = {String.valueOf(bar.getuId())};
 //        db.update("Bares", pegaDadosDoAluno(bar), "id = ?", params);
     }
 

@@ -3,6 +3,10 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_editar_perfil"
+            android:title="Editar Perfil" />
+            <!--android:icon="@drawable/ic_editar_perfil"-->
+        <item
             android:id="@+id/nav_camera"
             android:icon="@drawable/ic_menu_camera"
             android:title="Import" />
@@ -30,6 +34,15 @@
                 android:id="@+id/nav_send"
                 android:icon="@drawable/ic_menu_send"
                 android:title="Send" />
+        </menu>
+    </item>
+
+    <item android:title="Logout">
+        <menu>
+            <item
+                android:id="@+id/nav_sair"
+                android:title="Sair" />
+                <!--android:icon="@drawable/ic_menu_share"-->
         </menu>
     </item>
 

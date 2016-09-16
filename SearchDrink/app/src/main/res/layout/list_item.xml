@@ -32,7 +32,7 @@
             android:textSize="16sp"
             android:paddingLeft="10dp"
             android:paddingTop="8dp"
-            android:id="@+id/item_telefone"/>
+            android:id="@+id/item_preco"/>
 
     </LinearLayout>
 

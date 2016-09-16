@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class Bar implements Serializable{
 
-    private long id;
+    private long uId;
     private String nome;
     private String endereco;
     private String telefone;
@@ -19,15 +19,20 @@ public class Bar implements Serializable{
 
     private List<Bebida> bebidas;
 
-//    public Bar(String nome, String endereco, String telefone, String site, double nota) {
-//        this.nome = nome;
-//        this.endereco = endereco;
-//        this.telefone = telefone;
-//        this.site = site;
-//        this.nota = nota;
-//    }
+    public Bar(String nome, String email){
+        this.nome = nome;
+        this.email = email;
+    }
 
-//    public Bar (){}
+
+    public Bar(String nome, String endereco, String telefone, String site) {
+        this.nome = nome;
+        this.endereco = endereco;
+        this.telefone = telefone;
+        this.site = site;
+    }
+
+    public Bar (){}
 
 
     public List<Bebida> getBebidas() {
@@ -46,12 +51,12 @@ public class Bar implements Serializable{
         this.caminhoFoto = caminhoFoto;
     }
 
-    public long getId() {
-        return id;
+    public long getuId() {
+        return uId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setuId(long uId) {
+        this.uId = uId;
     }
 
     public String getNome() {
@@ -105,6 +110,6 @@ public class Bar implements Serializable{
 
     @Override
     public String toString() {
-        return getId() + " - " + getNome();
+        return getuId() + " - " + getNome();
     }
 }
