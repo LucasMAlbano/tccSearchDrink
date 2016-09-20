@@ -5,11 +5,17 @@ package br.com.alura.searchdrink.modelo;
  */
 public class Bebida {
 
-    private long uId;
+//    private long uId;
     private String nome;
     private double preco;
 
     private String caminhoFoto;
+
+    public Bebida(String nome, double preco){
+        this.nome = nome;
+        this.preco = preco;
+    }
+
 
     public String getNome() {
         return nome;
@@ -27,14 +33,14 @@ public class Bebida {
         this.preco = preco;
     }
 
-    public long getuId() {
+//    public long getuId() {
+//
+//        return uId;
+//    }
 
-        return uId;
-    }
-
-    public void setuId(long uId) {
-        this.uId = uId;
-    }
+//    public void setuId(long uId) {
+//        this.uId = uId;
+//    }
 
     public String getCaminhoFoto() {
         return caminhoFoto;

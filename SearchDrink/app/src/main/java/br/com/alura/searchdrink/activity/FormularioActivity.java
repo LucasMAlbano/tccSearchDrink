@@ -49,18 +49,20 @@ public class FormularioActivity extends BaseActivity {
 
         uId = getUid();
 
-        database.child("bares").child(uId).addListenerForSingleValueEvent(new ValueEventListener() {
+        database.child("bares").child(uId).child("perfil").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map <String, String> mapBar = (Map)dataSnapshot.getValue();
-
                 String nome = mapBar.get("nome");
+                String endereco = mapBar.get("endereco");
+                String telefone = mapBar.get("telefone");
+                String site = mapBar.get("site");
                 String email = mapBar.get("email");
 
-                Bar bar = new Bar(nome, email);
+                Bar bar = new Bar(nome, endereco, telefone, site, email);
 
                 helper.preencheFormulario(bar);
-
+                
             }
 
             @Override
@@ -192,7 +194,7 @@ public class FormularioActivity extends BaseActivity {
 
 
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("bares/" + uId + "/", valoresBar);
+        childUpdates.put("bares/" + uId + "/perfil/", valoresBar);
 
         database.updateChildren(childUpdates);
     }

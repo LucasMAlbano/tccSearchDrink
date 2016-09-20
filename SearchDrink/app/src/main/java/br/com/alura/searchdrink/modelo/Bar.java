@@ -27,12 +27,17 @@ public class Bar implements Serializable{
         this.email = email;
     }
 
+    public Bar(String email){
+        this.email = email;
+    }
 
-    public Bar(String nome, String endereco, String telefone, String site) {
+
+    public Bar(String nome, String endereco, String telefone, String site, String email) {
         this.nome = nome;
         this.endereco = endereco;
         this.telefone = telefone;
         this.site = site;
+        this.email = email;
     }
 
     public Bar (){}

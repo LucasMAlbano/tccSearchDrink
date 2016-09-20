@@ -77,7 +77,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 //        auth.addAuthStateListener(authListener);
 
         if (auth.getCurrentUser() != null) {
-            onAuthSuccess(auth.getCurrentUser());
+            onAuthSuccess();
         }
     }
 
@@ -105,7 +105,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
 
                         if (task.isSuccessful()) {
-                            onAuthSuccess(task.getResult().getUser());
+                            onAuthSuccess();
                         }
                         else{
                             Log.w(TAG, "signInWithEmail:failed", task.getException());
@@ -138,7 +138,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
 
                         if (task.isSuccessful()) {
-                            onAuthSuccess(task.getResult().getUser());
+                            writeNewUser(task.getResult().getUser());
+                            onAuthSuccess();
                             Toast.makeText(LoginActivity.this, "Usuário cadastrado com sucesso!",
                                     Toast.LENGTH_SHORT).show();
                         }else{
@@ -173,11 +174,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         return validador;
     }
 
-    private void onAuthSuccess(FirebaseUser user) {
-        String username = usernameFromEmail(user.getEmail());
-
-        // Write new user
-        writeNewUser(user.getUid(), username, user.getEmail());
+    private void onAuthSuccess() {
 
         Intent vaiParaPerfil = new Intent(LoginActivity.this, PerfilActivity.class);
         startActivity(vaiParaPerfil);
@@ -193,10 +190,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         }
     }
 
-    private void writeNewUser(String userId, String nome, String email) {
-        Bar usuario = new Bar(nome, email);
+    private void writeNewUser(FirebaseUser user) {
+        Bar usuario = new Bar(usernameFromEmail(user.getEmail()), user.getEmail());
 
-        database.child("bares").child(userId).setValue(usuario);
+        database.child("bares").child(user.getUid()).setValue(usuario.getEmail());
+        database.child("bares").child(user.getUid()).child("perfil").child("nome").setValue(usuario.getNome());
     }
 
     @Override
