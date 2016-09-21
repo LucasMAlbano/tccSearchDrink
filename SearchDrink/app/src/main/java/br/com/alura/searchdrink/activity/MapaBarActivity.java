@@ -15,6 +15,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import br.com.alura.searchdrink.Localizador;
 import br.com.alura.searchdrink.fragment.MapaFragment;
 import br.com.alura.searchdrink.R;
@@ -22,20 +25,25 @@ import br.com.alura.searchdrink.R;
 //import com.google.android.gms.maps.SupportMapFragment;
 
 
-public class MapaBarActivity extends AppCompatActivity {
+public class MapaBarActivity extends BaseActivity {
 
     private static final int REQUEST_PERMISSOES = 1;
     private MapaFragment mapaFragment;
+    private String uId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mapa_bar);
 
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+
+        uId = getUid();
+
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction tx = manager.beginTransaction();
 
-        mapaFragment = new MapaFragment();
+        mapaFragment = new MapaFragment(database, uId);
 
         tx.replace(R.id.frame_mapa, mapaFragment);
         tx.commit();
@@ -77,8 +85,6 @@ public class MapaBarActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.menu_login:
-
-                Toast.makeText(MapaBarActivity.this, "oi", Toast.LENGTH_LONG).show();
 
                 Intent vaiParaLogin = new Intent(this, LoginActivity.class);
                 startActivity(vaiParaLogin);

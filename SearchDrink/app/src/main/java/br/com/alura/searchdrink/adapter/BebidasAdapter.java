@@ -41,7 +41,7 @@ public class BebidasAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return bebidas.get(position).getuId();
+        return bebidas.get(position).getId();
     }
 
     @Override
@@ -71,13 +71,13 @@ public class BebidasAdapter extends BaseAdapter {
 //            campoSite.setText(bebida.getSite());
 //        }
 
-        ImageView campoFoto = (ImageView) view.findViewById(R.id.item_foto);
-        if(bebida.getCaminhoFoto() != null) {
-            Bitmap bitmap = BitmapFactory.decodeFile(bebida.getCaminhoFoto());
-            bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
-            campoFoto.setImageBitmap(bitmap);
-            campoFoto.setScaleType(ImageView.ScaleType.FIT_XY);
-        }
+//        ImageView campoFoto = (ImageView) view.findViewById(R.id.item_foto);
+//        if(bebida.getCaminhoFoto() != null) {
+//            Bitmap bitmap = BitmapFactory.decodeFile(bebida.getCaminhoFoto());
+//            bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+//            campoFoto.setImageBitmap(bitmap);
+//            campoFoto.setScaleType(ImageView.ScaleType.FIT_XY);
+//        }
 
         return view;
     }

@@ -71,61 +71,16 @@ public class FormularioActivity extends BaseActivity {
             }
         });
 
-//        database.child("bares").child(uId).addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                Map<String, String> mapBar = dataSnapshot.getValue(Map.class);
-//
-////                String nome = mapBar.get("nome");
-////                String endereco = mapBar.get("endereco");
-////                String telefone = mapBar.get("telefone");
-////                String site = mapBar.get("site");
-////
-////                Bar bar = new Bar(nome, endereco, telefone, site);
-////
-////                helper.preencheFormulario(bar);
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-
-//        Intent intent = getIntent();
-//        Bar bar = (Bar) intent.getSerializableExtra("bar");
-
-//        if (bar != null){
-//            this.helper.preencheFormulario(bar);
-//        }
-
         Button botaoFoto = (Button)findViewById(R.id.formulario_botao_foto);
         botaoFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent vaiParaCamera= new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                caminhoFoto = getExternalFilesDir(null) + "/" + System.currentTimeMillis() + ".jpg";
-//                File arquivoFoto = new File(caminhoFoto);
-//                vaiParaCamera.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(arquivoFoto));
-//                startActivityForResult(vaiParaCamera, CODIGO_CAMERA);
-
-//                Intent vaiParaGaleria = new Intent(Intent.ACTION_PICK,
-//                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//                vaiParaGaleria.setAction(Intent.ACTION_GET_CONTENT);
-//                startActivityForResult(Intent.createChooser(vaiParaGaleria, "Selecione uma imagem"), CODIGO_GALERIA);
-
-//                Intent i = new Intent(
-//                        Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//
-//                startActivityForResult(i, CODIGO_GALERIA);
-
 
                 Intent intent = new Intent();
-// Show only images, no videos or anything else
+                // Show only images, no videos or anything else
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-// Always show the chooser (if there are multiple options available)
+                // Always show the chooser (if there are multiple options available)
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), CODIGO_GALERIA);
             }
         });
@@ -171,16 +126,8 @@ public class FormularioActivity extends BaseActivity {
 
                     }
                 });
-//                BarDAO dao = new BarDAO(this);
 
-//                if(bar.getuId() == 0) {
-//                    dao.insere(bar);
-//                } else{
-//                    dao.altera(bar);
-//                }
-//                dao.close();
-
-                        Toast.makeText(FormularioActivity.this, "Bar " + bar.getNome() + " salvo com sucesso!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(FormularioActivity.this, "Bar " + bar.getNome() + " salvo com sucesso!", Toast.LENGTH_SHORT).show();
                 finish();
                 break;
         }

@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.view.ContextMenu;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,10 +13,13 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -33,19 +37,16 @@ import br.com.alura.searchdrink.R;
 import br.com.alura.searchdrink.adapter.BebidasAdapter;
 import br.com.alura.searchdrink.modelo.Bebida;
 
-import static android.R.attr.key;
-
 public class PerfilActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private ListView listaBebidas;
     private TextView bemVindo;
+//    private ProgressBar progressBar;
 
     private DatabaseReference database;
 
     private String uId;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,42 +57,9 @@ public class PerfilActivity extends BaseActivity
 
         database = FirebaseDatabase.getInstance().getReference();
 
-        listaBebidas = (ListView) findViewById(R.id.perfil_lista_bebidas);
-
         uId = getUid();
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        Button novaBebida = (Button) findViewById(R.id.nova_bebida);
-        novaBebida.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Dialog dialog = new Dialog(PerfilActivity.this);
-                dialog.setContentView(R.layout.dialog_bebida);
-                dialog.setTitle("Adicionar Bebida");
-
-                EditText dialogNome = (EditText) findViewById(R.id.dialog_bebida_nome);
-                EditText dialogPreco = (EditText) findViewById(R.id.dialog_bebida_preco);
-                Button dialogSalvar = (Button) findViewById(R.id.dialog_bebida_salvar);
-                Button dialogCancelar = (Button) findViewById(R.id.dialog_bebida_cancelar);
-
-                dialogSalvar.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        carregaLista();
-                    }
-                });
-                dialogCancelar.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                    }
-                });
-
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        listaBebidas = (ListView) findViewById(R.id.perfil_lista_bebidas);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -101,8 +69,24 @@ public class PerfilActivity extends BaseActivity
 
         bemVindo = (TextView) findViewById(R.id.perfil_bemvindo);
 
+//        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        Button novaBebida = (Button) findViewById(R.id.nova_bebida);
+        novaBebida.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cadastraNovaBebida(view);
+                final ArrayAdapter<String> adapter = new ArrayAdapter<String>(PerfilActivity.this, android.R.layout.simple_list_item_1, new ArrayList<String>());
+                listaBebidas.setAdapter(adapter);
+                carregaListaBebidas();
+            }
+        });
+
+        registerForContextMenu(listaBebidas);
     }
 
     @Override
@@ -121,6 +105,8 @@ public class PerfilActivity extends BaseActivity
 
             }
         });
+
+        carregaListaBebidas();
     }
 
     @Override
@@ -131,6 +117,57 @@ public class PerfilActivity extends BaseActivity
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+
+        final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+
+        final Bebida bebida = (Bebida) listaBebidas.getItemAtPosition(info.position);
+
+        MenuItem itemEditar = menu.add("Editar Bebida");
+        itemEditar.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+
+                final Dialog dialog = new Dialog(PerfilActivity.this);
+                dialog.setContentView(R.layout.dialog_bebida);
+                dialog.setTitle("Editar Bebida");
+
+                final EditText dialogNome = (EditText) dialog.findViewById(R.id.dialog_bebida_nome);
+                dialogNome.setText(bebida.getNome());
+
+                final EditText dialogPreco = (EditText) dialog.findViewById(R.id.dialog_bebida_preco);
+                dialogPreco.setText(String.valueOf(bebida.getPreco()));
+
+                Button dialogSalvar = (Button) dialog.findViewById(R.id.dialog_bebida_salvar);
+                Button dialogCancelar = (Button) dialog.findViewById(R.id.dialog_bebida_cancelar);
+
+//                Toast.makeText(PerfilActivity.this, bebida.getIdFirebase(), Toast.LENGTH_SHORT).show();
+
+                dialogSalvar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String nome = dialogNome.getText().toString();
+                        double preco = Double.parseDouble(dialogPreco.getText().toString());
+                        Bebida bebidaEditada = new Bebida(nome, preco, bebida.getIdFirebase());
+                        editaBebidaFirebase(bebidaEditada);
+                        dialog.dismiss();
+                    }
+                });
+                dialogCancelar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.show();
+
+                return false;
+            }
+        });
     }
 
     @Override
@@ -178,6 +215,7 @@ public class PerfilActivity extends BaseActivity
         else if(id == R.id.nav_editar_perfil){
             startActivity(new Intent(this, FormularioActivity.class));
             finish();
+            return true;
         }
 
         else if (id == R.id.nav_sair){
@@ -192,47 +230,90 @@ public class PerfilActivity extends BaseActivity
         return true;
     }
 
-    private void carregaLista() {
+    private void carregaListaBebidas() {
 
+        final List<Bebida> bebidas = new ArrayList<>();
+        final BebidasAdapter bebidasAdapter = new BebidasAdapter(this, bebidas);
+        listaBebidas.setAdapter(bebidasAdapter);
 
-        String idBebida = database.child("bares").child(uId).child("bebidas").push().getKey();
+        database.child("bares").child(uId).child("bebidas").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-        Map<String, Object> postValues = post.toMap();
+                for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                    Map <String, Object> mapBebidas = (HashMap<String, Object>)snapshot.getValue();
+                    String nome = (String) mapBebidas.get("nome");
+                    Double preco = (double) mapBebidas.get("preco");
+                    String idBebida = dataSnapshot.getKey();
+                    Bebida bebida = new Bebida(nome, preco, idBebida);
 
-        Bebida bebida = new Bebida(nome, preco);
+                    bebidas.add(bebida);
+                }
+
+                bebidasAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void cadastraNovaBebida(View view) {
+        final Dialog dialog = new Dialog(PerfilActivity.this);
+        dialog.setContentView(R.layout.dialog_bebida);
+        dialog.setTitle("Adicionar Bebida");
+
+        final EditText dialogNome = (EditText) dialog.findViewById(R.id.dialog_bebida_nome);
+        final EditText dialogPreco = (EditText) dialog.findViewById(R.id.dialog_bebida_preco);
+        Button dialogSalvar = (Button) dialog.findViewById(R.id.dialog_bebida_salvar);
+        Button dialogCancelar = (Button) dialog.findViewById(R.id.dialog_bebida_cancelar);
+
+        dialogSalvar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String nome = dialogNome.getText().toString();
+                double preco = Double.parseDouble(dialogPreco.getText().toString());
+//                Bebida bebida = new Bebida(nome, preco);
+                cadastraBebidaFirebase(nome, preco);
+                dialog.dismiss();
+            }
+        });
+        dialogCancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+
+        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
+    }
+
+    private void cadastraBebidaFirebase(String nome, double preco) {
+
+        String idBebida = database.child("bares").child("bebidas").push().getKey();
+        Bebida bebida = new Bebida(nome, preco, idBebida);
+        Map<String, Object> valoresBebida = bebida.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/posts/" + idBebida, postValues);
-        childUpdates.put("/user-posts/" + userId + "/" + idBebida, postValues);
+        childUpdates.put("bares/" + uId + "/bebidas/" + idBebida, valoresBebida);
 
         database.updateChildren(childUpdates);
-
-//        database.child("bares").child(uId).child("bebidas").addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                String idBebida = dataSnapshot.getKey();
-//
-//                Map<String, String> mapBebidas = (Map)dataSnapshot.getValue();
-//                String nome = mapBebidas.get(idBebida, "nome");
-//                String preco = mapBebidas.get("preco");
-//
-//                bemVindo.setText("Bem vindo " + mapBebidas.get("nome") + "!");
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-
-        Bebida dao = new Bebida();
-        List<Bebida> bebidas = new ArrayList<>();
-//        List<Bebida> bars = dao.buscaAlunos();
-//        dao.close();
-
-        BebidasAdapter adapter = new BebidasAdapter(PerfilActivity.this, bebidas);
-
-        listaBebidas.setAdapter(adapter);
     }
+
+    private void editaBebidaFirebase(Bebida bebida) {
+
+        String idBebida = bebida.getIdFirebase();
+        Map<String, Object> valoresBebida = bebida.toMap();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("bares/" + uId + "/bebidas/" + idBebida, valoresBebida);
+
+        database.updateChildren(childUpdates);
+    }
+
 }
