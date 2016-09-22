@@ -1,17 +1,22 @@
 package br.com.alura.searchdrink.modelo;
 
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
+
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by Birbara on 05/09/2016.
  */
+@IgnoreExtraProperties
 public class Bebida {
 
 //    private long uId;
     private String nome;
     private double preco;
     private String caminhoFoto;
+
     private long id;
     private String idFirebase;
 
@@ -48,15 +53,6 @@ public class Bebida {
         this.preco = preco;
     }
 
-//    public long getuId() {
-//
-//        return uId;
-//    }
-
-//    public void setuId(long uId) {
-//        this.uId = uId;
-//    }
-
     public String getCaminhoFoto() {
         return caminhoFoto;
     }
@@ -65,14 +61,17 @@ public class Bebida {
         this.caminhoFoto = caminhoFoto;
     }
 
+    @Exclude
     public long getId() {
         return id;
     }
 
+    @Exclude
     public void setId(long id) {
         this.id = id;
     }
 
+    @Exclude
     public Map<String, Object> toMap(){
         HashMap<String, Object> resultado = new HashMap<>();
         resultado.put("nome", nome);

@@ -63,6 +63,9 @@ public class BebidasAdapter extends BaseAdapter {
         TextView campoPreco = (TextView) view.findViewById(R.id.item_preco);
         campoPreco.setText(String.valueOf(bebida.getPreco()));
 
+//        TextView campoIdFirebase = (TextView) view.findViewById(R.id.item_idFirebase);
+//        campoIdFirebase.setText(bebida.getIdFirebase());
+
         // preenchimento de modo paisagem
 //        TextView campoEndereco = (TextView) view.findViewById(R.id.item_endereco);
 //        TextView campoSite = (TextView) view.findViewById(R.id.item_site);

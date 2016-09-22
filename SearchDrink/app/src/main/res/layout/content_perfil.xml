@@ -34,10 +34,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="italic"
-            android:text="Bem vindo!"
+            android:text="Bem vindo(a)!"
             android:textSize="30sp"
             android:paddingTop="30dp"
-            android:id="@+id/perfil_bemvindo"/>
+            android:id="@+id/perfil_bemvindo" />
 
         <ImageView
             android:id="@+id/perfil_foto"
@@ -60,6 +60,12 @@
             android:id="@+id/perfil_lista_bebidas"
             android:layout_marginTop="5dp"
             android:layout_weight="1.61" />
+        <!--<android.support.v7.widget.RecyclerView-->
+            <!--android:id="@+id/recycler_comments"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_below="@+id/comment_form"-->
+            <!--tools:listitem="@layout/list_item" />-->
 
     </LinearLayout>
 

@@ -2,8 +2,11 @@ package br.com.alura.searchdrink.activity;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.drm.DrmManagerClient;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -21,12 +24,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.vision.text.Text;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,11 +40,20 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.alura.searchdrink.R;
+import br.com.alura.searchdrink.adapter.BebidaAdapterTeste;
 import br.com.alura.searchdrink.adapter.BebidasAdapter;
+import br.com.alura.searchdrink.modelo.Bar;
 import br.com.alura.searchdrink.modelo.Bebida;
 
 public class PerfilActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+//    private BebidaAdapterTeste adapterTeste;
+
+//    private RecyclerView bebidasRecicler;
+
+//    private DatabaseReference bebidasReference;
+
 
     private ListView listaBebidas;
     private TextView bemVindo;
@@ -46,7 +61,12 @@ public class PerfilActivity extends BaseActivity
 
     private DatabaseReference database;
 
+    private StorageReference storageRef;
+
     private String uId;
+
+    private List<Bebida> bebidas;
+    private BebidasAdapter bebidasAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +77,19 @@ public class PerfilActivity extends BaseActivity
 
         database = FirebaseDatabase.getInstance().getReference();
 
+        storageRef = FirebaseStorage.getInstance().getReference();
+
         uId = getUid();
+
+
+//        bebidasRecicler = (RecyclerView) findViewById(R.id.recycler_comments);
+//        bebidasRecicler.setLayoutManager(new LinearLayoutManager(this));
+
+//        bebidasReference = FirebaseDatabase.getInstance().getReference()
+//                .child("bares").child(uId).child("bebidas");
+
+
+
 
         listaBebidas = (ListView) findViewById(R.id.perfil_lista_bebidas);
 
@@ -80,8 +112,6 @@ public class PerfilActivity extends BaseActivity
             @Override
             public void onClick(View view) {
                 cadastraNovaBebida(view);
-                final ArrayAdapter<String> adapter = new ArrayAdapter<String>(PerfilActivity.this, android.R.layout.simple_list_item_1, new ArrayList<String>());
-                listaBebidas.setAdapter(adapter);
                 carregaListaBebidas();
             }
         });
@@ -90,14 +120,28 @@ public class PerfilActivity extends BaseActivity
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        bebidas = new ArrayList<>();
+        bebidasAdapter = new BebidasAdapter(this, bebidas);
+        listaBebidas.setAdapter(bebidasAdapter);
+//        adapterTeste = new BebidaAdapterTeste(this, bebidasReference);
+//        bebidasRecicler.setAdapter(adapterTeste);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 
-        database.child("bares").child(uId).child("perfil").addListenerForSingleValueEvent(new ValueEventListener() {
+        showProgressDialog();
+
+        database.child("bares").child(uId).addListenerForSingleValueEvent(new ValueEventListener() {
+//        database.child("bares").child(uId).child("perfil").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, String> mapBar = (Map)dataSnapshot.getValue();
-                bemVindo.setText("Bem vindo " + mapBar.get("nome") + "!");
+                bemVindo.setText("Bem vindo(a) " + mapBar.get("nome") + "!");
             }
 
             @Override
@@ -107,6 +151,15 @@ public class PerfilActivity extends BaseActivity
         });
 
         carregaListaBebidas();
+
+        hideProgressDialog();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+//        listaBebidas.removeAllViews();
     }
 
     @Override
@@ -122,9 +175,11 @@ public class PerfilActivity extends BaseActivity
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
 
-        final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+//        final Bebida bebida = (Bebida) listaBebidas.getItemAtPosition(info.position);
 
-        final Bebida bebida = (Bebida) listaBebidas.getItemAtPosition(info.position);
+        final int index = info.position;
+        final Bebida bebida = bebidas.get(index);
 
         MenuItem itemEditar = menu.add("Editar Bebida");
         itemEditar.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -135,6 +190,9 @@ public class PerfilActivity extends BaseActivity
                 dialog.setContentView(R.layout.dialog_bebida);
                 dialog.setTitle("Editar Bebida");
 
+//                final TextView dialogId = (TextView) dialog.findViewById(R.id.dialog_bebida_id);
+//                dialogId.setText(bebida.getIdFirebase());
+
                 final EditText dialogNome = (EditText) dialog.findViewById(R.id.dialog_bebida_nome);
                 dialogNome.setText(bebida.getNome());
 
@@ -144,7 +202,8 @@ public class PerfilActivity extends BaseActivity
                 Button dialogSalvar = (Button) dialog.findViewById(R.id.dialog_bebida_salvar);
                 Button dialogCancelar = (Button) dialog.findViewById(R.id.dialog_bebida_cancelar);
 
-//                Toast.makeText(PerfilActivity.this, bebida.getIdFirebase(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(PerfilActivity.this, String.valueOf(index), Toast.LENGTH_SHORT).show();
+                Toast.makeText(PerfilActivity.this, bebida.getIdFirebase(), Toast.LENGTH_SHORT).show();
 
                 dialogSalvar.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -214,7 +273,8 @@ public class PerfilActivity extends BaseActivity
 
         else if(id == R.id.nav_editar_perfil){
             startActivity(new Intent(this, FormularioActivity.class));
-            finish();
+//            finish();
+            onResume();
             return true;
         }
 
@@ -232,24 +292,25 @@ public class PerfilActivity extends BaseActivity
 
     private void carregaListaBebidas() {
 
-        final List<Bebida> bebidas = new ArrayList<>();
-        final BebidasAdapter bebidasAdapter = new BebidasAdapter(this, bebidas);
-        listaBebidas.setAdapter(bebidasAdapter);
+//        bebidas = new ArrayList<>();
+//        listaBebidas.setAdapter(bebidasAdapter);
 
         database.child("bares").child(uId).child("bebidas").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
+                bebidas.removeAll(bebidas);
+
                 for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
                     Map <String, Object> mapBebidas = (HashMap<String, Object>)snapshot.getValue();
-                    String nome = (String) mapBebidas.get("nome");
-                    Double preco = (double) mapBebidas.get("preco");
-                    String idBebida = dataSnapshot.getKey();
+                    String nome = String.valueOf(mapBebidas.get("nome"));
+                    double preco = Double.parseDouble(String.valueOf(mapBebidas.get("preco")));
+                    String idBebida = snapshot.getKey();
                     Bebida bebida = new Bebida(nome, preco, idBebida);
 
                     bebidas.add(bebida);
                 }
-
+//                Toast.makeText(PerfilActivity.this, bebidas.get(0).getIdFirebase(), Toast.LENGTH_LONG).show();
                 bebidasAdapter.notifyDataSetChanged();
             }
 
@@ -297,7 +358,11 @@ public class PerfilActivity extends BaseActivity
 
         String idBebida = database.child("bares").child("bebidas").push().getKey();
         Bebida bebida = new Bebida(nome, preco, idBebida);
+        bebidas.add(bebida);
+
         Map<String, Object> valoresBebida = bebida.toMap();
+
+//        database.child("bares").child(uId).child("bebidas").setValue(bebida);
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("bares/" + uId + "/bebidas/" + idBebida, valoresBebida);

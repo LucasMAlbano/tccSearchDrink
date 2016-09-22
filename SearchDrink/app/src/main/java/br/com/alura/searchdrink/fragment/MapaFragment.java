@@ -37,14 +37,14 @@ import br.com.alura.searchdrink.modelo.Bebida;
  */
 public class MapaFragment extends SupportMapFragment implements OnMapReadyCallback {
 
-    private final DatabaseReference database;
-    private final String uId;
+//    private final DatabaseReference database;
+//    private final String uId;
     private GoogleMap mapa;
 
-    public MapaFragment(DatabaseReference database, String uId){
-        this.database = database;
-        this.uId = uId;
-    }
+//    public MapaFragment(DatabaseReference database, String uId){
+//        this.database = database;
+//        this.uId = uId;
+//    }
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -66,8 +66,8 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
 
         final List<Bar> bares = new ArrayList<>();
 
-        Query queryRef = database.child("bares").equalTo("perfil");
-        Toast.makeText(getContext(), queryRef.getRef().toString(), Toast.LENGTH_LONG).show();
+//        Query queryRef = database.child("bares").equalTo("perfil");
+//        Toast.makeText(getContext(), queryRef.getRef().toString(), Toast.LENGTH_LONG).show();
 //        queryRef.addChildEventListener(new ChildEventListener() {
 //            @Override
 //            public void onChildAdded(DataSnapshot dataSnapshot, String s) {

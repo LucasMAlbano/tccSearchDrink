@@ -1,7 +1,10 @@
 package br.com.alura.searchdrink.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,15 +12,22 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,8 +45,10 @@ public class FormularioActivity extends BaseActivity {
     private String caminhoFoto = "";
 
     private DatabaseReference database;
+    private StorageReference storageReference;
 
     private String uId;
+    private Uri uri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +61,10 @@ public class FormularioActivity extends BaseActivity {
 
         uId = getUid();
 
-        database.child("bares").child(uId).child("perfil").addListenerForSingleValueEvent(new ValueEventListener() {
+//        storageReference = FirebaseStorage.getInstance().getReference("gs://wazebar.appspot.com").child(uId).child("images");
+        storageReference = FirebaseStorage.getInstance().getReference().child(uId);
+
+        database.child("bares").child(uId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map <String, String> mapBar = (Map)dataSnapshot.getValue();
@@ -92,9 +107,10 @@ public class FormularioActivity extends BaseActivity {
 
         if (requestCode == CODIGO_GALERIA && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
-            Uri uri = data.getData();
+            uri = data.getData();
 
             helper.carregaFoto(uri, getContentResolver());
+
         }
     }
 
@@ -127,7 +143,27 @@ public class FormularioActivity extends BaseActivity {
                     }
                 });
 
-                Toast.makeText(FormularioActivity.this, "Bar " + bar.getNome() + " salvo com sucesso!", Toast.LENGTH_SHORT).show();
+//                if(uri != null) {
+//                    StorageReference riversRef = storageReference.child(uri.getLastPathSegment());
+                    UploadTask uploadTask = storageReference.child(uri.getLastPathSegment()).putFile(uri);
+
+                    uploadTask.addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            // Handle unsuccessful uploads
+                            Toast.makeText(FormularioActivity.this, "Falha", Toast.LENGTH_LONG).show();
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                            Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                            Toast.makeText(FormularioActivity.this, "Sucesso", Toast.LENGTH_LONG).show();
+                        }
+                    });
+//                }
+
+//                Toast.makeText(FormularioActivity.this, "Bar " + bar.getNome() + " salvo com sucesso!", Toast.LENGTH_SHORT).show();
                 finish();
                 break;
         }
@@ -141,7 +177,8 @@ public class FormularioActivity extends BaseActivity {
 
 
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("bares/" + uId + "/perfil/", valoresBar);
+//        childUpdates.put("bares/" + uId + "/perfil/", valoresBar);
+        childUpdates.put("bares/" + uId, valoresBar);
 
         database.updateChildren(childUpdates);
     }

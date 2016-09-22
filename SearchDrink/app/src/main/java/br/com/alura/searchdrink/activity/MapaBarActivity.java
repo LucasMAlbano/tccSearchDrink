@@ -29,21 +29,26 @@ public class MapaBarActivity extends BaseActivity {
 
     private static final int REQUEST_PERMISSOES = 1;
     private MapaFragment mapaFragment;
-    private String uId;
+
+    DatabaseReference database;
+
+//    private String uId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mapa_bar);
 
-        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+        database = FirebaseDatabase.getInstance().getReference();
 
-        uId = getUid();
+//        if(getUid() != null){
+//            uId = getUid();
+//        }
 
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction tx = manager.beginTransaction();
 
-        mapaFragment = new MapaFragment(database, uId);
+        mapaFragment = new MapaFragment(/*database, uId*/);
 
         tx.replace(R.id.frame_mapa, mapaFragment);
         tx.commit();

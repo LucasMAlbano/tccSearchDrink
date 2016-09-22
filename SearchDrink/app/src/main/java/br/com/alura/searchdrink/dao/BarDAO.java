@@ -132,7 +132,7 @@ public class BarDAO {
         dados.put("endereco", bar.getEndereco());
         dados.put("telefone", bar.getTelefone());
         dados.put("site", bar.getSite());
-        dados.put("caminhoFoto", bar.getCaminhoFoto());
+//        dados.put("caminhoFoto", bar.getCaminhoFoto());
         dados.put("email", bar.getEmail());
         dados.put("senha", bar.getSenha());
         return dados;

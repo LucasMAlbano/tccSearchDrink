@@ -18,6 +18,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import br.com.alura.searchdrink.R;
 import br.com.alura.searchdrink.modelo.Bar;
@@ -28,6 +30,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     private FirebaseAuth auth;
     private DatabaseReference database;
+    private FirebaseStorage storage;
 //    private FirebaseAuth.AuthStateListener authListener;
 
     private EditText campoEmail;
@@ -42,6 +45,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
         database = FirebaseDatabase.getInstance().getReference();
         auth = FirebaseAuth.getInstance();
+
+        storage = FirebaseStorage.getInstance();
 
 //        authListener = new FirebaseAuth.AuthStateListener() {
 //            @Override
@@ -111,7 +116,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                             Log.w(TAG, "signInWithEmail:failed", task.getException());
                             Toast.makeText(LoginActivity.this, "Falha na Autenticação",
                                     Toast.LENGTH_SHORT).show();
-                            campoStatus.setText("Falha na Autenticação");
+                            campoStatus.setText("Email ou senha inválidos.");
                             campoStatus.setVisibility(1);
                         }
 
@@ -193,8 +198,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private void writeNewUser(FirebaseUser user) {
         Bar usuario = new Bar(usernameFromEmail(user.getEmail()), user.getEmail());
 
-        database.child("bares").child(user.getUid()).setValue(usuario.getEmail());
-        database.child("bares").child(user.getUid()).child("perfil").child("nome").setValue(usuario.getNome());
+        database.child("bares").child(user.getUid()).setValue(usuario);
+
+//        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://wazebar.appspot.com");
+        storageRef.child(user.getUid());
+
+
+//        database.child("bares").child(user.getUid()).setValue(usuario.getEmail());
+//        database.child("bares").child(user.getUid()).child("perfil").child("nome").setValue(usuario.getNome());
     }
 
     @Override

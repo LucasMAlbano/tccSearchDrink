@@ -1,5 +1,10 @@
 package br.com.alura.searchdrink.modelo;
 
+import android.net.Uri;
+
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
@@ -9,20 +14,22 @@ import java.util.Objects;
 /**
  * Created by Birbara on 20/07/2016.
  */
+@IgnoreExtraProperties
 public class Bar implements Serializable{
 
-//    private long uId;
+//    private String uId;
     private String nome;
     private String endereco;
     private String telefone;
     private String site;
-    private String caminhoFoto;
+    private Uri caminhoFoto;
     private String email;
     private String senha;
 
     private List<Bebida> bebidas;
 
     public Bar(String nome, String email){
+//        this.uId = uId;
         this.nome = nome;
         this.email = email;
     }
@@ -51,11 +58,11 @@ public class Bar implements Serializable{
         this.bebidas = bebidas;
     }
 
-    public String getCaminhoFoto() {
+    public Uri getCaminhoFoto() {
         return caminhoFoto;
     }
 
-    public void setCaminhoFoto(String caminhoFoto) {
+    public void setCaminhoFoto(Uri caminhoFoto) {
         this.caminhoFoto = caminhoFoto;
     }
 
@@ -116,9 +123,11 @@ public class Bar implements Serializable{
     }
 
 
+    @Exclude
     public Map<String, Object> toMap(){
         HashMap<String, Object> resultado = new HashMap<>();
         resultado.put("nome", nome);
+        resultado.put("email", email);
         resultado.put("endereco", endereco);
         resultado.put("telefone", telefone);
         resultado.put("site", site);

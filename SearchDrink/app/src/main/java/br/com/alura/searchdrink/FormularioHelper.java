@@ -54,7 +54,7 @@ public class FormularioHelper {
         bar.setTelefone(campoTelefone.getText().toString());
         bar.setSite(campoSite.getText().toString());
 //        bar.setNota(Double.valueOf(campoNota.getRating()));
-        bar.setCaminhoFoto((String)campoFoto.getTag());
+//        bar.setCaminhoFoto(campoFoto.getTag());
 //        bar.setSenha(campoSenha.getText().toString());
         return bar;
     }
@@ -74,18 +74,18 @@ public class FormularioHelper {
         }
     }
 
-    public void carregaFoto(Uri caminhoFoto, ContentResolver contentResolver) {
+    public void carregaFoto(Uri uri, ContentResolver contentResolver) {
 
-        if(caminhoFoto != null) {
+        if(uri != null) {
 
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(contentResolver, caminhoFoto);
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri);
                 // Log.d(TAG, String.valueOf(bitmap));
                 bitmap = Bitmap.createScaledBitmap(bitmap, 500, 500, true);
 
                 campoFoto.setImageBitmap(bitmap);
                 campoFoto.setScaleType(ImageView.ScaleType.FIT_XY);
-                campoFoto.setTag(caminhoFoto);
+                campoFoto.setTag(uri);
             } catch (IOException e) {
                 e.printStackTrace();
             }
