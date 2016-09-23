@@ -1,9 +1,13 @@
 package br.com.alura.searchdrink.activity;
 
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,6 +26,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -139,6 +145,7 @@ public class FormularioActivity extends BaseActivity {
 
                 uploadFotoPerfil();
 
+
 //                Toast.makeText(FormularioActivity.this, "Bar " + bar.getNome() + " salvo com sucesso!", Toast.LENGTH_SHORT).show();
                 finish();
                 break;
@@ -161,8 +168,9 @@ public class FormularioActivity extends BaseActivity {
 
     private void uploadFotoPerfil() {
         if(uriFoto != null) {
+
             StorageReference riversRef = storageReference.child(uriFoto.getLastPathSegment());
-            UploadTask uploadTask = storageReference.child("perfil")/*.child(uriFoto.getLastPathSegment())*/.putFile(uriFoto);
+            UploadTask uploadTask = storageReference.child("perfil").putFile(uriFoto);
 
             uploadTask.addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -174,8 +182,8 @@ public class FormularioActivity extends BaseActivity {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                    Uri downloadUrl = taskSnapshot.getMetadata().getDownloadUrl();
-                    dbBar.child("uriFotoPerfil").setValue(uriFoto);
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    dbBar.child("uriFotoPerfil").setValue(downloadUrl);
                     Toast.makeText(FormularioActivity.this, "Sucesso ao fazer upload de foto", Toast.LENGTH_LONG).show();
                 }
             });

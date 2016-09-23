@@ -1,8 +1,9 @@
 package br.com.alura.searchdrink.activity;
 
 import android.app.Dialog;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
-import android.drm.DrmManagerClient;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -10,8 +11,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -22,7 +22,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -32,7 +31,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.vision.text.Text;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,9 +40,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,7 +50,6 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.alura.searchdrink.R;
-import br.com.alura.searchdrink.adapter.BebidaAdapterTeste;
 import br.com.alura.searchdrink.adapter.BebidasAdapter;
 import br.com.alura.searchdrink.modelo.Bar;
 import br.com.alura.searchdrink.modelo.Bebida;
@@ -67,12 +64,11 @@ public class PerfilActivity extends BaseActivity
 //    private DatabaseReference bebidasReference;
 
 
-    private ListView listaBebidas;
-    private TextView bemVindo;
-    private ImageView fotoPerfil;
-    private ImageView miniFotoPerfil;
-    private TextView nomeBar;
-    private TextView emailBar;
+    private ListView campoListaBebidas;
+    private TextView campoBemVindo;
+    private ImageView campoFotoPerfil;
+    private TextView campoNomeBar;
+    private TextView campoEmailBar;
 //    private ProgressBar progressBar;
 
 //    private DatabaseReference database;
@@ -88,6 +84,9 @@ public class PerfilActivity extends BaseActivity
 
     private Bar bar;
 
+    private Bitmap bitmap = null;
+    private File mypath;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +95,13 @@ public class PerfilActivity extends BaseActivity
         setSupportActionBar(toolbar);
 
 //        database = FirebaseDatabase.getInstance().getReference();
+
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        File directory = cw.getDir("profile", Context.MODE_PRIVATE);
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+        mypath = new File(directory, "thumbnail.jpg");
 
         uId = getUid();
 
@@ -112,15 +118,12 @@ public class PerfilActivity extends BaseActivity
 
 
 
-        fotoPerfil = (ImageView) findViewById(R.id.perfil_foto);
+        campoFotoPerfil = (ImageView) findViewById(R.id.perfil_foto);
+        campoFotoPerfil.setVisibility(View.GONE);
 
-        bemVindo = (TextView) findViewById(R.id.perfil_bemvindo);
+        campoBemVindo = (TextView) findViewById(R.id.perfil_bemvindo);
 
-        listaBebidas = (ListView) findViewById(R.id.perfil_lista_bebidas);
-
-        miniFotoPerfil = (ImageView) findViewById(R.id.perfil_miniFoto);
-        nomeBar = (TextView) findViewById(R.id.perfil_nomeBar);
-        emailBar = (TextView) findViewById(R.id.perfil_emailBar);
+        campoListaBebidas = (ListView) findViewById(R.id.perfil_lista_bebidas);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -133,6 +136,10 @@ public class PerfilActivity extends BaseActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        View v = navigationView.getHeaderView(0);
+        campoNomeBar = (TextView) v.findViewById(R.id.perfil_nomeBar);
+        campoEmailBar = (TextView) v.findViewById(R.id.perfil_emailBar);
+
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         Button novaBebida = (Button) findViewById(R.id.nova_bebida);
         novaBebida.setOnClickListener(new View.OnClickListener() {
@@ -143,7 +150,7 @@ public class PerfilActivity extends BaseActivity
             }
         });
 
-        registerForContextMenu(listaBebidas);
+        registerForContextMenu(campoListaBebidas);
     }
 
     @Override
@@ -154,12 +161,10 @@ public class PerfilActivity extends BaseActivity
 
         bebidas = new ArrayList<>();
         bebidasAdapter = new BebidasAdapter(this, bebidas);
-        listaBebidas.setAdapter(bebidasAdapter);
+        campoListaBebidas.setAdapter(bebidasAdapter);
 //        adapterTeste = new BebidaAdapterTeste(this, bebidasReference);
 //        bebidasRecicler.setAdapter(adapterTeste);
 
-        carregaFotoPerfil();
-        //        Picasso.with(this).load(bar.getCaminhoFoto()).into(fotoPerfil);
     }
 
     @Override
@@ -173,12 +178,14 @@ public class PerfilActivity extends BaseActivity
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, String> mapBar = (Map)dataSnapshot.getValue();
-                String nome = mapBar.get("nome");
-                String email = mapBar.get("email");
-                bemVindo.setText("Bem vindo(a) " + nome + "!");
-                Toast.makeText(PerfilActivity.this, nome + " " + email, Toast.LENGTH_LONG).show();
-//                nomeBar.setText(nome);
-//                emailBar.setText(email);
+                String nomeBar = mapBar.get("nome");
+                String emailBar = mapBar.get("email");
+                campoBemVindo.setText("Bem vindo(a) " + nomeBar + "!");
+                campoNomeBar.setText(nomeBar);
+                campoEmailBar.setText(emailBar);
+
+//                Toast.makeText(PerfilActivity.this, nomeBar + " " + emailBar, Toast.LENGTH_LONG).show();
+
             }
 
             @Override
@@ -191,6 +198,10 @@ public class PerfilActivity extends BaseActivity
 
         carregaListaBebidas();
 
+        carregaFotoPerfil();
+
+        //        Picasso.with(this).load(bar.getCaminhoFoto()).into(campoFotoPerfil);
+
         hideProgressDialog();
     }
 
@@ -198,7 +209,7 @@ public class PerfilActivity extends BaseActivity
     public void onStop() {
         super.onStop();
 
-//        listaBebidas.removeAllViews();
+//        campoListaBebidas.removeAllViews();
     }
 
     @Override
@@ -215,7 +226,7 @@ public class PerfilActivity extends BaseActivity
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-//        final Bebida bebida = (Bebida) listaBebidas.getItemAtPosition(info.position);
+//        final Bebida bebida = (Bebida) campoListaBebidas.getItemAtPosition(info.position);
 
         final int index = info.position;
         final Bebida bebida = bebidas.get(index);
@@ -228,6 +239,7 @@ public class PerfilActivity extends BaseActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.perfil, menu);
+
         return true;
     }
 
@@ -310,9 +322,6 @@ public class PerfilActivity extends BaseActivity
     }
 
     private void carregaListaBebidas() {
-
-//        bebidas = new ArrayList<>();
-//        listaBebidas.setAdapter(bebidasAdapter);
 
         dbBar.child("bebidas").addValueEventListener(new ValueEventListener() {
             @Override
@@ -451,30 +460,61 @@ public class PerfilActivity extends BaseActivity
     }
 
     private void carregaFotoPerfil() {
-        try {
-            final File localFile = File.createTempFile("images", "jpg");
-            storageRef.child("perfil").getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
 
-                    Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                    bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+        if (mypath != null){
+            campoFotoPerfil.setImageBitmap(BitmapFactory.decodeFile(mypath.getAbsolutePath()));
+            campoFotoPerfil.setVisibility(View.VISIBLE);
+        }
 
-                    fotoPerfil.setImageBitmap(bitmap);
-                    fotoPerfil.setScaleType(ImageView.ScaleType.FIT_XY);
-                    fotoPerfil.setTag(Uri.parse(localFile.getPath()));
+        dbBar.child("uriFotoPerfil").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                try {
+                    final File localFile = File.createTempFile("images", "jpg");
+                    storageRef.child("perfil").getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+
+                            bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                            bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+
+                            campoFotoPerfil.setVisibility(View.VISIBLE);
+                            campoFotoPerfil.setImageBitmap(bitmap);
+                            campoFotoPerfil.setScaleType(ImageView.ScaleType.FIT_XY);
+                            campoFotoPerfil.setTag(Uri.parse(localFile.getPath()));
+
+                            //salvando imagem no app
+
+                            FileOutputStream fos = null;
+                            try {
+                                fos = new FileOutputStream(mypath);
+                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                                fos.close();
+                            } catch (Exception e) {
+                                Log.e("SAVE_IMAGE", e.getMessage(), e);
+                            }
 
 //                    Toast.makeText(PerfilActivity.this, "Sucesso ao fazer download de foto perfil" + bitmap == null ? "null":"nao nulo", Toast.LENGTH_LONG).show();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(PerfilActivity.this, "Falha ao fazer download de foto perfil", Toast.LENGTH_LONG).show();
-                }
-            });
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(PerfilActivity.this, "Falha ao fazer download de foto perfil", Toast.LENGTH_LONG).show();
+                        }
+                    });
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 }
