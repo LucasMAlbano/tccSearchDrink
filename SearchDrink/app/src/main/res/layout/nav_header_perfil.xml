@@ -12,21 +12,32 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/perfil_miniFoto"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:src="@android:drawable/sym_def_app_icon" />
+        android:src="@drawable/copocheio"/>
+
+    <!--<TextView-->
+        <!--android:id="@+id/perfil_nomeBar"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content" />-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/perfil_emailBar"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content" />-->
 
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/perfil_nomeBar"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text="Nome Bar"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/perfil_emailBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="bar@gmail.com" />

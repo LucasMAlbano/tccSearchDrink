@@ -1,23 +1,18 @@
 package br.com.alura.searchdrink.activity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,13 +22,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import br.com.alura.searchdrink.FormularioHelper;
 import br.com.alura.searchdrink.R;
-import br.com.alura.searchdrink.dao.BarDAO;
 import br.com.alura.searchdrink.modelo.Bar;
 
 public class FormularioActivity extends BaseActivity {
@@ -44,27 +37,27 @@ public class FormularioActivity extends BaseActivity {
     private FormularioHelper helper;
     private String caminhoFoto = "";
 
-    private DatabaseReference database;
+    private DatabaseReference dbBar;
+//    private DatabaseReference database;
     private StorageReference storageReference;
 
     private String uId;
-    private Uri uri;
+    private Uri uriFoto = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_formulario);
 
-        this.helper = new FormularioHelper(this);
-
-        database = FirebaseDatabase.getInstance().getReference();
-
         uId = getUid();
 
-//        storageReference = FirebaseStorage.getInstance().getReference("gs://wazebar.appspot.com").child(uId).child("images");
+        dbBar = FirebaseDatabase.getInstance().getReference().child("bares").child(uId);
+
         storageReference = FirebaseStorage.getInstance().getReference().child(uId);
 
-        database.child("bares").child(uId).addListenerForSingleValueEvent(new ValueEventListener() {
+        this.helper = new FormularioHelper(this, storageReference);
+
+        dbBar.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map <String, String> mapBar = (Map)dataSnapshot.getValue();
@@ -74,9 +67,10 @@ public class FormularioActivity extends BaseActivity {
                 String site = mapBar.get("site");
                 String email = mapBar.get("email");
 
+
                 Bar bar = new Bar(nome, endereco, telefone, site, email);
 
-                helper.preencheFormulario(bar);
+                helper.preencheFormulario(bar, getContentResolver());
                 
             }
 
@@ -107,9 +101,9 @@ public class FormularioActivity extends BaseActivity {
 
         if (requestCode == CODIGO_GALERIA && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
-            uri = data.getData();
+            uriFoto = data.getData();
 
-            helper.carregaFoto(uri, getContentResolver());
+            helper.carregaFoto(uriFoto, getContentResolver());
 
         }
     }
@@ -131,10 +125,10 @@ public class FormularioActivity extends BaseActivity {
             case R.id.menu_formulario_ok:
                 final Bar bar = helper.pegaBar();
 
-                database.child("bares").child(uId).addListenerForSingleValueEvent(new ValueEventListener() {
+                dbBar.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        enviaCadastro(bar);
+                        enviaCadastroFirebase(bar);
                     }
 
                     @Override
@@ -143,25 +137,7 @@ public class FormularioActivity extends BaseActivity {
                     }
                 });
 
-//                if(uri != null) {
-//                    StorageReference riversRef = storageReference.child(uri.getLastPathSegment());
-                    UploadTask uploadTask = storageReference.child(uri.getLastPathSegment()).putFile(uri);
-
-                    uploadTask.addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            // Handle unsuccessful uploads
-                            Toast.makeText(FormularioActivity.this, "Falha", Toast.LENGTH_LONG).show();
-                        }
-                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                            Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                            Toast.makeText(FormularioActivity.this, "Sucesso", Toast.LENGTH_LONG).show();
-                        }
-                    });
-//                }
+                uploadFotoPerfil();
 
 //                Toast.makeText(FormularioActivity.this, "Bar " + bar.getNome() + " salvo com sucesso!", Toast.LENGTH_SHORT).show();
                 finish();
@@ -171,15 +147,38 @@ public class FormularioActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void enviaCadastro(Bar bar) {
+    private void enviaCadastroFirebase(Bar bar) {
 
         Map<String, Object> valoresBar = bar.toMap();
 
 
         Map<String, Object> childUpdates = new HashMap<>();
 //        childUpdates.put("bares/" + uId + "/perfil/", valoresBar);
-        childUpdates.put("bares/" + uId, valoresBar);
+//        childUpdates.put("bares/" + uId, valoresBar);
 
-        database.updateChildren(childUpdates);
+        dbBar.updateChildren(valoresBar);
+    }
+
+    private void uploadFotoPerfil() {
+        if(uriFoto != null) {
+            StorageReference riversRef = storageReference.child(uriFoto.getLastPathSegment());
+            UploadTask uploadTask = storageReference.child("perfil")/*.child(uriFoto.getLastPathSegment())*/.putFile(uriFoto);
+
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                    Toast.makeText(FormularioActivity.this, "Falha ao fazer upload de foto", Toast.LENGTH_LONG).show();
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                    Uri downloadUrl = taskSnapshot.getMetadata().getDownloadUrl();
+                    dbBar.child("uriFotoPerfil").setValue(uriFoto);
+                    Toast.makeText(FormularioActivity.this, "Sucesso ao fazer upload de foto", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 }

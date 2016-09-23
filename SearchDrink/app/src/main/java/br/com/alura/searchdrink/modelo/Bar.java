@@ -49,6 +49,15 @@ public class Bar implements Serializable{
 
     public Bar (){}
 
+    public Bar(String nome, String email, String endereco, String site, String telefone, Uri uriFotoPerfil) {
+        this.nome = nome;
+        this.email = email;
+        this.endereco = endereco;
+        this.site = site;
+        this.telefone = telefone;
+        this.caminhoFoto = uriFotoPerfil;
+    }
+
 
     public List<Bebida> getBebidas() {
         return bebidas;

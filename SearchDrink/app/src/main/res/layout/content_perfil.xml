@@ -56,10 +56,9 @@
 
         <ListView
             android:layout_width="match_parent"
-            android:layout_height="204dp"
+            android:layout_height="157dp"
             android:id="@+id/perfil_lista_bebidas"
-            android:layout_marginTop="5dp"
-            android:layout_weight="1.61" />
+            android:layout_marginTop="5dp" />
         <!--<android.support.v7.widget.RecyclerView-->
             <!--android:id="@+id/recycler_comments"-->
             <!--android:layout_width="match_parent"-->
