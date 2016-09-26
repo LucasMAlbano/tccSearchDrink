@@ -69,7 +69,7 @@ public class FormularioHelper {
         return bar;
     }
 
-    public void preencheFormulario(final Bar bar, ContentResolver contentResolver) {
+    public void preencheFormulario(final Bar bar, File mypath) {
 
         this.bar = bar;
         campoNome.setText(bar.getNome());
@@ -77,12 +77,14 @@ public class FormularioHelper {
         campoTelefone.setText(bar.getTelefone());
         campoSite.setText(bar.getSite());
 
-//        carregaFotoPerfilFirebase(storageReference);
-        carregaFoto(bar.getCaminhoFoto(), contentResolver);
+        if (mypath != null){
+            campoFoto.setImageBitmap(BitmapFactory.decodeFile(mypath.getAbsolutePath()));
+            campoFoto.setScaleType(ImageView.ScaleType.FIT_XY);
+            campoFoto.setTag(Uri.parse(mypath.getPath()));
+        }
 
-//        if (bar.getCaminhoFoto() != null){
-//            carregaFoto(bar.getCaminhoFoto(), contentResolver);
-//        }
+//        carregaFoto(bar.getCaminhoFoto(), contentResolver);
+
     }
 
 

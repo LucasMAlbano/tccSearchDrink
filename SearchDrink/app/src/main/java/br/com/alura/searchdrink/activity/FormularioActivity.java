@@ -3,11 +3,10 @@ package br.com.alura.searchdrink.activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -27,7 +26,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,6 +48,8 @@ public class FormularioActivity extends BaseActivity {
     private String uId;
     private Uri uriFoto = null;
 
+    private File mypath;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +62,13 @@ public class FormularioActivity extends BaseActivity {
         storageReference = FirebaseStorage.getInstance().getReference().child(uId);
 
         this.helper = new FormularioHelper(this, storageReference);
+
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        File directory = cw.getDir("profile", Context.MODE_PRIVATE);
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+        mypath = new File(directory, "perfil" + uId + ".jpg");
 
         dbBar.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -76,7 +83,7 @@ public class FormularioActivity extends BaseActivity {
 
                 Bar bar = new Bar(nome, endereco, telefone, site, email);
 
-                helper.preencheFormulario(bar, getContentResolver());
+                helper.preencheFormulario(bar, mypath);
                 
             }
 
@@ -143,7 +150,7 @@ public class FormularioActivity extends BaseActivity {
                     }
                 });
 
-                uploadFotoPerfil();
+                uploadFotoPerfilFirebase();
 
 
 //                Toast.makeText(FormularioActivity.this, "Bar " + bar.getNome() + " salvo com sucesso!", Toast.LENGTH_SHORT).show();
@@ -166,7 +173,7 @@ public class FormularioActivity extends BaseActivity {
         dbBar.updateChildren(valoresBar);
     }
 
-    private void uploadFotoPerfil() {
+    private void uploadFotoPerfilFirebase() {
         if(uriFoto != null) {
 
             StorageReference riversRef = storageReference.child(uriFoto.getLastPathSegment());

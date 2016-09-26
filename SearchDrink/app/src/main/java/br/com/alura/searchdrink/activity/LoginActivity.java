@@ -30,7 +30,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     private FirebaseAuth auth;
     private DatabaseReference database;
-    private FirebaseStorage storage;
+//    private FirebaseStorage storage;
 //    private FirebaseAuth.AuthStateListener authListener;
 
     private EditText campoEmail;
@@ -46,7 +46,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         database = FirebaseDatabase.getInstance().getReference();
         auth = FirebaseAuth.getInstance();
 
-        storage = FirebaseStorage.getInstance();
+//        storage = FirebaseStorage.getInstance();
 
 //        authListener = new FirebaseAuth.AuthStateListener() {
 //            @Override
@@ -117,7 +117,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                             Toast.makeText(LoginActivity.this, "Falha na Autenticação",
                                     Toast.LENGTH_SHORT).show();
                             campoStatus.setText("Email ou senha inválidos.");
-                            campoStatus.setVisibility(1);
+                            campoStatus.setVisibility(View.VISIBLE);
                         }
 
                         hideProgressDialog();
@@ -201,8 +201,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         database.child("bares").child(user.getUid()).setValue(usuario);
 
 //        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReferenceFromUrl("gs://wazebar.appspot.com");
-        storageRef.child(user.getUid());
+//        StorageReference storageRef = storage.getReferenceFromUrl("gs://wazebar.appspot.com");
+//        storageRef.child(user.getUid());
 
 
 //        database.child("bares").child(user.getUid()).setValue(usuario.getEmail());

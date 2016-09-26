@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -31,6 +30,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.vision.text.Text;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -96,13 +96,6 @@ public class PerfilActivity extends BaseActivity
 
 //        database = FirebaseDatabase.getInstance().getReference();
 
-        ContextWrapper cw = new ContextWrapper(getApplicationContext());
-        File directory = cw.getDir("profile", Context.MODE_PRIVATE);
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
-        mypath = new File(directory, "thumbnail.jpg");
-
         uId = getUid();
 
         dbBar = FirebaseDatabase.getInstance().getReference().child("bares").child(uId);
@@ -116,10 +109,17 @@ public class PerfilActivity extends BaseActivity
 //        bebidasReference = FirebaseDatabase.getInstance().getReference()
 //                .child("bares").child(uId).child("bebidas");
 
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        File directory = cw.getDir("profile", Context.MODE_PRIVATE);
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+        mypath = new File(directory, "perfil" + uId + ".jpg");
+
 
 
         campoFotoPerfil = (ImageView) findViewById(R.id.perfil_foto);
-        campoFotoPerfil.setVisibility(View.GONE);
+//        campoFotoPerfil.setVisibility(View.GONE);
 
         campoBemVindo = (TextView) findViewById(R.id.perfil_bemvindo);
 
@@ -233,6 +233,9 @@ public class PerfilActivity extends BaseActivity
 
         MenuItem itemEditar = menu.add("Editar Bebida");
         editaBebida(bebida, itemEditar);
+
+        MenuItem itemDeletar = menu.add("Deletar Bebida");
+        deletaBebida(bebida, itemDeletar);
     }
 
     @Override
@@ -351,7 +354,7 @@ public class PerfilActivity extends BaseActivity
 
     private void cadastraNovaBebida(View view) {
         final Dialog dialog = new Dialog(PerfilActivity.this);
-        dialog.setContentView(R.layout.dialog_bebida);
+        dialog.setContentView(R.layout.dialog_editar_bebida);
         dialog.setTitle("Adicionar Bebida");
 
         final EditText dialogNome = (EditText) dialog.findViewById(R.id.dialog_bebida_nome);
@@ -405,7 +408,7 @@ public class PerfilActivity extends BaseActivity
             public boolean onMenuItemClick(MenuItem menuItem) {
 
                 final Dialog dialog = new Dialog(PerfilActivity.this);
-                dialog.setContentView(R.layout.dialog_bebida);
+                dialog.setContentView(R.layout.dialog_editar_bebida);
                 dialog.setTitle("Editar Bebida");
 
 //                final TextView dialogId = (TextView) dialog.findViewById(R.id.dialog_bebida_id);
@@ -459,62 +462,104 @@ public class PerfilActivity extends BaseActivity
         dbBar.updateChildren(childUpdates);
     }
 
+    private void deletaBebida(final Bebida bebida, MenuItem itemDeletar) {
+        itemDeletar.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+
+                final Dialog dialog = new Dialog(PerfilActivity.this);
+                dialog.setContentView(R.layout.dialog_deletar_bebida);
+                dialog.setTitle("Confirmar para deletar...");
+
+                final TextView dialogNome = (TextView) dialog.findViewById(R.id.dialog_bebida_nome);
+                dialogNome.setText(bebida.getNome());
+
+                final TextView dialogPreco = (TextView) dialog.findViewById(R.id.dialog_bebida_preco);
+                dialogPreco.setText(String.valueOf(bebida.getPreco()));
+
+                Button dialogSalvar = (Button) dialog.findViewById(R.id.dialog_bebida_salvar);
+                Button dialogCancelar = (Button) dialog.findViewById(R.id.dialog_bebida_cancelar);
+
+                dialogSalvar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        deletaBebidaFirebase(bebida);
+                        dialog.dismiss();
+                    }
+                });
+                dialogCancelar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.show();
+
+                return false;
+            }
+        });
+    }
+
+    private void deletaBebidaFirebase(Bebida bebida) {
+
+        dbBar.child("bebidas").child(bebida.getIdFirebase()).removeValue();
+
+    }
+
     private void carregaFotoPerfil() {
 
         if (mypath != null){
             campoFotoPerfil.setImageBitmap(BitmapFactory.decodeFile(mypath.getAbsolutePath()));
-            campoFotoPerfil.setVisibility(View.VISIBLE);
+            campoFotoPerfil.setScaleType(ImageView.ScaleType.FIT_XY);
+            campoFotoPerfil.setTag(Uri.parse(mypath.getPath()));
+//            campoFotoPerfil.setVisibility(View.VISIBLE);
         }
 
-        dbBar.child("uriFotoPerfil").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                try {
-                    final File localFile = File.createTempFile("images", "jpg");
-                    storageRef.child("perfil").getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-
-                            bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                            bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
-
-                            campoFotoPerfil.setVisibility(View.VISIBLE);
-                            campoFotoPerfil.setImageBitmap(bitmap);
-                            campoFotoPerfil.setScaleType(ImageView.ScaleType.FIT_XY);
-                            campoFotoPerfil.setTag(Uri.parse(localFile.getPath()));
-
-                            //salvando imagem no app
-
-                            FileOutputStream fos = null;
-                            try {
-                                fos = new FileOutputStream(mypath);
-                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-                                fos.close();
-                            } catch (Exception e) {
-                                Log.e("SAVE_IMAGE", e.getMessage(), e);
-                            }
-
-//                    Toast.makeText(PerfilActivity.this, "Sucesso ao fazer download de foto perfil" + bitmap == null ? "null":"nao nulo", Toast.LENGTH_LONG).show();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(PerfilActivity.this, "Falha ao fazer download de foto perfil", Toast.LENGTH_LONG).show();
-                        }
-                    });
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        baixaFotoPerfilFirebase();
 
     }
+
+    private void baixaFotoPerfilFirebase() {
+        try {
+
+            final File localFile = File.createTempFile("images", "jpg");
+
+            storageRef.child("perfil").getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+
+                    bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                    bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+
+//                    campoFotoPerfil.setVisibility(View.VISIBLE);
+                    campoFotoPerfil.setImageBitmap(bitmap);
+                    campoFotoPerfil.setScaleType(ImageView.ScaleType.FIT_XY);
+                    campoFotoPerfil.setTag(Uri.parse(localFile.getPath()));
+
+                    //salvando imagem no app
+
+                    FileOutputStream fos = null;
+                    try {
+                        fos = new FileOutputStream(mypath);
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                        fos.close();
+                    } catch (Exception e) {
+                        Log.e("SAVE_IMAGE", e.getMessage(), e);
+                    }
+
+//                    Toast.makeText(PerfilActivity.this, "Sucesso ao fazer download de foto perfil" + bitmap == null ? "null":"nao nulo", Toast.LENGTH_LONG).show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(PerfilActivity.this, "Falha ao fazer download de foto perfil", Toast.LENGTH_LONG).show();
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

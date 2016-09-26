@@ -39,7 +39,7 @@ public class MapaBarActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mapa_bar);
 
-        database = FirebaseDatabase.getInstance().getReference();
+        database = FirebaseDatabase.getInstance().getReference().child("bares");
 
 //        if(getUid() != null){
 //            uId = getUid();
@@ -48,7 +48,7 @@ public class MapaBarActivity extends BaseActivity {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction tx = manager.beginTransaction();
 
-        mapaFragment = new MapaFragment(/*database, uId*/);
+        mapaFragment = new MapaFragment(database/*database, uId*/);
 
         tx.replace(R.id.frame_mapa, mapaFragment);
         tx.commit();
