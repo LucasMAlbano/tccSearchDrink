@@ -7,7 +7,7 @@
     <ImageView
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:background="@drawable/person"
+        android:background="@drawable/ic_bebida"
         android:id="@+id/item_foto"/>
 
     <LinearLayout
