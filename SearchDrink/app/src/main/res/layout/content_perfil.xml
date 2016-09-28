@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:layout_below="@+id/toolbar">
+<!--<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_below="@+id/toolbar">-->
 
 <RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:layout_below="@+id/toolbar"
+    android:background="#FFF"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="br.com.alura.searchdrink.activity.PerfilActivity"
-    tools:showIn="@layout/app_bar_perfil">
+    tools:context="br.com.alura.searchdrink.activity.PerfilActivity">
+    <!--android:paddingBottom="@dimen/activity_vertical_margin"-->
+    <!--android:paddingLeft="@dimen/activity_horizontal_margin"-->
+    <!--android:paddingRight="@dimen/activity_horizontal_margin"-->
+    <!--android:paddingTop="@dimen/activity_vertical_margin"-->
+
 
     <LinearLayout
         xmlns:tools="http://schemas.android.com/tools"
@@ -23,11 +26,10 @@
         android:layout_height="match_parent"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
         android:orientation="vertical"
-        tools:context=".activity.PerfilActivity"
-
-        android:weightSum="1">
+        tools:context=".activity.PerfilActivity">
+        <!--android:weightSum="1"-->
+        <!--android:paddingTop="@dimen/activity_vertical_margin"-->
         <!--android:padding="@dimen/activity_vertical_margin"-->
 
         <TextView
@@ -35,9 +37,11 @@
             android:layout_height="wrap_content"
             android:textStyle="italic"
             android:text="Bem vindo(a)!"
-            android:textSize="30sp"
-            android:paddingTop="30dp"
-            android:id="@+id/perfil_bemvindo" />
+            android:textSize="20sp"
+            android:paddingTop="15dp"
+            android:id="@+id/perfil_bemvindo"
+            android:textColor="#F1C332"
+            android:fontFamily="casual"/>
 
         <ImageView
             android:id="@+id/perfil_foto"
@@ -52,11 +56,13 @@
             android:layout_height="wrap_content"
             android:text="Bebidas:"
             android:textSize="20sp"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="20dp"
+            android:textColor="#F1C332"
+            android:fontFamily="casual"/>
 
         <ListView
             android:layout_width="match_parent"
-            android:layout_height="157dp"
+            android:layout_height="match_parent"
             android:id="@+id/perfil_lista_bebidas"
             android:layout_marginTop="5dp" />
         <!--<android.support.v7.widget.RecyclerView-->
@@ -77,4 +83,4 @@
         <!--android:layout_alignParentStart="true" />-->
 </RelativeLayout>
 
-</ScrollView>
+<!--</ScrollView>-->

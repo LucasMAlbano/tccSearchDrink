@@ -25,6 +25,7 @@
                 android:id="@+id/formulario_botao_foto"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
+                android:clickable="true"
                 android:background="@drawable/fundo_camera"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"

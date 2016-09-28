@@ -3,6 +3,8 @@ package br.com.alura.searchdrink.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -13,8 +15,14 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.Toast;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -31,12 +39,16 @@ public class MapaBarActivity extends BaseActivity {
     private MapaFragment mapaFragment;
 
     DatabaseReference database;
+    private Button botaoMenu;
 
 //    private String uId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_mapa_bar);
 
         database = FirebaseDatabase.getInstance().getReference().child("bares");
@@ -44,6 +56,15 @@ public class MapaBarActivity extends BaseActivity {
 //        if(getUid() != null){
 //            uId = getUid();
 //        }
+
+        botaoMenu = (Button) findViewById(R.id.botao_mapa);
+        botaoMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent vaiParaLogin = new Intent(MapaBarActivity.this, LoginActivity.class);
+                startActivity(vaiParaLogin);
+            }
+        });
 
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction tx = manager.beginTransaction();
@@ -60,6 +81,30 @@ public class MapaBarActivity extends BaseActivity {
                 requestPermissions(permissoes, REQUEST_PERMISSOES);
             }
         }
+
+
+        final View actionB = findViewById(R.id.action_b);
+
+        FloatingActionButton actionC = new FloatingActionButton(getBaseContext());
+        actionC.setTitle("Hide/Show Action above");
+        actionC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionB.setVisibility(actionB.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+            }
+        });
+
+        final FloatingActionsMenu menuMultipleActions = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
+        menuMultipleActions.addButton(actionC);
+
+        final FloatingActionButton actionA = (FloatingActionButton) findViewById(R.id.action_a);
+        actionA.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                actionA.setTitle("Action A clicked");
+            }
+        });
+
     }
 
     @Override
@@ -75,28 +120,28 @@ public class MapaBarActivity extends BaseActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        MenuInflater menuInflater = getMenuInflater();
-
-        menuInflater.inflate(R.menu.menu_mapa, menu);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.menu_login:
-
-                Intent vaiParaLogin = new Intent(this, LoginActivity.class);
-                startActivity(vaiParaLogin);
-
-                break;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//
+//        MenuInflater menuInflater = getMenuInflater();
+//
+//        menuInflater.inflate(R.menu.menu_mapa, menu);
+//
+//        return super.onCreateOptionsMenu(menu);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//
+//        switch (item.getItemId()) {
+//            case R.id.menu_login:
+//
+//                Intent vaiParaLogin = new Intent(this, LoginActivity.class);
+//                startActivity(vaiParaLogin);
+//
+//                break;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 }

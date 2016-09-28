@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:background="#000000">
+<android.support.v7.widget.CardView
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,7 +15,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#FFF">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,27 +25,34 @@
         android:layout_margin="16dp"
         android:layout_alignParentTop="true">
 
-        <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Login"
-        android:textStyle="bold"
-        android:textSize="40dp" />
+        <ImageView
+            android:layout_width="180dp"
+            android:layout_height="180dp"
+            android:src="@drawable/ic_password"
+            android:layout_gravity="center_horizontal"/>
+
+        <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Login"-->
+        <!--android:textStyle="bold"-->
+        <!--android:textSize="30dp" />-->
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email"
+            android:hint="email"
             android:layout_alignParentTop="true"
-            android:paddingTop="30dp"
+            android:textColor="#F1C332"
             android:id="@+id/login_email"/>
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Senha"
+            android:hint="senha"
             android:layout_alignParentBottom="true"
             android:inputType="textPassword"
+            android:textColor="#F1C332"
             android:id="@+id/login_senha"/>
 
         <TextView
@@ -51,34 +63,58 @@
             android:textColor="#ff0000"
             android:id="@+id/login_status"/>
 
-        <Button
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Entrar"
-            android:id="@+id/login_entrar"/>
+            android:layout_gravity="center_horizontal">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginRight="15dp"
+                android:text="Entrar"
+                android:id="@+id/login_entrar"
+                android:background="@android:color/transparent"
+                android:textColor="#F1C332" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="15dp"
+                android:text="Cadastrar"
+                android:textAlignment="center"
+                android:id="@+id/login_cadastrar"
+                android:background="@android:color/transparent"
+                android:textColor="#F1C332"/>
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_login"
+            android:layout_margin="20dp"
+            android:layout_gravity="center_horizontal"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Entre/Cadastra-se para exibir seus preços"
+            android:textStyle="bold"
+            android:textSize="17dp"/>
 
         </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true">
+    <!--<LinearLayout-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="16dp"-->
+        <!--android:orientation="vertical"-->
+        <!--android:layout_alignParentBottom="true">-->
+    <!--</LinearLayout>-->
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Seu bar ainda não é cadastrado?"
-        android:textStyle="bold"
-        android:textSize="20dp"/>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Cadastrar"
-        android:textAlignment="center"
-        android:id="@+id/login_cadastrar"/>
-    </LinearLayout>
     </RelativeLayout>
 </android.support.v7.widget.CardView>
+</RelativeLayout>

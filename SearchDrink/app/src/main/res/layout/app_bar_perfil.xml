@@ -16,9 +16,10 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
     </android.support.design.widget.AppBarLayout>
+    <!--android:background="?attr/colorPrimary"-->
+
 
     <include layout="@layout/content_perfil" />
 
@@ -28,7 +29,7 @@
         android:layout_height="56dp"
         android:text="+"
         android:textSize="40dp"
-        android:textColor="#ffffff"
+        android:textColor="#F1C332"
         android:layout_gravity="bottom|end"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"

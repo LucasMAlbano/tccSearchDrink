@@ -22,22 +22,49 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".activity.ListaAlunosActivity"
-            android:label="@string/app_name" />
+            android:label="@string/app_name"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+
         <activity
             android:name=".activity.FormularioActivity"
-            android:label="@string/title_activity_formulario" />
+            android:label="@string/title_activity_formulario"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
 
-        <receiver
-            android:name=".receiver.SmsReceiver"
-            android:enabled="true">
+        <activity android:name=".activity.ProvasActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".activity.MapaBarActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
-            </intent-filter>
-        </receiver>
+                <action android:name="android.intent.action.MAIN" />
 
-        <activity android:name=".activity.ProvasActivity" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".activity.LoginActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".activity.PerfilActivity_"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".activity.PerfilActivity"
+            android:label="@string/title_activity_perfil"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -50,19 +77,14 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".activity.MapaBarActivity">
+        <receiver
+            android:name=".receiver.SmsReceiver"
+            android:enabled="true">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
-        </activity>
-        <activity android:name=".activity.LoginActivity" />
-        <activity android:name=".activity.PerfilActivity_" />
-        <activity
-            android:name=".activity.PerfilActivity"
-            android:label="@string/title_activity_perfil"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+        </receiver>
+
     </application>
 
 </manifest>
