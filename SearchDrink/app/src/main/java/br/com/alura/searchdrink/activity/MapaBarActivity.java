@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,12 +24,23 @@ import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ThreadFactory;
 
 import br.com.alura.searchdrink.Localizador;
 import br.com.alura.searchdrink.fragment.MapaFragment;
 import br.com.alura.searchdrink.R;
+import br.com.alura.searchdrink.modelo.Bar;
+import br.com.alura.searchdrink.task.TarefaDownloadLocalizacaoBares;
 
 //import com.google.android.gms.maps.SupportMapFragment;
 
@@ -39,6 +51,9 @@ public class MapaBarActivity extends BaseActivity {
     private MapaFragment mapaFragment;
 
     DatabaseReference database;
+
+//    private List<Bar> bares;
+
     private Button botaoMenu;
 
 //    private String uId;
@@ -57,6 +72,10 @@ public class MapaBarActivity extends BaseActivity {
 //            uId = getUid();
 //        }
 
+
+
+
+
         botaoMenu = (Button) findViewById(R.id.botao_mapa);
         botaoMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,7 +88,7 @@ public class MapaBarActivity extends BaseActivity {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction tx = manager.beginTransaction();
 
-        mapaFragment = new MapaFragment(database/*database, uId*/);
+        mapaFragment = new MapaFragment(/*bares,*/ database/*, uId*/);
 
         tx.replace(R.id.frame_mapa, mapaFragment);
         tx.commit();
@@ -105,6 +124,13 @@ public class MapaBarActivity extends BaseActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+//        bares = pegaBares();
     }
 
     @Override
@@ -144,4 +170,56 @@ public class MapaBarActivity extends BaseActivity {
 //
 //        return super.onOptionsItemSelected(item);
 //    }
+
+
+//    private List<Bar> pegaBares() {
+//
+//        final List<Bar> estabelecimentos = new ArrayList<>();
+//
+//            database.addValueEventListener(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//
+//                        Map<String, Object> map = (HashMap<String, Object>) snapshot.getValue();
+//
+//                        String nome = String.valueOf(map.get("nome"));
+//                        String endereco = String.valueOf(map.get("endereco"));
+//                        String telefone = String.valueOf(map.get("telefone"));
+//                        String site = String.valueOf(map.get("site"));
+//                        String email = String.valueOf(map.get("email"));
+//
+//                        if (endereco != null) {
+//                            Bar bar = new Bar(nome, endereco, telefone, site, email);
+//
+//                            estabelecimentos.add(bar);
+//
+//
+//                        }
+////                    Toast.makeText(getContext(), String.valueOf(nome + " - " + endereco), Toast.LENGTH_LONG).show();
+//                    }
+////                Toast.makeText(getContext(), bares.get(1).getEndereco(), Toast.LENGTH_LONG).show();
+//                }
+//
+//                @Override
+//                public void onCancelled(DatabaseError databaseError) {
+//
+//                }
+//            });
+//
+//
+//
+////        Toast.makeText(MapaBarActivity.this, "Estabelecimento ultimo " + estabelecimentos.get(estabelecimentos.size()-1).getEndereco(), Toast.LENGTH_LONG).show();
+//
+//        return estabelecimentos;
+//    }
+
+//    private void pegaBares(){
+//
+//        TarefaDownloadLocalizacaoBares download = new TarefaDownloadLocalizacaoBares(this, database);
+//        Log.i("AsyncTask", "AsyncTask senado chamado Thread: " + Thread.currentThread().getName());
+//        download.execute();
+//    }
+
 }

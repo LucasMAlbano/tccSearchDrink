@@ -3,6 +3,7 @@ package br.com.alura.searchdrink.fragment;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -12,7 +13,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,7 +27,9 @@ import java.util.Map;
 
 import br.com.alura.searchdrink.Localizador;
 import br.com.alura.searchdrink.R;
+import br.com.alura.searchdrink.activity.MapaBarActivity;
 import br.com.alura.searchdrink.modelo.Bar;
+import br.com.alura.searchdrink.task.TarefaDownloadLocalizacaoBares;
 
 /**
  * Created by Birbara on 31/08/2016.
@@ -36,9 +38,14 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
 
     private final DatabaseReference database;
 //    private final String uId;
-    private GoogleMap mapa;
 
-    public MapaFragment(DatabaseReference database/*, String uId*/){
+    public static GoogleMap mapa;
+
+    private List<Bar> bares;
+
+    public MapaFragment(/*List<Bar> bares, */DatabaseReference database/*, String uId*/){
+
+//        this.bares = bares;
         this.database = database;
 //        this.uId = uId;
     }
@@ -47,13 +54,30 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
+//        bares = new ArrayList<>();
+//        pegaBares(bares);
+
         getMapAsync(this);
     }
+
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//
+//        TarefaDownloadLocalizacaoBares download = new TarefaDownloadLocalizacaoBares(getContext(), database);
+//        Log.i("AsyncTask", "AsyncTask senado chamado Thread: " + Thread.currentThread().getName());
+//        download.execute();
+//
+//    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
         this.mapa = googleMap;
+
+//        TarefaDownloadLocalizacaoBares download = new TarefaDownloadLocalizacaoBares(getContext()/*, database*/);
+//        Log.i("AsyncTask", "AsyncTask senado chamado Thread: " + Thread.currentThread().getName());
+//        download.execute(database);
 
 //        LatLng posicaoDaEscola = pegaCoordenadaDoEndereco("Rua Vergueiro 3185, Vila Mariana, Sao Paulo");
 //
@@ -61,62 +85,57 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
 //            centralizaEm(posicaoDaEscola);
 //        }
 
-        final List<Bar> bares = new ArrayList<>();
 
-        database.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+//        Toast.makeText(getContext(), bares.get(1).getEndereco(), Toast.LENGTH_LONG).show();
 
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Map<String, Object> map = (HashMap<String, Object>) snapshot.getValue();
+//        Toast.makeText(getContext(), "antes do for tamanho bares" + bares.size(), Toast.LENGTH_LONG).show();
 
-                    String nome = String.valueOf(map.get("nome"));
-                    String endereco = String.valueOf(map.get("endereco"));
-                    String telefone = String.valueOf(map.get("telefone"));
-                    String site = String.valueOf(map.get("site"));
-                    String email = String.valueOf(map.get("email"));
+        try {
 
-                    if (endereco != null) {
-                        Bar bar = new Bar(nome, endereco, telefone, site, email);
-                        bares.add(bar);
-                    }
+            Log.i("Resolvendo problema com professor:", " antes método pegaBares() Thread: " + Thread.currentThread().getName());
 
-//                    Toast.makeText(getContext(), String.valueOf(nome + email), Toast.LENGTH_LONG).show();
+            bares = new ArrayList<>();
+
+            synchronized (bares) {
+                pegaBares();
+            }
+
+
+            Log.i("Resolvendo problema com professor:", " depois método pegaBares() e antes synchronized bares.wait Thread: " + Thread.currentThread().getName());
+
+//            synchronized (bares) {
+//                bares.wait();
+//            }
+
+            Log.i("Resolvendo problema com professor:", " depois synchronized bares.wait Thread: " + Thread.currentThread().getName());
+
+            for(Bar bar : bares){
+
+                Log.i("Resolvendo problema com professor:", " dentro for Thread: " + Thread.currentThread().getName());
+
+                Toast.makeText(getContext(), "dentro do for", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), bar.getNome() + " - " + bar.getEndereco(), Toast.LENGTH_LONG).show();
+                LatLng coordenada = pegaCoordenadaDoEndereco(bar.getEndereco());
+                if(coordenada != null) {
+                    MarkerOptions marcador = new MarkerOptions();
+                    marcador.position(coordenada);
+                    marcador.title(bar.getNome());
+                    marcador.snippet(String.valueOf(bar.getTelefone()));
+                    marcador.icon(BitmapDescriptorFactory.fromResource(R.drawable.copocheio));
+                    MapaFragment.mapa.addMarker(marcador);
+
                 }
-//                Toast.makeText(getContext(), bares.get(1).getEndereco(), Toast.LENGTH_LONG).show();
             }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-
-        //adiciona local do bar
-//        BarDAO dao = new BarDAO(getContext());
-        for(Bar bar : bares){
-            LatLng coordenada = pegaCoordenadaDoEndereco(bar.getEndereco());
-            if(coordenada != null) {
-//                Marker b = mapa.addMarker(new MarkerOptions()
-//                        .position(coordenada)
-//                        .anchor(0.5f, 0.5f)
-//                        .title(bar.getEndereco())
-//                        .snippet(String.valueOf(bar.getTelefone()))
-//                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.copocheio)));
-
-                MarkerOptions marcador = new MarkerOptions();
-                marcador.position(coordenada);
-                marcador.title(bar.getNome());
-                marcador.snippet(String.valueOf(bar.getTelefone()));
-                marcador.icon(BitmapDescriptorFactory.fromResource(R.drawable.copocheio));
-                mapa.addMarker(marcador);
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-//        dao.close();
+
 
         new Localizador(getContext(), MapaFragment.this);
     }
+
+
 
     private LatLng pegaCoordenadaDoEndereco(String endereco) {
 
@@ -152,4 +171,66 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
             mapa.addMarker(marcador);
         }
     }
+
+    private void pegaBares() {
+
+        Log.i("Resolvendo problema com professor:", " Inicio método pegaBares Thread: " + Thread.currentThread().getName());
+
+//        bares = new ArrayList<>();
+
+
+        database.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(final DataSnapshot dataSnapshot) {
+
+//                new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+
+                        Log.i("Resolvendo problema com professor:", " Inicio método onDatChange Thread: " + Thread.currentThread().getName());
+
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+
+                            Log.i("Resolvendo problema com professor:", " Dentro do for do método onDataChange Thread: " + Thread.currentThread().getName());
+                            Map<String, Object> map = (HashMap<String, Object>) snapshot.getValue();
+
+                            String nome = String.valueOf(map.get("nome"));
+                            String endereco = String.valueOf(map.get("endereco"));
+                            String telefone = String.valueOf(map.get("telefone"));
+                            String site = String.valueOf(map.get("site"));
+                            String email = String.valueOf(map.get("email"));
+
+                            if (endereco != null) {
+                                Bar bar = new Bar(nome, endereco, telefone, site, email);
+
+                                bares.add(bar);
+
+
+                            }
+                            Toast.makeText(getContext(), String.valueOf(nome + " - " + endereco), Toast.LENGTH_LONG).show();
+                        }
+                        Log.i("Resolvendo problema com professor:", " final método onDataChanged Thread: " + Thread.currentThread().getName());
+//                    }
+//                }).start();
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        Log.i("Resolvendo problema com professor:", " antes synchronized bares.notify Thread: " + Thread.currentThread().getName());
+
+//        synchronized (bares) {
+//            bares.notify();
+//        }
+
+
+        Log.i("Resolvendo problema com professor:", " depois synchronized bares.notify Thread: " + Thread.currentThread().getName());
+
+    }
+
+
 }
