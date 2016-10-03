@@ -75,10 +75,6 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
 
         this.mapa = googleMap;
 
-//        TarefaDownloadLocalizacaoBares download = new TarefaDownloadLocalizacaoBares(getContext()/*, database*/);
-//        Log.i("AsyncTask", "AsyncTask senado chamado Thread: " + Thread.currentThread().getName());
-//        download.execute(database);
-
 //        LatLng posicaoDaEscola = pegaCoordenadaDoEndereco("Rua Vergueiro 3185, Vila Mariana, Sao Paulo");
 //
 //        if (posicaoDaEscola != null){
@@ -86,50 +82,57 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
 //        }
 
 
+                bares = new ArrayList<>();
+
+//        synchronized (bares) {
+        TarefaDownloadLocalizacaoBares download = new TarefaDownloadLocalizacaoBares(getContext()/*, database*/, bares);
+        Log.i("AsyncTask", "AsyncTask senado chamado Thread: " + Thread.currentThread().getName());
+        download.execute(database);
+//        }
+
+
 //        Toast.makeText(getContext(), bares.get(1).getEndereco(), Toast.LENGTH_LONG).show();
 
 //        Toast.makeText(getContext(), "antes do for tamanho bares" + bares.size(), Toast.LENGTH_LONG).show();
 
-        try {
-
-            Log.i("Resolvendo problema com professor:", " antes método pegaBares() Thread: " + Thread.currentThread().getName());
-
-            bares = new ArrayList<>();
-
-            synchronized (bares) {
-                pegaBares();
-            }
-
-
-            Log.i("Resolvendo problema com professor:", " depois método pegaBares() e antes synchronized bares.wait Thread: " + Thread.currentThread().getName());
-
+//        try {
+//
+//            Log.i("Resolvendo problema com professor:", " antes método pegaBares() Thread: " + Thread.currentThread().getName());
+//
 //            synchronized (bares) {
-//                bares.wait();
+//                pegaBares();
 //            }
-
-            Log.i("Resolvendo problema com professor:", " depois synchronized bares.wait Thread: " + Thread.currentThread().getName());
-
-            for(Bar bar : bares){
-
-                Log.i("Resolvendo problema com professor:", " dentro for Thread: " + Thread.currentThread().getName());
-
-                Toast.makeText(getContext(), "dentro do for", Toast.LENGTH_LONG).show();
-                Toast.makeText(getContext(), bar.getNome() + " - " + bar.getEndereco(), Toast.LENGTH_LONG).show();
-                LatLng coordenada = pegaCoordenadaDoEndereco(bar.getEndereco());
-                if(coordenada != null) {
-                    MarkerOptions marcador = new MarkerOptions();
-                    marcador.position(coordenada);
-                    marcador.title(bar.getNome());
-                    marcador.snippet(String.valueOf(bar.getTelefone()));
-                    marcador.icon(BitmapDescriptorFactory.fromResource(R.drawable.copocheio));
-                    MapaFragment.mapa.addMarker(marcador);
-
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//
+//
+//            Log.i("Resolvendo problema com professor:", " depois método pegaBares() e antes synchronized bares.wait Thread: " + Thread.currentThread().getName());
+//
+////            synchronized (bares) {
+////                bares.wait();
+////            }
+//
+//            Log.i("Resolvendo problema com professor:", " depois synchronized bares.wait Thread: " + Thread.currentThread().getName());
+//
+//            for(Bar bar : bares){
+//
+//                Log.i("Resolvendo problema com professor:", " dentro for Thread: " + Thread.currentThread().getName());
+//
+//                Toast.makeText(getContext(), "dentro do for", Toast.LENGTH_LONG).show();
+//                Toast.makeText(getContext(), bar.getNome() + " - " + bar.getEndereco(), Toast.LENGTH_LONG).show();
+//                LatLng coordenada = pegaCoordenadaDoEndereco(bar.getEndereco());
+//                if(coordenada != null) {
+//                    MarkerOptions marcador = new MarkerOptions();
+//                    marcador.position(coordenada);
+//                    marcador.title(bar.getNome());
+//                    marcador.snippet(String.valueOf(bar.getTelefone()));
+//                    marcador.icon(BitmapDescriptorFactory.fromResource(R.drawable.copocheio));
+//                    MapaFragment.mapa.addMarker(marcador);
+//
+//                }
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
 
         new Localizador(getContext(), MapaFragment.this);
@@ -176,44 +179,75 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
 
         Log.i("Resolvendo problema com professor:", " Inicio método pegaBares Thread: " + Thread.currentThread().getName());
 
-//        bares = new ArrayList<>();
+        bares = new ArrayList<>();
 
 
         database.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshot) {
 
-//                new Thread(new Runnable() {
+//                Thread t = new Thread(new Runnable() {
 //                    @Override
 //                    public void run() {
 
                         Log.i("Resolvendo problema com professor:", " Inicio método onDatChange Thread: " + Thread.currentThread().getName());
+//                        synchronized (this) {
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                                Log.i("Resolvendo problema com professor:", " Dentro do for do método onDataChange Thread: " + Thread.currentThread().getName());
+                                Map<String, Object> map = (HashMap<String, Object>) snapshot.getValue();
 
-                            Log.i("Resolvendo problema com professor:", " Dentro do for do método onDataChange Thread: " + Thread.currentThread().getName());
-                            Map<String, Object> map = (HashMap<String, Object>) snapshot.getValue();
+                                String nome = String.valueOf(map.get("nome"));
+                                String endereco = String.valueOf(map.get("endereco"));
+                                String telefone = String.valueOf(map.get("telefone"));
+                                String site = String.valueOf(map.get("site"));
+                                String email = String.valueOf(map.get("email"));
 
-                            String nome = String.valueOf(map.get("nome"));
-                            String endereco = String.valueOf(map.get("endereco"));
-                            String telefone = String.valueOf(map.get("telefone"));
-                            String site = String.valueOf(map.get("site"));
-                            String email = String.valueOf(map.get("email"));
+                                if (endereco != null) {
+                                    Bar bar = new Bar(nome, endereco, telefone, site, email);
 
-                            if (endereco != null) {
-                                Bar bar = new Bar(nome, endereco, telefone, site, email);
-
-                                bares.add(bar);
+                                    bares.add(bar);
 
 
+                                }
+                                Log.i("Resolvendo problema com professor:", nome + " " + endereco);
+//                                Toast.makeText(getContext(), String.valueOf(nome + " - " + endereco), Toast.LENGTH_LONG).show();
                             }
-                            Toast.makeText(getContext(), String.valueOf(nome + " - " + endereco), Toast.LENGTH_LONG).show();
+//                            notifyAll();
+                            Log.i("Resolvendo problema com professor:", " final método onDataChanged Thread: " + Thread.currentThread().getName());
                         }
-                        Log.i("Resolvendo problema com professor:", " final método onDataChanged Thread: " + Thread.currentThread().getName());
 //                    }
-//                }).start();
+//                });
 
-            }
+//                t.start();
+
+//                synchronized (t){
+//                    Log.i("Resolvendo problema com professor:", " antes wait: " + Thread.currentThread().getName());
+//                    try {
+//                        t.wait();
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    Log.i("Resolvendo problema com professor:", " depois wait: " + Thread.currentThread().getName());
+
+                    //adiciona local do bar
+//                    for(Bar bar : bares){
+//                        Log.i("Resolvendo problema com professor:", " dentro for add: " + Thread.currentThread().getName());
+//                        Toast.makeText(getContext(), "dentro do for", Toast.LENGTH_LONG).show();
+//                        Toast.makeText(getContext(), bar.getNome() + " - " + bar.getEndereco(), Toast.LENGTH_LONG).show();
+//                        LatLng coordenada = pegaCoordenadaDoEndereco(bar.getEndereco());
+//                        if(coordenada != null) {
+//                            MarkerOptions marcador = new MarkerOptions();
+//                            marcador.position(coordenada);
+//                            marcador.title(bar.getNome());
+//                            marcador.snippet(String.valueOf(bar.getTelefone()));
+//                            marcador.icon(BitmapDescriptorFactory.fromResource(R.drawable.copocheio));
+//                            MapaFragment.mapa.addMarker(marcador);
+//                        }
+//                    }
+//                }
+
+//            }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {

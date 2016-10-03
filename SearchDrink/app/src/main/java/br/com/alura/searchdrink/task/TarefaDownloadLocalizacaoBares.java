@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.alura.searchdrink.R;
-import br.com.alura.searchdrink.activity.MapaBarActivity;
 import br.com.alura.searchdrink.fragment.MapaFragment;
 import br.com.alura.searchdrink.modelo.Bar;
 
@@ -34,13 +33,14 @@ import br.com.alura.searchdrink.modelo.Bar;
 public class TarefaDownloadLocalizacaoBares extends AsyncTask<DatabaseReference, Void, List<Bar>> {
 
     private final Context context;
-//    private final DatabaseReference database;
+
+    private final List<Bar> estabelecimentos;
 
     private ProgressDialog progresso;
 
-    public TarefaDownloadLocalizacaoBares(Context context/*, DatabaseReference database*/){
+    public TarefaDownloadLocalizacaoBares(Context context, List<Bar> bares){
+        this.estabelecimentos = bares;
         this.context = context;
-//        this.database = database;
     }
 
     @Override
@@ -52,28 +52,34 @@ public class TarefaDownloadLocalizacaoBares extends AsyncTask<DatabaseReference,
 
     @Override
     protected List<Bar> doInBackground(DatabaseReference... dbs) {
-
-        final List<Bar> estabelecimentos = new ArrayList<>();
+        Log.i("AsyncTask", "Exibindo ProgressDialog na tela Thread 1: " + Thread.currentThread().getName());
 
             dbs[0].addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+                    Log.i("AsyncTask", "Exibindo ProgressDialog na tela Thread 2: " + Thread.currentThread().getName());
 
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    synchronized (estabelecimentos) {
 
-                        Map<String, Object> map = (HashMap<String, Object>) snapshot.getValue();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            Log.i("AsyncTask", "Exibindo ProgressDialog na tela Thread 3: " + Thread.currentThread().getName());
 
-                        String nome = String.valueOf(map.get("nome"));
-                        String endereco = String.valueOf(map.get("endereco"));
-                        String telefone = String.valueOf(map.get("telefone"));
-                        String site = String.valueOf(map.get("site"));
-                        String email = String.valueOf(map.get("email"));
+                            Map<String, Object> map = (HashMap<String, Object>) snapshot.getValue();
 
-                        if (endereco != null) {
-                            Bar bar = new Bar(nome, endereco, telefone, site, email);
+                            String nome = String.valueOf(map.get("nome"));
+                            String endereco = String.valueOf(map.get("endereco"));
+                            String telefone = String.valueOf(map.get("telefone"));
+                            String site = String.valueOf(map.get("site"));
+                            String email = String.valueOf(map.get("email"));
 
-                            estabelecimentos.add(bar);
+                            if (endereco != null) {
+                                Bar bar = new Bar(nome, endereco, telefone, site, email);
+                                estabelecimentos.add(bar);
+                            }
                         }
+
+                    estabelecimentos.notifyAll();
+
                     }
                 }
 
@@ -83,9 +89,11 @@ public class TarefaDownloadLocalizacaoBares extends AsyncTask<DatabaseReference,
                 }
             });
 
-//        synchronized (estabelecimentos){
-//            estabelecimentos.notify();
-//        }
+        synchronized (estabelecimentos){
+            try {
+                estabelecimentos.wait();
+            } catch (InterruptedException e) {e.printStackTrace();}
+        }
 
         return estabelecimentos;
     }
@@ -95,20 +103,12 @@ public class TarefaDownloadLocalizacaoBares extends AsyncTask<DatabaseReference,
 
         progresso.dismiss();
 
-//        synchronized (bares){
-//            try {
-//                bares.wait();
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-
         Toast.makeText(context, "tamanho da lista: " + bares.size(), Toast.LENGTH_LONG).show();
 
         //adiciona local do bar
         for(Bar bar : bares){
-            Toast.makeText(context, "dentro do for", Toast.LENGTH_LONG).show();
-            Toast.makeText(context, bar.getNome() + " - " + bar.getEndereco(), Toast.LENGTH_LONG).show();
+//            Toast.makeText(context, "dentro do for", Toast.LENGTH_LONG).show();
+//            Toast.makeText(context, bar.getNome() + " - " + bar.getEndereco(), Toast.LENGTH_LONG).show();
             LatLng coordenada = pegaCoordenadaDoEndereco(bar.getEndereco());
             if(coordenada != null) {
                 MarkerOptions marcador = new MarkerOptions();
