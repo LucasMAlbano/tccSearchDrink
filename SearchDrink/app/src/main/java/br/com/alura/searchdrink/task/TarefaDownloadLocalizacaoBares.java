@@ -5,12 +5,14 @@ import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -52,42 +54,11 @@ public class TarefaDownloadLocalizacaoBares extends AsyncTask<DatabaseReference,
 
     @Override
     protected List<Bar> doInBackground(DatabaseReference... dbs) {
-        Log.i("AsyncTask", "Exibindo ProgressDialog na tela Thread 1: " + Thread.currentThread().getName());
+        Log.i("AsyncTask", "doInbackground: " + Thread.currentThread().getName());
 
-            dbs[0].addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Log.i("AsyncTask", "Exibindo ProgressDialog na tela Thread 2: " + Thread.currentThread().getName());
 
-                    synchronized (estabelecimentos) {
-
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            Log.i("AsyncTask", "Exibindo ProgressDialog na tela Thread 3: " + Thread.currentThread().getName());
-
-                            Map<String, Object> map = (HashMap<String, Object>) snapshot.getValue();
-
-                            String nome = String.valueOf(map.get("nome"));
-                            String endereco = String.valueOf(map.get("endereco"));
-                            String telefone = String.valueOf(map.get("telefone"));
-                            String site = String.valueOf(map.get("site"));
-                            String email = String.valueOf(map.get("email"));
-
-                            if (endereco != null) {
-                                Bar bar = new Bar(nome, endereco, telefone, site, email);
-                                estabelecimentos.add(bar);
-                            }
-                        }
-
-                    estabelecimentos.notifyAll();
-
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
+        ValueEventListener postListener = pegaEstabelecimentos();
+        dbs[0].addValueEventListener(postListener);
 
         synchronized (estabelecimentos){
             try {
@@ -98,28 +69,31 @@ public class TarefaDownloadLocalizacaoBares extends AsyncTask<DatabaseReference,
         return estabelecimentos;
     }
 
+
     @Override
     protected void onPostExecute(List<Bar> bares) {
 
-        progresso.dismiss();
+//        Toast.makeText(context, "tamanho da lista: " + bares.size(), Toast.LENGTH_LONG).show();
 
-        Toast.makeText(context, "tamanho da lista: " + bares.size(), Toast.LENGTH_LONG).show();
-
-        //adiciona local do bar
-        for(Bar bar : bares){
+        if (bares.size() != 0) {
+            //adiciona local do bar
+            for (Bar bar : bares) {
 //            Toast.makeText(context, "dentro do for", Toast.LENGTH_LONG).show();
 //            Toast.makeText(context, bar.getNome() + " - " + bar.getEndereco(), Toast.LENGTH_LONG).show();
-            LatLng coordenada = pegaCoordenadaDoEndereco(bar.getEndereco());
-            if(coordenada != null) {
-                MarkerOptions marcador = new MarkerOptions();
-                marcador.position(coordenada);
-                marcador.title(bar.getNome());
-                marcador.snippet(String.valueOf(bar.getTelefone()));
-                marcador.icon(BitmapDescriptorFactory.fromResource(R.drawable.copocheio));
-                MapaFragment.mapa.addMarker(marcador);
+                LatLng coordenada = pegaCoordenadaDoEndereco(bar.getEndereco());
+                if (coordenada != null) {
+                    MarkerOptions marcador = new MarkerOptions();
+                    marcador.position(coordenada);
+                    marcador.title(bar.getNome());
+                    marcador.snippet(String.valueOf(bar.getTelefone()));
+                    marcador.icon(BitmapDescriptorFactory.fromResource(R.drawable.copocheio_mapa));
+                    MapaFragment.mapa.addMarker(marcador);
 
+                }
             }
         }
+
+        progresso.dismiss();
 
     }
 
@@ -140,4 +114,79 @@ public class TarefaDownloadLocalizacaoBares extends AsyncTask<DatabaseReference,
         }
         return null;
     }
+
+    @NonNull
+    private ValueEventListener pegaEstabelecimentos() {
+        return new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.i("AsyncTask", "doInbackground 2: " + Thread.currentThread().getName());
+
+                synchronized (estabelecimentos) {
+
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Log.i("AsyncTask", "doInbackground 3: " + Thread.currentThread().getName());
+
+                        Map<String, Object> map = (HashMap<String, Object>) snapshot.getValue();
+
+                        String nome = String.valueOf(map.get("nome"));
+                        String endereco = String.valueOf(map.get("endereco"));
+                        String telefone = String.valueOf(map.get("telefone"));
+                        String site = String.valueOf(map.get("site"));
+                        String email = String.valueOf(map.get("email"));
+
+                        if (endereco != null) {
+                            Bar bar = new Bar(nome, endereco, telefone, site, email);
+                            estabelecimentos.add(bar);
+                        }
+                    }
+
+                    estabelecimentos.notifyAll();
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w("AsyncTask", "loadPost:onCancelled", databaseError.toException());
+                // ...
+            }
+        };
+    }
 }
+
+//        dbs[0].addValueEventListener(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//                    Log.i("AsyncTask", "doInbackground 2: " + Thread.currentThread().getName());
+//
+//                    synchronized (estabelecimentos) {
+//
+//                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                            Log.i("AsyncTask", "doInbackground 3: " + Thread.currentThread().getName());
+//
+//                            Map<String, Object> map = (HashMap<String, Object>) snapshot.getValue();
+//
+//                            String nome = String.valueOf(map.get("nome"));
+//                            String endereco = String.valueOf(map.get("endereco"));
+//                            String telefone = String.valueOf(map.get("telefone"));
+//                            String site = String.valueOf(map.get("site"));
+//                            String email = String.valueOf(map.get("email"));
+//
+//                            if (endereco != null) {
+//                                Bar bar = new Bar(nome, endereco, telefone, site, email);
+//                                estabelecimentos.add(bar);
+//                            }
+//                        }
+//
+//                        estabelecimentos.notifyAll();
+//
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(DatabaseError databaseError) {
+//                      Log.w("AsyncTask", "loadPost:onCancelled", databaseError.toException());
+//                }
+//            });
