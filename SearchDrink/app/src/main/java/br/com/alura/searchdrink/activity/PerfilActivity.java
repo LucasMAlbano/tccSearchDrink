@@ -384,7 +384,7 @@ public class PerfilActivity extends BaseActivity
                         for(DataSnapshot snapshot1 : snapshot.getChildren()){
                             for(DataSnapshot snapshot2 : snapshot1.getChildren()){
                                 Map<String, Object> m = (HashMap<String, Object>) snapshot2.getValue();
-                                String marca = String.valueOf(m.get("marca"));
+                                String marca = String.valueOf(snapshot1.getKey() + ": " + m.get("marca"));
                                 b.add(marca);
                             }
                         }
@@ -393,8 +393,15 @@ public class PerfilActivity extends BaseActivity
 
                         for(DataSnapshot snapshot1 : snapshot.getChildren()){
                             Map<String, Object> m = (HashMap<String, Object>) snapshot1.getValue();
-                            String marca = String.valueOf(m.get("marca"));
-                            b.add(marca);
+
+                            if (snapshot.getKey().equals("drinks") || snapshot.getKey().equals("sucos")){
+                                String nome = String.valueOf(snapshot.getKey() + ": " + m.get("nome"));
+                                b.add(nome);
+                            }
+                            else {
+                                String marca = String.valueOf(snapshot.getKey() + ": " + m.get("marca"));
+                                b.add(marca);
+                            }
                         }
                     }
                 }
@@ -531,10 +538,10 @@ public class PerfilActivity extends BaseActivity
                 dialog.setTitle("Confirmar para deletar...");
 
                 final TextView dialogNome = (TextView) dialog.findViewById(R.id.dialog_bebida_nome);
-                dialogNome.setText(bebida.getNome());
+                dialogNome.setText(bebida.getNome() + " - " + bebida.getQuantidade());
 
                 final TextView dialogPreco = (TextView) dialog.findViewById(R.id.dialog_bebida_preco);
-                dialogPreco.setText(String.valueOf(bebida.getPreco()));
+                dialogPreco.setText("R$ " + String.valueOf(bebida.getPreco()));
 
                 Button dialogSalvar = (Button) dialog.findViewById(R.id.dialog_bebida_salvar);
                 Button dialogCancelar = (Button) dialog.findViewById(R.id.dialog_bebida_cancelar);

@@ -15,9 +15,7 @@ public class Bebida {
 //    private long uId;
     private String nome;
     private double preco;
-
     private String quantidade;
-
 
     private long id;
     private String idFirebase;

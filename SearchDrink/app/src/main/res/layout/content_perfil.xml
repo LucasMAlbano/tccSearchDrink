@@ -40,7 +40,7 @@
             android:textSize="20sp"
             android:paddingTop="15dp"
             android:id="@+id/perfil_bemvindo"
-            android:textColor="#F1C332"
+            android:textColor="#000"
             android:fontFamily="casual"/>
 
         <ImageView
@@ -57,7 +57,7 @@
             android:text="Bebidas:"
             android:textSize="20sp"
             android:layout_marginTop="20dp"
-            android:textColor="#F1C332"
+            android:textColor="#000"
             android:fontFamily="casual"/>
 
         <ListView

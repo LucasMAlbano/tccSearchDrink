@@ -22,6 +22,7 @@
     <string name="title_activity_perfil">Perfil</string>
 
     <string-array name="quantidades_bebidas">
+        <item>shot</item>
         <item>200 ml</item>
         <item>275 ml</item>
         <item>300 ml</item>
