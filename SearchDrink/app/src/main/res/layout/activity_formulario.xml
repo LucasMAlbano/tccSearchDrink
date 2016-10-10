@@ -8,7 +8,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:weightSum="1">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -59,6 +60,37 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:hint="@string/campo_site"/>
+
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Tipo de bar:"-->
+            <!--android:textSize="15dp"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:layout_marginLeft="5dp"/>-->
+        <!--<ExpandableListView-->
+            <!--android:id="@+id/expandableListBares"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft"-->
+            <!--android:divider="@android:color/darker_gray"-->
+            <!--android:dividerHeight="0.5dp"-->
+            <!--android:layout_weight="1.16" />-->
+
+        <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tipo de bar:"
+        android:textSize="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="5dp"/>
+        <Spinner
+            android:id="@+id/spinnerBares"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+
+
 
         <!--<EditText-->
             <!--android:id="@+id/cadastro_senha"-->

@@ -3,10 +3,10 @@ package br.com.alura.searchdrink.activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,7 +28,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import br.com.alura.searchdrink.FormularioHelper;
@@ -44,6 +46,7 @@ public class FormularioActivity extends BaseActivity {
     private String caminhoFoto = "";
 
     private DatabaseReference dbBar;
+    private DatabaseReference dbFiltrosBar;
 //    private DatabaseReference database;
     private StorageReference storageReference;
 
@@ -51,6 +54,10 @@ public class FormularioActivity extends BaseActivity {
     private Uri uriFoto = null;
 
     private File mypath;
+
+    private String tipo;
+
+    private List<String> tiposBares;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,13 +67,30 @@ public class FormularioActivity extends BaseActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_formulario);
 
+        Intent intent = getIntent();
+        tipo = (String) intent.getSerializableExtra("tipo");
+
         uId = getUid();
 
         dbBar = FirebaseDatabase.getInstance().getReference().child("bares").child(uId);
+        dbFiltrosBar = FirebaseDatabase.getInstance().getReference().child("filtros").child("tipoBar");
 
         storageReference = FirebaseStorage.getInstance().getReference().child(uId);
 
-        this.helper = new FormularioHelper(this, storageReference);
+        tiposBares = new ArrayList<String>();
+
+
+        ValueEventListener listenerTiposBares = pegaTiposBares();
+        dbFiltrosBar.addListenerForSingleValueEvent(listenerTiposBares);
+//        synchronized (tiposBares){
+//            try {
+//                tiposBares.wait();
+//            } catch (InterruptedException e) {e.printStackTrace();}
+//        }
+
+//        storageReference = FirebaseStorage.getInstance().getReference().child(uId);
+//
+//        this.helper = new FormularioHelper(this, tiposBares);
 
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         File directory = cw.getDir("profile", Context.MODE_PRIVATE);
@@ -75,28 +99,10 @@ public class FormularioActivity extends BaseActivity {
         }
         mypath = new File(directory, "perfil" + uId + ".jpg");
 
-        dbBar.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Map <String, String> mapBar = (Map)dataSnapshot.getValue();
-                String nome = mapBar.get("nome");
-                String endereco = mapBar.get("endereco");
-                String telefone = mapBar.get("telefone");
-                String site = mapBar.get("site");
-                String email = mapBar.get("email");
 
+//        ValueEventListener listenerPreenche = preencheFormulario();
+//        dbBar.addListenerForSingleValueEvent(listenerPreenche);
 
-                Bar bar = new Bar(nome, endereco, telefone, site, email);
-
-                helper.preencheFormulario(bar, mypath);
-                
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
         Button botaoFoto = (Button)findViewById(R.id.formulario_botao_foto);
         botaoFoto.setOnClickListener(new View.OnClickListener() {
@@ -121,7 +127,7 @@ public class FormularioActivity extends BaseActivity {
 
             uriFoto = data.getData();
 
-            helper.carregaFoto(uriFoto, getContentResolver());
+            helper.carregaFoto(uriFoto, getContentResolver(), storageReference);
 
         }
     }
@@ -143,23 +149,31 @@ public class FormularioActivity extends BaseActivity {
             case R.id.menu_formulario_ok:
                 final Bar bar = helper.pegaBar();
 
-                dbBar.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        enviaCadastroFirebase(bar);
+                if (bar != null) {
+
+                    dbBar.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            enviaCadastroFirebase(bar);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    uploadFotoPerfilFirebase();
+
+                    if (tipo != null && tipo.equals("cadastro")) {
+                        Intent vaiParaPerfil = new Intent(FormularioActivity.this, PerfilActivity.class);
+                        startActivity(vaiParaPerfil);
                     }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-                uploadFotoPerfilFirebase();
-
 
 //                Toast.makeText(FormularioActivity.this, "Bar " + bar.getNome() + " salvo com sucesso!", Toast.LENGTH_SHORT).show();
-                finish();
+                    finish();
+                }
+
                 break;
         }
 
@@ -200,5 +214,66 @@ public class FormularioActivity extends BaseActivity {
                 }
             });
         }
+    }
+
+    @NonNull
+    private ValueEventListener pegaTiposBares() {
+        return new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.i("AsyncTask", "doInbackground 2: " + Thread.currentThread().getName());
+
+//                synchronized (tiposBares) {
+
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Map<String, Object> map = (HashMap<String, Object>) snapshot.getValue();
+                        String tipo = String.valueOf(map.get("nome"));
+                        tiposBares.add(tipo);
+                    }
+
+                tiposBares.add(0, "selecione uma opção");
+
+//                    tiposBares.notifyAll();
+
+//                }
+
+                FormularioActivity.this.helper = new FormularioHelper(FormularioActivity.this, tiposBares);
+
+                ValueEventListener listenerPreenche = preencheFormulario();
+                dbBar.addListenerForSingleValueEvent(listenerPreenche);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w("AsyncTask", "loadPost:onCancelled", databaseError.toException());
+                // ...
+            }
+        };
+    }
+
+    private ValueEventListener preencheFormulario() {
+        return new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map <String, String> mapBar = (Map)dataSnapshot.getValue();
+                String nome = mapBar.get("nome");
+                String endereco = mapBar.get("endereco");
+                String telefone = mapBar.get("telefone");
+                String site = mapBar.get("site");
+                String email = mapBar.get("email");
+                String tipoBar = mapBar.get("tipoBar");
+
+
+                Bar bar = new Bar(nome, endereco, telefone, site, email, tipoBar);
+
+                helper.preencheFormulario(bar, mypath);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
     }
 }

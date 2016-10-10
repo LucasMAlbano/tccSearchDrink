@@ -15,13 +15,16 @@ public class Bebida {
 //    private long uId;
     private String nome;
     private double preco;
-    private String caminhoFoto;
+
+    private String quantidade;
+
 
     private long id;
     private String idFirebase;
 
-    public Bebida(String nome, double preco, String idFirebase){
+    public Bebida(String nome, String quantidade, double preco, String idFirebase){
         this.nome = nome;
+        this.quantidade = quantidade;
         this.preco = preco;
         this.idFirebase = idFirebase;
     }
@@ -53,13 +56,14 @@ public class Bebida {
         this.preco = preco;
     }
 
-    public String getCaminhoFoto() {
-        return caminhoFoto;
+    public String getQuantidade() {
+        return quantidade;
     }
 
-    public void setCaminhoFoto(String caminhoFoto) {
-        this.caminhoFoto = caminhoFoto;
+    public void setQuantidade(String quantidade) {
+        this.quantidade = quantidade;
     }
+
 
     @Exclude
     public long getId() {
@@ -75,6 +79,7 @@ public class Bebida {
     public Map<String, Object> toMap(){
         HashMap<String, Object> resultado = new HashMap<>();
         resultado.put("nome", nome);
+        resultado.put("quantidade", quantidade);
         resultado.put("preco", preco);
         resultado.put("idFirebase", idFirebase);
 

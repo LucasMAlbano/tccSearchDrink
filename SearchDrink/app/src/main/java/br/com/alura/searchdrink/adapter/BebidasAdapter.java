@@ -1,19 +1,15 @@
 package br.com.alura.searchdrink.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
 
 import br.com.alura.searchdrink.R;
-import br.com.alura.searchdrink.modelo.Bar;
 import br.com.alura.searchdrink.modelo.Bebida;
 
 /**
@@ -54,11 +50,11 @@ public class BebidasAdapter extends BaseAdapter {
         // reaproveitamento de view
         View view = convertView;
         if(view == null) {
-            view = inflater.inflate(R.layout.list_item, parent, false);
+            view = inflater.inflate(R.layout.list_item_bebida, parent, false);
         }
 
         TextView campoNome = (TextView) view.findViewById(R.id.item_nome);
-        campoNome.setText(bebida.getNome());
+        campoNome.setText(bebida.getNome() + " - " + bebida.getQuantidade());
 
         TextView campoPreco = (TextView) view.findViewById(R.id.item_preco);
         campoPreco.setText(String.valueOf(bebida.getPreco()));

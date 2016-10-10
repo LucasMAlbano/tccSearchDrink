@@ -1,29 +1,30 @@
 package br.com.alura.searchdrink;
 
 import android.content.ContentResolver;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import br.com.alura.searchdrink.activity.FormularioActivity;
-import br.com.alura.searchdrink.activity.PerfilActivity;
 import br.com.alura.searchdrink.modelo.Bar;
 
 /**
@@ -40,14 +41,19 @@ public class FormularioHelper {
     private final FormularioActivity activity;
 
     private Bar bar;
+    private List<String> tiposBar;
 
-    private StorageReference storageRef;
+    private static String OBRIGATORIO = "Obrigatório.";
 
-    public FormularioHelper(FormularioActivity activity, StorageReference storageRef) {
+    private Spinner spinnerBares;
 
-        this.storageRef = storageRef;
+    private ArrayAdapter<String> spinnerAdapter;
+
+    public FormularioHelper(final FormularioActivity activity, List<String> tiposBar) {
 
         this.activity = activity;
+
+        this.tiposBar = tiposBar;
 
         this.bar = new Bar();
 
@@ -56,15 +62,33 @@ public class FormularioHelper {
         this.campoTelefone = (EditText) activity.findViewById(R.id.formulario_telefone);
         this.campoSite = (EditText) activity.findViewById(R.id.formulario_site);
         this.campoFoto = (ImageView) activity.findViewById(R.id.formulario_foto);
+
+        addItensEmSpinnerBares();
+    }
+
+    // add items into spinner dynamically
+    public void addItensEmSpinnerBares() {
+        spinnerBares = (Spinner) activity.findViewById(R.id.spinnerBares);
+
+        spinnerAdapter = new ArrayAdapter<String>(activity,
+                android.R.layout.simple_spinner_item, tiposBar);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerBares.setAdapter(spinnerAdapter);
+
     }
 
     public Bar pegaBar() {
+
+        if (!validaCampos()) {
+            return null;
+        }
 
         bar.setNome(campoNome.getText().toString());
         bar.setEndereco(campoEndereco.getText().toString());
         bar.setTelefone(campoTelefone.getText().toString());
         bar.setSite(campoSite.getText().toString());
         bar.setCaminhoFoto((Uri) campoFoto.getTag());
+        bar.setTipoBar(String.valueOf(spinnerBares.getSelectedItem()));
 
         return bar;
     }
@@ -76,6 +100,7 @@ public class FormularioHelper {
         campoEndereco.setText(bar.getEndereco());
         campoTelefone.setText(bar.getTelefone());
         campoSite.setText(bar.getSite());
+        spinnerBares.setPrompt(bar.getTipoBar());
 
         if (mypath != null){
             campoFoto.setImageBitmap(BitmapFactory.decodeFile(mypath.getAbsolutePath()));
@@ -88,7 +113,7 @@ public class FormularioHelper {
     }
 
 
-    public void carregaFoto(Uri uri, ContentResolver contentResolver) {
+    public void carregaFoto(Uri uri, ContentResolver contentResolver, StorageReference storageRef) {
 
         if(uri != null) {
 
@@ -165,4 +190,45 @@ public class FormularioHelper {
 //        }
 //    }
 
+
+    private boolean validaCampos() {
+
+        boolean validador = true;
+
+        String nome = campoNome.getText().toString();
+        if (TextUtils.isEmpty(nome)) {
+            campoNome.setError(OBRIGATORIO);
+            validador = false;
+        } else {
+            campoNome.setError(null);
+        }
+
+        String endereco = campoEndereco.getText().toString();
+        if (TextUtils.isEmpty(endereco)) {
+            campoEndereco.setError(OBRIGATORIO);
+            validador = false;
+        } else {
+            campoEndereco.setError(null);
+        }
+
+        String telefone = campoTelefone.getText().toString();
+        if (TextUtils.isEmpty(telefone)) {
+            campoTelefone.setError(OBRIGATORIO);
+            validador = false;
+        } else {
+            campoTelefone.setError(null);
+        }
+
+        String spinner = spinnerBares.getSelectedItem().toString();
+        if (spinner.equals("selecione uma opção")) {
+            TextView errorText = (TextView)spinnerBares.getSelectedView();
+            errorText.setError(OBRIGATORIO);
+            errorText.setTextColor(Color.RED);
+            errorText.setText(OBRIGATORIO);
+            validador = false;
+        }
+
+
+        return validador;
+    }
 }

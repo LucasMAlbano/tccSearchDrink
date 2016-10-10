@@ -149,7 +149,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
                         if (task.isSuccessful()) {
                             writeNewUser(task.getResult().getUser());
-                            onAuthSuccess();
+//                            onAuthSuccess();
+
+                            Intent vaiParaFormulario = new Intent(LoginActivity.this, FormularioActivity.class);
+                            vaiParaFormulario.putExtra("tipo", "cadastro");
+                            startActivity(vaiParaFormulario);
+
                             Toast.makeText(LoginActivity.this, "Usuário cadastrado com sucesso!",
                                     Toast.LENGTH_SHORT).show();
                         }else{

@@ -95,8 +95,8 @@ public class MapaBarActivity extends BaseActivity {
         });
         floatingPesquisar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-
+                Intent vaiParaPesquisa = new Intent(MapaBarActivity.this, SearchActivity.class);
+                startActivity(vaiParaPesquisa);
             }
         });
         floatingListar.setOnClickListener(new View.OnClickListener() {

@@ -26,6 +26,8 @@ public class Bar implements Serializable{
     private String email;
     private String senha;
 
+    private String tipoBar;
+
     private List<Bebida> bebidas;
 
     public Bar(String nome, String email){
@@ -39,12 +41,13 @@ public class Bar implements Serializable{
     }
 
 
-    public Bar(String nome, String endereco, String telefone, String site, String email) {
+    public Bar(String nome, String endereco, String telefone, String site, String email, String tipoBar) {
         this.nome = nome;
         this.endereco = endereco;
         this.telefone = telefone;
         this.site = site;
         this.email = email;
+        this.tipoBar = tipoBar;
     }
 
     public Bar (){}
@@ -58,6 +61,14 @@ public class Bar implements Serializable{
         this.caminhoFoto = uriFotoPerfil;
     }
 
+
+    public String getTipoBar() {
+        return tipoBar;
+    }
+
+    public void setTipoBar(String tipoBar) {
+        this.tipoBar = tipoBar;
+    }
 
     public List<Bebida> getBebidas() {
         return bebidas;
@@ -140,6 +151,7 @@ public class Bar implements Serializable{
         resultado.put("endereco", endereco);
         resultado.put("telefone", telefone);
         resultado.put("site", site);
+        resultado.put("tipoBar", tipoBar);
 
         return resultado;
     }

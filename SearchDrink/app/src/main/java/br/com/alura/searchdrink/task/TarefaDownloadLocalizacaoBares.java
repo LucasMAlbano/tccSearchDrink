@@ -48,7 +48,7 @@ public class TarefaDownloadLocalizacaoBares extends AsyncTask<DatabaseReference,
     @Override
     protected void onPreExecute() {
         Log.i("AsyncTask", "Exibindo ProgressDialog na tela Thread: " + Thread.currentThread().getName());
-        progresso = ProgressDialog.show(context, "Por favor Aguarde ...",
+        progresso = ProgressDialog.show(context, "Por favor aguarde ...",
                 "Baixando Bares...");
     }
 
@@ -134,9 +134,10 @@ public class TarefaDownloadLocalizacaoBares extends AsyncTask<DatabaseReference,
                         String telefone = String.valueOf(map.get("telefone"));
                         String site = String.valueOf(map.get("site"));
                         String email = String.valueOf(map.get("email"));
+                        String tipoBar = String.valueOf(map.get("tipoBar"));
 
                         if (endereco != null) {
-                            Bar bar = new Bar(nome, endereco, telefone, site, email);
+                            Bar bar = new Bar(nome, endereco, telefone, site, email, tipoBar);
                             estabelecimentos.add(bar);
                         }
                     }

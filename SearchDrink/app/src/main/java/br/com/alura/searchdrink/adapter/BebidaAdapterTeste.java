@@ -127,7 +127,7 @@ public class BebidaAdapterTeste extends RecyclerView.Adapter<BebidaViewHolder> {
     @Override
     public BebidaViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.list_item, parent, false);
+        View view = inflater.inflate(R.layout.list_item_bebida, parent, false);
         return new BebidaViewHolder(view);
     }
 

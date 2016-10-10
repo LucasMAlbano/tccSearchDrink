@@ -20,4 +20,23 @@
     <string name="action_settings">Settings</string>
     <!--<string name="title_activity_perfil">PerfilActivity</string>-->
     <string name="title_activity_perfil">Perfil</string>
+
+    <string-array name="quantidades_bebidas">
+        <item>200 ml</item>
+        <item>275 ml</item>
+        <item>300 ml</item>
+        <item>350 ml</item>
+        <item>369 ml</item>
+        <item>400 ml</item>
+        <item>475 ml</item>
+        <item>500 ml</item>
+        <item>550 ml</item>
+        <item>600 ml</item>
+        <item>650 ml</item>
+        <item>750 ml</item>
+        <item>900 ml</item>
+        <item>1000 ml</item>
+        <item>1500 ml</item>
+        <item>2000 ml</item>
+    </string-array>
 </resources>
