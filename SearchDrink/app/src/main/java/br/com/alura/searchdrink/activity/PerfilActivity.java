@@ -61,21 +61,12 @@ import br.com.alura.searchdrink.modelo.Bebida;
 public class PerfilActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-//    private BebidaAdapterTeste adapterTeste;
-
-//    private RecyclerView bebidasRecicler;
-
-//    private DatabaseReference bebidasReference;
-
-
     private ListView campoListaBebidas;
     private TextView campoBemVindo;
     private ImageView campoFotoPerfil;
     private TextView campoNomeBar;
     private TextView campoEmailBar;
 //    private ProgressBar progressBar;
-
-//    private DatabaseReference database;
 
     private DatabaseReference dbBar;
     private DatabaseReference dbFiltroBebidas;
@@ -117,6 +108,7 @@ public class PerfilActivity extends BaseActivity
 //        bebidasReference = FirebaseDatabase.getInstance().getReference()
 //                .child("bares").child(uId).child("bebidas");
 
+
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         File directory = cw.getDir("profile", Context.MODE_PRIVATE);
         if (!directory.exists()) {
@@ -154,6 +146,7 @@ public class PerfilActivity extends BaseActivity
             @Override
             public void onClick(View view) {
                 cadastraNovaBebida(view);
+                showProgressDialog();
                 carregaListaBebidas();
             }
         });
@@ -170,9 +163,6 @@ public class PerfilActivity extends BaseActivity
         bebidas = new ArrayList<>();
         bebidasAdapter = new BebidasAdapter(this, bebidas);
         campoListaBebidas.setAdapter(bebidasAdapter);
-//        adapterTeste = new BebidaAdapterTeste(this, bebidasReference);
-//        bebidasRecicler.setAdapter(adapterTeste);
-
     }
 
     @Override
@@ -181,36 +171,11 @@ public class PerfilActivity extends BaseActivity
 
         showProgressDialog();
 
-        dbBar.addListenerForSingleValueEvent(new ValueEventListener() {
-//        database.child("bares").child(uId).child("perfil").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, String> mapBar = (Map)dataSnapshot.getValue();
-                String nomeBar = mapBar.get("nome");
-                String emailBar = mapBar.get("email");
-                campoBemVindo.setText("Bem vindo(a) " + nomeBar + "!");
-                campoNomeBar.setText(nomeBar);
-                campoEmailBar.setText(emailBar);
-
-//                Toast.makeText(PerfilActivity.this, nomeBar + " " + emailBar, Toast.LENGTH_LONG).show();
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        carregaBar();
-
-        carregaListaBebidas();
-
-        carregaFotoPerfil();
+        iniciaPerfil();
 
         //        Picasso.with(this).load(bar.getCaminhoFoto()).into(campoFotoPerfil);
 
-        hideProgressDialog();
+
     }
 
     @Override
@@ -322,6 +287,10 @@ public class PerfilActivity extends BaseActivity
                 String telefone = String.valueOf(mapBar.get("telefone"));
                 String uriFotoPerfil = String.valueOf(mapBar.get("uriFotoPerfil"));
 
+                campoBemVindo.setText("Bem vindo(a) " + nome + "!");
+                campoNomeBar.setText(nome);
+                campoEmailBar.setText(email);
+
                 bar = new Bar(nome, email, endereco, site, telefone, Uri.parse(uriFotoPerfil));
             }
 
@@ -352,6 +321,8 @@ public class PerfilActivity extends BaseActivity
                 }
 //                Toast.makeText(PerfilActivity.this, bebidas.get(0).getIdFirebase(), Toast.LENGTH_LONG).show();
                 bebidasAdapter.notifyDataSetChanged();
+
+                hideProgressDialog();
             }
 
             @Override
@@ -368,8 +339,11 @@ public class PerfilActivity extends BaseActivity
 
         final Spinner dialogNome = (Spinner) dialog.findViewById(R.id.dialog_spinner_bebida_nome);
 
+        showProgressDialog();
+
         Map<String, List<String>> mapNomesBebidas = new HashMap<>();
         final List<String> b = new ArrayList<>();
+
         dbFiltroBebidas.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -379,29 +353,19 @@ public class PerfilActivity extends BaseActivity
 
                     Log.i("teste", snapshot.getKey());
 
-                    if(snapshot.getKey().equals("bebidas geladas") || snapshot.getKey().equals("bebidas quentes")){
+                    for(DataSnapshot snapshot1 : snapshot.getChildren()) {
 
-                        for(DataSnapshot snapshot1 : snapshot.getChildren()){
-                            for(DataSnapshot snapshot2 : snapshot1.getChildren()){
-                                Map<String, Object> m = (HashMap<String, Object>) snapshot2.getValue();
-                                String marca = String.valueOf(snapshot1.getKey() + ": " + m.get("marca"));
-                                b.add(marca);
-                            }
-                        }
-                    }
-                    else{
-
-                        for(DataSnapshot snapshot1 : snapshot.getChildren()){
-                            Map<String, Object> m = (HashMap<String, Object>) snapshot1.getValue();
-
-                            if (snapshot.getKey().equals("drinks") || snapshot.getKey().equals("sucos")){
-                                String nome = String.valueOf(snapshot.getKey() + ": " + m.get("nome"));
+                        if (snapshot.getKey().equals("bebidas geladas") || snapshot.getKey().equals("bebidas quentes")) {
+                            for (DataSnapshot snapshot2 : snapshot1.getChildren()) {
+                                Map<String, Object> map = (HashMap<String, Object>) snapshot2.getValue();
+                                String nome = String.valueOf(snapshot1.getKey() + ": " + map.get("nome"));
                                 b.add(nome);
                             }
-                            else {
-                                String marca = String.valueOf(snapshot.getKey() + ": " + m.get("marca"));
-                                b.add(marca);
-                            }
+
+                        } else {
+                            Map<String, Object> map = (HashMap<String, Object>) snapshot1.getValue();
+                            String nome = String.valueOf(snapshot.getKey() + ": " + map.get("nome"));
+                            b.add(nome);
                         }
                     }
                 }
@@ -410,6 +374,8 @@ public class PerfilActivity extends BaseActivity
                         android.R.layout.simple_spinner_item, b);
                 spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 dialogNome.setAdapter(spinnerAdapter);
+
+                hideProgressDialog();
             }
 
             @Override
@@ -427,7 +393,7 @@ public class PerfilActivity extends BaseActivity
         dialogSalvar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String nome = String.valueOf(dialogNome.getSelectedItem());
+                String nome = String.valueOf(dialogNome.getSelectedItem()).split(": ")[1];
                 String quantidade = String.valueOf(dialogQuantidade.getSelectedItem());
                 double preco = Double.parseDouble(dialogPreco.getText().toString());
 //                Bebida bebida = new Bebida(nome, preco);
@@ -626,6 +592,13 @@ public class PerfilActivity extends BaseActivity
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    private void iniciaPerfil() {
+        carregaBar();
+        carregaListaBebidas();
+        carregaFotoPerfil();
     }
 
 }

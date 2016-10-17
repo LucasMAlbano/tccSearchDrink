@@ -20,8 +20,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import br.com.alura.searchdrink.R;
 import br.com.alura.searchdrink.modelo.Bar;
@@ -29,16 +27,14 @@ import br.com.alura.searchdrink.modelo.Bar;
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String TAG = "login";
+    private static String OBRIGATORIO = "Obrigatório.";
 
     private FirebaseAuth auth;
     private DatabaseReference database;
-//    private FirebaseStorage storage;
-//    private FirebaseAuth.AuthStateListener authListener;
 
     private EditText campoEmail;
     private EditText campoSenha;
     private TextView campoStatus;
-    private static String OBRIGATORIO = "Obrigatório.";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,18 +80,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     protected void onStart() {
         super.onStart();
 
-//        auth.addAuthStateListener(authListener);
-
         if (auth.getCurrentUser() != null) {
             onAuthSuccess();
         }
     }
 
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//        auth.removeAuthStateListener(authListener);
-//    }
 
     private void entraConta() {
         Log.d(TAG, "login");
@@ -209,14 +198,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         Bar usuario = new Bar(usernameFromEmail(user.getEmail()), user.getEmail());
 
         database.child("bares").child(user.getUid()).setValue(usuario);
-
-//        FirebaseStorage storage = FirebaseStorage.getInstance();
-//        StorageReference storageRef = storage.getReferenceFromUrl("gs://wazebar.appspot.com");
-//        storageRef.child(user.getUid());
-
-
-//        database.child("bares").child(user.getUid()).setValue(usuario.getEmail());
-//        database.child("bares").child(user.getUid()).child("perfil").child("nome").setValue(usuario.getNome());
     }
 
     @Override

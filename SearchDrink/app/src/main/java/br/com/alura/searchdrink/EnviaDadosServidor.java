@@ -36,13 +36,14 @@ public class EnviaDadosServidor extends AsyncTask<Void, Void, String> {
 
         WebClient webClient = new WebClient();
         AlunoConverter converter = new AlunoConverter();
-        BarDAO dao = new BarDAO(context);
-        List<Bar> bars = dao.buscaAlunos();
+//        BarDAO dao = new BarDAO(context);
+//        List<Bar> bars = dao.buscaAlunos();
 //        dao.close();
-        String json = converter.toJson(bars);
-        String resposta = webClient.post(json);
+//        String json = converter.toJson(bars);
+//        String resposta = webClient.post(json);
 
-        return resposta;
+//        return resposta;
+        return "";
     }
 
     @Override

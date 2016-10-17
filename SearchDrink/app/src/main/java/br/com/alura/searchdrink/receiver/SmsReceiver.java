@@ -29,14 +29,14 @@ public class SmsReceiver extends BroadcastReceiver {
         }
         String telefone = message.getOriginatingAddress();
 
-        BarDAO dao = new BarDAO(context);
+//        BarDAO dao = new BarDAO(context);
 
-        if(dao.ehBar(telefone)) {
+//        if(dao.ehBar(telefone)) {
             Toast.makeText(context, "SMS recebido!", Toast.LENGTH_SHORT).show();
 
             MediaPlayer mp = MediaPlayer.create(context, R.raw.msg);
             mp.start();
-        }
+//        }
 
 //        dao.close();
     }

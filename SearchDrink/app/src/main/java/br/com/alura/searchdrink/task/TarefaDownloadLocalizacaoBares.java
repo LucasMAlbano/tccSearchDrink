@@ -36,12 +36,12 @@ public class TarefaDownloadLocalizacaoBares extends AsyncTask<DatabaseReference,
 
     private final Context context;
 
-    private final List<Bar> estabelecimentos;
+    private List<Bar> estabelecimentos;
 
     private ProgressDialog progresso;
 
-    public TarefaDownloadLocalizacaoBares(Context context, List<Bar> bares){
-        this.estabelecimentos = bares;
+    public TarefaDownloadLocalizacaoBares(Context context/*, List<Bar> bares*/){
+//        this.estabelecimentos = bares;
         this.context = context;
     }
 
@@ -56,6 +56,7 @@ public class TarefaDownloadLocalizacaoBares extends AsyncTask<DatabaseReference,
     protected List<Bar> doInBackground(DatabaseReference... dbs) {
         Log.i("AsyncTask", "doInbackground: " + Thread.currentThread().getName());
 
+        estabelecimentos = new ArrayList<>();
 
         ValueEventListener postListener = pegaEstabelecimentos();
         dbs[0].addValueEventListener(postListener);
@@ -73,7 +74,7 @@ public class TarefaDownloadLocalizacaoBares extends AsyncTask<DatabaseReference,
     @Override
     protected void onPostExecute(List<Bar> bares) {
 
-//        Toast.makeText(context, "tamanho da lista: " + bares.size(), Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "tamanho da lista: " + bares.size(), Toast.LENGTH_LONG).show();
 
         if (bares.size() != 0) {
             //adiciona local do bar
@@ -154,6 +155,10 @@ public class TarefaDownloadLocalizacaoBares extends AsyncTask<DatabaseReference,
                 // ...
             }
         };
+    }
+
+    public List<Bar> getEstabelecimentos(){
+        return this.estabelecimentos;
     }
 }
 

@@ -12,18 +12,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import br.com.alura.searchdrink.R;
 
-public class CustomExpandableListAdapterSearch extends BaseExpandableListAdapter {
+public class ListaExpansivaBebidasAdapter extends BaseExpandableListAdapter {
 
     private Context context;
     private List<String> expandableListTitle;
     private HashMap<String, List<String>> expandableListDetail;
 
-    public CustomExpandableListAdapterSearch(Context context, List<String> expandableListTitle,
-                                             HashMap<String, List<String>> expandableListDetail) {
+    public ListaExpansivaBebidasAdapter(Context context, List<String> expandableListTitle,
+                                        HashMap<String, List<String>> expandableListDetail) {
         this.context = context;
         this.expandableListTitle = expandableListTitle;
         this.expandableListDetail = expandableListDetail;
@@ -47,10 +48,12 @@ public class CustomExpandableListAdapterSearch extends BaseExpandableListAdapter
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = layoutInflater.inflate(R.layout.list_item_search, null);
+            convertView = layoutInflater.inflate(R.layout.list_item_filtro, null);
         }
-        TextView expandedListTextView = (TextView) convertView
-                .findViewById(R.id.expandedListItemSearch);
+
+//        TextView expandedListTextView = (TextView) convertView
+//                .findViewById(R.id.expandedListItemSearch);
+        CheckBox expandedListTextView = (CheckBox) convertView.findViewById(R.id.expandedListItemSearch);
         expandedListTextView.setText(expandedListText);
         return convertView;
     }
@@ -77,16 +80,16 @@ public class CustomExpandableListAdapterSearch extends BaseExpandableListAdapter
     }
 
     @Override
-    public View getGroupView(int listPosition, boolean isExpanded,
-                             View convertView, ViewGroup parent) {
+    public View getGroupView(int listPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+
         String listTitle = (String) getGroup(listPosition);
+
         if (convertView == null) {
-            LayoutInflater layoutInflater = (LayoutInflater) this.context.
-                    getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.list_group_search, null);
         }
-        TextView listTitleTextView = (TextView) convertView
-                .findViewById(R.id.listTitleSearch);
+
+        TextView listTitleTextView = (TextView) convertView.findViewById(R.id.listTitleSearch);
         listTitleTextView.setTypeface(null, Typeface.BOLD);
         listTitleTextView.setText(listTitle);
         return convertView;

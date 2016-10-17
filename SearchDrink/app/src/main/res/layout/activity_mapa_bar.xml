@@ -88,17 +88,17 @@
             android:id="@+id/floating_pesquisar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_pesquisar"
+            android:src="@mipmap/ic_listar"
             app:fab_colorNormal="#000"
             app:fab_size="mini" />
 
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/floating_listar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/ic_listar"
-            app:fab_colorNormal="#892080"
-            app:fab_size="mini" />
+        <!--<com.github.clans.fab.FloatingActionButton-->
+            <!--android:id="@+id/floating_listar"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:src="@mipmap/ic_listar"-->
+            <!--app:fab_colorNormal="#892080"-->
+            <!--app:fab_size="mini" />-->
 
             <!--<com.github.clans.fab.FloatingActionButton-->
                 <!--android:id="@+id/floating_google_plus"-->

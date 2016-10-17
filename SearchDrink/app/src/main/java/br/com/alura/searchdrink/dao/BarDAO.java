@@ -2,16 +2,34 @@ package br.com.alura.searchdrink.dao;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import br.com.alura.searchdrink.FormularioHelper;
+import br.com.alura.searchdrink.activity.FormularioActivity;
 import br.com.alura.searchdrink.modelo.Bar;
 
 /**
@@ -19,6 +37,121 @@ import br.com.alura.searchdrink.modelo.Bar;
  */
 public class BarDAO {
 
+    private final Context context;
+
+    private DatabaseReference dbBar;
+    private StorageReference storageReference;
+
+    public BarDAO(Context context, String uId){
+
+        this.context = context;
+
+        dbBar = FirebaseDatabase.getInstance().getReference().child("bares").child(uId);
+        storageReference = FirebaseStorage.getInstance().getReference().child(uId);
+    }
+
+
+    public void cadastraBar(final Bar bar) {
+        dbBar.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> valoresBar = bar.toMap();
+                Map<String, Object> childUpdates = new HashMap<>();
+//        childUpdates.put("bares/" + uId + "/perfil/", valoresBar);
+//        childUpdates.put("bares/" + uId, valoresBar);
+                dbBar.updateChildren(valoresBar);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void pegaBarEPreencheFormulario(final FormularioHelper helper){
+
+        final Bar[] bar = {null};
+
+        dbBar.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Map <String, String> mapBar = (Map)dataSnapshot.getValue();
+                String nome = mapBar.get("nome");
+                String endereco = mapBar.get("endereco");
+                String telefone = mapBar.get("telefone");
+                String site = mapBar.get("site");
+                String email = mapBar.get("email");
+                String tipoBar = mapBar.get("tipoBar");
+
+                bar[0] = new Bar(nome, endereco, telefone, site, email, tipoBar);
+
+                helper.preencheFormulario(bar[0]);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+//        return bar[0];
+//        return helper[0];
+    }
+
+    public void uploadFotoPerfilFirebase(Uri uriFoto) {
+        if(uriFoto != null) {
+
+            StorageReference riversRef = storageReference.child(uriFoto.getLastPathSegment());
+            UploadTask uploadTask = storageReference.child("perfil").putFile(uriFoto);
+
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                    Toast.makeText(context, "Falha ao fazer upload de foto", Toast.LENGTH_LONG).show();
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    dbBar.child("uriFotoPerfil").setValue(downloadUrl);
+                    Toast.makeText(context, "Sucesso ao fazer upload de foto", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    }
+
+    public Bitmap downloadFotoPerfilFirebase(){
+
+        final Bitmap[] bitmap = new Bitmap[1];
+
+        try {
+            final File localFile = File.createTempFile("images", "jpg");
+            storageReference.child("perfil").getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+
+                    bitmap[0] = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                    bitmap[0] = Bitmap.createScaledBitmap(bitmap[0], 200, 200, true);
+
+//                    Toast.makeText(PerfilActivity.this, "Sucesso ao fazer download de foto perfil" + bitmap == null ? "null":"nao nulo", Toast.LENGTH_LONG).show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(context, "Falha ao fazer download de foto perfil", Toast.LENGTH_LONG).show();
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return  bitmap[0];
+    }
 
 
     @NonNull

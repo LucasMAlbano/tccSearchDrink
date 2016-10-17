@@ -1,6 +1,8 @@
 package br.com.alura.searchdrink;
 
 import android.content.ContentResolver;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -8,6 +10,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -25,6 +28,7 @@ import java.io.IOException;
 import java.util.List;
 
 import br.com.alura.searchdrink.activity.FormularioActivity;
+import br.com.alura.searchdrink.dao.BarDAO;
 import br.com.alura.searchdrink.modelo.Bar;
 
 /**
@@ -39,6 +43,9 @@ public class FormularioHelper {
     private final ImageView campoFoto;
 
     private final FormularioActivity activity;
+    private final String uId;
+
+    private final File mypath;
 
     private Bar bar;
     private List<String> tiposBar;
@@ -49,12 +56,11 @@ public class FormularioHelper {
 
     private ArrayAdapter<String> spinnerAdapter;
 
-    public FormularioHelper(final FormularioActivity activity, List<String> tiposBar) {
+    public FormularioHelper(final FormularioActivity activity, List<String> tiposBar, String uId) {
 
         this.activity = activity;
-
         this.tiposBar = tiposBar;
-
+        this.uId = uId;
         this.bar = new Bar();
 
         this.campoNome = (EditText) activity.findViewById(R.id.formulario_nome);
@@ -64,6 +70,13 @@ public class FormularioHelper {
         this.campoFoto = (ImageView) activity.findViewById(R.id.formulario_foto);
 
         addItensEmSpinnerBares();
+
+        ContextWrapper cw = new ContextWrapper(activity.getApplicationContext());
+        File directory = cw.getDir("profile", Context.MODE_PRIVATE);
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+        mypath = new File(directory, "perfil" + uId + ".jpg");
     }
 
     // add items into spinner dynamically
@@ -93,7 +106,7 @@ public class FormularioHelper {
         return bar;
     }
 
-    public void preencheFormulario(final Bar bar, File mypath) {
+    public void preencheFormulario(final Bar bar) {
 
         this.bar = bar;
         campoNome.setText(bar.getNome());
@@ -113,7 +126,7 @@ public class FormularioHelper {
     }
 
 
-    public void carregaFoto(Uri uri, ContentResolver contentResolver, StorageReference storageRef) {
+    public void carregaFoto(Uri uri, ContentResolver contentResolver/*, StorageReference storageRef*/) {
 
         if(uri != null) {
 
@@ -132,31 +145,43 @@ public class FormularioHelper {
 
         else{
 
+            Bitmap bitmap = new BarDAO(activity, uId).downloadFotoPerfilFirebase();
+
+            File localFile = null;
             try {
-                final File localFile = File.createTempFile("images", "jpg");
-                storageRef.child("perfil").getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-
-                        Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                        bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
-
-                        campoFoto.setImageBitmap(bitmap);
-                        campoFoto.setScaleType(ImageView.ScaleType.FIT_XY);
-                        campoFoto.setTag(Uri.parse(localFile.getPath()));
-
-//                    Toast.makeText(PerfilActivity.this, "Sucesso ao fazer download de foto perfil" + bitmap == null ? "null":"nao nulo", Toast.LENGTH_LONG).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(activity, "Falha ao fazer download de foto perfil", Toast.LENGTH_LONG).show();
-                    }
-                });
-
+                localFile = File.createTempFile("images", "jpg");
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            campoFoto.setImageBitmap(bitmap);
+            campoFoto.setScaleType(ImageView.ScaleType.FIT_XY);
+            campoFoto.setTag(Uri.parse(localFile.getPath()));
+
+//            try {
+//                final File localFile = File.createTempFile("images", "jpg");
+//                storageRef.child("perfil").getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+//                    @Override
+//                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+//
+//                        Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+//                        bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+//
+//                        campoFoto.setImageBitmap(bitmap);
+//                        campoFoto.setScaleType(ImageView.ScaleType.FIT_XY);
+//                        campoFoto.setTag(Uri.parse(localFile.getPath()));
+//
+////                    Toast.makeText(PerfilActivity.this, "Sucesso ao fazer download de foto perfil" + bitmap == null ? "null":"nao nulo", Toast.LENGTH_LONG).show();
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Toast.makeText(activity, "Falha ao fazer download de foto perfil", Toast.LENGTH_LONG).show();
+//                    }
+//                });
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
         }
 
 //        Picasso.with(activity).load(uri).into(campoFoto);

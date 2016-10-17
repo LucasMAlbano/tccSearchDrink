@@ -131,8 +131,8 @@ public class ListaAlunosActivity extends AppCompatActivity {
         itemDeletar.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                BarDAO dao = new BarDAO(ListaAlunosActivity.this);
-                dao.deleta(bar);
+//                BarDAO dao = new BarDAO(ListaAlunosActivity.this);
+//                dao.deleta(bar);
 //                dao.close();
 
                 Toast.makeText(ListaAlunosActivity.this, bar.getNome() + "removido(a)", Toast.LENGTH_SHORT).show();
@@ -179,8 +179,8 @@ public class ListaAlunosActivity extends AppCompatActivity {
 
     private void carregaLista() {
         //        String[] bars = {"Daniel", "Ronaldo", "Jeferson", "Felipe"};
-        BarDAO dao = new BarDAO(this);
-        List<Bar> bars = dao.buscaAlunos();
+//        BarDAO dao = new BarDAO(this);
+//        List<Bar> bars = dao.buscaAlunos();
 //        dao.close();
 
 //        BebidasAdapter adapter = new BebidasAdapter(this, bars);

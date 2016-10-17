@@ -22,6 +22,8 @@ import com.github.clans.fab.FloatingActionButton;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.Serializable;
+
 import br.com.alura.searchdrink.Localizador;
 import br.com.alura.searchdrink.fragment.MapaFragment;
 import br.com.alura.searchdrink.R;
@@ -34,13 +36,10 @@ public class MapaBarActivity extends BaseActivity {
     private static final int REQUEST_PERMISSOES = 1;
     private MapaFragment mapaFragment;
 
-    DatabaseReference database;
-
-
-//    private Button botaoMenu;
+//    DatabaseReference database;
 
     FloatingActionMenu botaoMenu;
-    FloatingActionButton floatingLogin, floatingPesquisar, floatingListar;
+    FloatingActionButton floatingLogin, floatingPesquisar/*, floatingListar*/;
     ImageButton centralizar;
 
     @Override
@@ -51,16 +50,7 @@ public class MapaBarActivity extends BaseActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_mapa_bar);
 
-        database = FirebaseDatabase.getInstance().getReference().child("bares");
-
-//        botaoMenu = (Button) findViewById(R.id.botao_mapa);
-//        botaoMenu.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent vaiParaLogin = new Intent(MapaBarActivity.this, LoginActivity.class);
-//                startActivity(vaiParaLogin);
-//            }
-//        });
+//        database = FirebaseDatabase.getInstance().getReference().child("bares");
 
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction tx = manager.beginTransaction();
@@ -84,7 +74,7 @@ public class MapaBarActivity extends BaseActivity {
         botaoMenu = (FloatingActionMenu) findViewById(R.id.button_menu);
         floatingLogin = (FloatingActionButton) findViewById(R.id.floating_login);
         floatingPesquisar = (FloatingActionButton) findViewById(R.id.floating_pesquisar);
-        floatingListar = (FloatingActionButton) findViewById(R.id.floating_listar);
+//        floatingListar = (FloatingActionButton) findViewById(R.id.floating_listar);
 
         floatingLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -95,39 +85,16 @@ public class MapaBarActivity extends BaseActivity {
         });
         floatingPesquisar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent vaiParaPesquisa = new Intent(MapaBarActivity.this, SearchActivity.class);
-                startActivity(vaiParaPesquisa);
+                Intent vaiParaLista = new Intent(MapaBarActivity.this, ListaBaresActivity.class);
+                vaiParaLista.putExtra("lista", (Serializable) mapaFragment.getEstabelecimentos());
+                startActivity(vaiParaLista);
             }
         });
-        floatingListar.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-
-            }
-        });
-
-
-//        final View actionB = findViewById(R.id.action_b);
-//
-//        FloatingActionButton actionC = new FloatingActionButton(getBaseContext());
-//        actionC.setTitle("Hide/Show Action above");
-//        actionC.setOnClickListener(new View.OnClickListener() {
-//            @Override
+//        floatingListar.setOnClickListener(new View.OnClickListener() {
 //            public void onClick(View v) {
-//                actionB.setVisibility(actionB.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+//
 //            }
 //        });
-//
-//        final FloatingActionsMenu menuMultipleActions = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
-//        menuMultipleActions.addButton(actionC);
-//
-//        final FloatingActionButton actionA = (FloatingActionButton) findViewById(R.id.action_a);
-//        actionA.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                actionA.setTitle("Action A clicked");
-//            }
-//        });
-
     }
 
     @Override
@@ -142,31 +109,4 @@ public class MapaBarActivity extends BaseActivity {
             }
         }
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//
-//        MenuInflater menuInflater = getMenuInflater();
-//
-//        menuInflater.inflate(R.menu.menu_mapa, menu);
-//
-//        return super.onCreateOptionsMenu(menu);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//
-//        switch (item.getItemId()) {
-//            case R.id.menu_login:
-//
-//                Intent vaiParaLogin = new Intent(this, LoginActivity.class);
-//                startActivity(vaiParaLogin);
-//
-//                break;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-
-
 }

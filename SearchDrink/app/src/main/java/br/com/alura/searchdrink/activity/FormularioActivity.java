@@ -35,6 +35,8 @@ import java.util.Map;
 
 import br.com.alura.searchdrink.FormularioHelper;
 import br.com.alura.searchdrink.R;
+import br.com.alura.searchdrink.dao.BarDAO;
+import br.com.alura.searchdrink.dao.FiltrosDAO;
 import br.com.alura.searchdrink.modelo.Bar;
 
 public class FormularioActivity extends BaseActivity {
@@ -42,22 +44,25 @@ public class FormularioActivity extends BaseActivity {
     public static final int CODIGO_CAMERA = 567;
     public static final int CODIGO_GALERIA = 1;
 
-    private FormularioHelper helper;
+//    private FormularioHelper helper;
     private String caminhoFoto = "";
 
-    private DatabaseReference dbBar;
+//    private DatabaseReference dbBar;
     private DatabaseReference dbFiltrosBar;
 //    private DatabaseReference database;
-    private StorageReference storageReference;
+//    private StorageReference storageReference;
 
     private String uId;
     private Uri uriFoto = null;
 
-    private File mypath;
+//    private File mypath;
 
     private String tipo;
 
-    private List<String> tiposBares;
+//    private List<String> tiposBares;
+
+    private BarDAO barDAO;
+    private FiltrosDAO filtrosDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,36 +77,34 @@ public class FormularioActivity extends BaseActivity {
 
         uId = getUid();
 
-        dbBar = FirebaseDatabase.getInstance().getReference().child("bares").child(uId);
-        dbFiltrosBar = FirebaseDatabase.getInstance().getReference().child("filtros").child("tipoBar");
+        barDAO = new BarDAO(this, uId);
 
-        storageReference = FirebaseStorage.getInstance().getReference().child(uId);
+        filtrosDAO = new FiltrosDAO(this, uId);
 
-        tiposBares = new ArrayList<String>();
+        Log.i("AsyncTask", "doInbackground 1: " + Thread.currentThread().getName());
+        filtrosDAO.inicializaFormularioHelper(this, barDAO);
+        Log.i("AsyncTask", "doInbackground 8: " + Thread.currentThread().getName());
+//        Bar bar = barDAO.pegaBar();
+//        helper.preencheFormulario(bar);
+        Log.i("AsyncTask", "doInbackground 9: " + Thread.currentThread().getName());
 
-
-        ValueEventListener listenerTiposBares = pegaTiposBares();
-        dbFiltrosBar.addListenerForSingleValueEvent(listenerTiposBares);
-//        synchronized (tiposBares){
-//            try {
-//                tiposBares.wait();
-//            } catch (InterruptedException e) {e.printStackTrace();}
-//        }
+//        dbBar = FirebaseDatabase.getInstance().getReference().child("bares").child(uId);
+//        dbFiltrosBar = FirebaseDatabase.getInstance().getReference().child("filtros").child("tipoBar");
 
 //        storageReference = FirebaseStorage.getInstance().getReference().child(uId);
-//
-//        this.helper = new FormularioHelper(this, tiposBares);
 
-        ContextWrapper cw = new ContextWrapper(getApplicationContext());
-        File directory = cw.getDir("profile", Context.MODE_PRIVATE);
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
-        mypath = new File(directory, "perfil" + uId + ".jpg");
+//        tiposBares = new ArrayList<String>();
 
 
-//        ValueEventListener listenerPreenche = preencheFormulario();
-//        dbBar.addListenerForSingleValueEvent(listenerPreenche);
+//        ValueEventListener listenerTiposBares = pegaTiposBares();
+//        dbFiltrosBar.addListenerForSingleValueEvent(listenerTiposBares);
+
+//        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+//        File directory = cw.getDir("profile", Context.MODE_PRIVATE);
+//        if (!directory.exists()) {
+//            directory.mkdir();
+//        }
+//        mypath = new File(directory, "perfil" + uId + ".jpg");
 
 
         Button botaoFoto = (Button)findViewById(R.id.formulario_botao_foto);
@@ -127,7 +130,7 @@ public class FormularioActivity extends BaseActivity {
 
             uriFoto = data.getData();
 
-            helper.carregaFoto(uriFoto, getContentResolver(), storageReference);
+            filtrosDAO.getHelper().carregaFoto(uriFoto, getContentResolver()/*, storageReference*/);
 
         }
     }
@@ -147,23 +150,25 @@ public class FormularioActivity extends BaseActivity {
 
         switch (item.getItemId()){
             case R.id.menu_formulario_ok:
-                final Bar bar = helper.pegaBar();
+                Log.i("helper", filtrosDAO.getHelper() == null? "sim" : "nao");
+                final Bar bar = filtrosDAO.getHelper().pegaBar();
 
                 if (bar != null) {
 
-                    dbBar.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            enviaCadastroFirebase(bar);
-                        }
+//                    dbBar.addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(DataSnapshot dataSnapshot) {
+//                            enviaCadastroFirebase(bar);
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(DatabaseError databaseError) {
+//
+//                        }
+//                    });
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-
-                    uploadFotoPerfilFirebase();
+                    barDAO.uploadFotoPerfilFirebase(uriFoto);
+//                    uploadFotoPerfilFirebase();
 
                     if (tipo != null && tipo.equals("cadastro")) {
                         Intent vaiParaPerfil = new Intent(FormularioActivity.this, PerfilActivity.class);
@@ -180,100 +185,90 @@ public class FormularioActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void enviaCadastroFirebase(Bar bar) {
-
-        Map<String, Object> valoresBar = bar.toMap();
 
 
-        Map<String, Object> childUpdates = new HashMap<>();
-//        childUpdates.put("bares/" + uId + "/perfil/", valoresBar);
-//        childUpdates.put("bares/" + uId, valoresBar);
-
-        dbBar.updateChildren(valoresBar);
-    }
-
-    private void uploadFotoPerfilFirebase() {
-        if(uriFoto != null) {
-
-            StorageReference riversRef = storageReference.child(uriFoto.getLastPathSegment());
-            UploadTask uploadTask = storageReference.child("perfil").putFile(uriFoto);
-
-            uploadTask.addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle unsuccessful uploads
-                    Toast.makeText(FormularioActivity.this, "Falha ao fazer upload de foto", Toast.LENGTH_LONG).show();
-                }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                    dbBar.child("uriFotoPerfil").setValue(downloadUrl);
-                    Toast.makeText(FormularioActivity.this, "Sucesso ao fazer upload de foto", Toast.LENGTH_LONG).show();
-                }
-            });
-        }
-    }
-
-    @NonNull
-    private ValueEventListener pegaTiposBares() {
-        return new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.i("AsyncTask", "doInbackground 2: " + Thread.currentThread().getName());
-
-//                synchronized (tiposBares) {
-
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        Map<String, Object> map = (HashMap<String, Object>) snapshot.getValue();
-                        String tipo = String.valueOf(map.get("nome"));
-                        tiposBares.add(tipo);
-                    }
-
-                tiposBares.add(0, "selecione uma opção");
-
-//                    tiposBares.notifyAll();
-
+//    private void uploadFotoPerfilFirebase() {
+//        if(uriFoto != null) {
+//
+//            StorageReference riversRef = storageReference.child(uriFoto.getLastPathSegment());
+//            UploadTask uploadTask = storageReference.child("perfil").putFile(uriFoto);
+//
+//            uploadTask.addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception exception) {
+//                    // Handle unsuccessful uploads
+//                    Toast.makeText(FormularioActivity.this, "Falha ao fazer upload de foto", Toast.LENGTH_LONG).show();
 //                }
+//            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                @Override
+//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+//                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+//                    dbBar.child("uriFotoPerfil").setValue(downloadUrl);
+//                    Toast.makeText(FormularioActivity.this, "Sucesso ao fazer upload de foto", Toast.LENGTH_LONG).show();
+//                }
+//            });
+//        }
+//    }
 
-                FormularioActivity.this.helper = new FormularioHelper(FormularioActivity.this, tiposBares);
+//    @NonNull
+//    private ValueEventListener pegaTiposBares() {
+//        return new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                Log.i("AsyncTask", "doInbackground 2: " + Thread.currentThread().getName());
+//
+////                synchronized (tiposBares) {
+//
+//                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                        Map<String, Object> map = (HashMap<String, Object>) snapshot.getValue();
+//                        String tipo = String.valueOf(map.get("nome"));
+//                        tiposBares.add(tipo);
+//                    }
+//
+//                tiposBares.add(0, "selecione uma opção");
+//
+////                    tiposBares.notifyAll();
+//
+////                }
+//
+//                FormularioActivity.this.helper = new FormularioHelper(FormularioActivity.this, tiposBares);
+//
+//                ValueEventListener listenerPreenche = preencheFormulario();
+//                dbBar.addListenerForSingleValueEvent(listenerPreenche);
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                // Getting Post failed, log a message
+//                Log.w("AsyncTask", "loadPost:onCancelled", databaseError.toException());
+//                // ...
+//            }
+//        };
+//    }
 
-                ValueEventListener listenerPreenche = preencheFormulario();
-                dbBar.addListenerForSingleValueEvent(listenerPreenche);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
-                Log.w("AsyncTask", "loadPost:onCancelled", databaseError.toException());
-                // ...
-            }
-        };
-    }
-
-    private ValueEventListener preencheFormulario() {
-        return new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Map <String, String> mapBar = (Map)dataSnapshot.getValue();
-                String nome = mapBar.get("nome");
-                String endereco = mapBar.get("endereco");
-                String telefone = mapBar.get("telefone");
-                String site = mapBar.get("site");
-                String email = mapBar.get("email");
-                String tipoBar = mapBar.get("tipoBar");
-
-
-                Bar bar = new Bar(nome, endereco, telefone, site, email, tipoBar);
-
-                helper.preencheFormulario(bar, mypath);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-    }
+//    private ValueEventListener preencheFormulario() {
+//        return new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                Map <String, String> mapBar = (Map)dataSnapshot.getValue();
+//                String nome = mapBar.get("nome");
+//                String endereco = mapBar.get("endereco");
+//                String telefone = mapBar.get("telefone");
+//                String site = mapBar.get("site");
+//                String email = mapBar.get("email");
+//                String tipoBar = mapBar.get("tipoBar");
+//
+//
+//                Bar bar = new Bar(nome, endereco, telefone, site, email, tipoBar);
+//
+//                helper.preencheFormulario(bar, mypath);
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        };
+//    }
 }
