@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
@@ -22,7 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.alura.searchdrink.R;
-import br.com.alura.searchdrink.adapter.ListaExpansivaBebidasAdapter;
+import br.com.alura.searchdrink.adapter.ListaExpansivaFiltrosAdapter;
+import br.com.alura.searchdrink.adapter.ListaExpansivaFiltrosAdapterTeste;
 import br.com.alura.searchdrink.modelo.Bar;
 
 public class ListaBaresActivity extends BaseActivity {
@@ -32,8 +34,8 @@ public class ListaBaresActivity extends BaseActivity {
     private Button buscaLista;
     private Button buscaFiltros;
 
-    private ExpandableListAdapter listaBebidasAdapter;
-    private List<String> listaFiltrosTitulos;
+    private ListaExpansivaFiltrosAdapterTeste listaFiltrosAdapter;
+    private ArrayList<String> listaFiltrosTitulos;
 
     private DatabaseReference dbFiltrosBar;
     private DatabaseReference dbFiltroBebidas;
@@ -123,20 +125,24 @@ public class ListaBaresActivity extends BaseActivity {
                 }
 
                 listaFiltrosTitulos = new ArrayList<String>(mapaFiltros.keySet());
-                listaBebidasAdapter = new ListaExpansivaBebidasAdapter(ListaBaresActivity.this, listaFiltrosTitulos, mapaFiltros);
-                listaBebidas.setAdapter(listaBebidasAdapter);
+                listaFiltrosAdapter = new ListaExpansivaFiltrosAdapterTeste(ListaBaresActivity.this, listaFiltrosTitulos, mapaFiltros);
+                listaBebidas.setAdapter(listaFiltrosAdapter);
+
 
                 hideProgressDialog();
 
-//                listaBebidas.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-//
-//                    @Override
-//                    public void onGroupExpand(int groupPosition) {
+                listaBebidas.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+
+                    @Override
+                    public void onGroupExpand(int groupPosition) {
 //                        Toast.makeText(getApplicationContext(),
 //                                listaFiltrosTitulos.get(groupPosition) + " List Expanded.",
 //                                Toast.LENGTH_SHORT).show();
-//                    }
-//                });
+                        final HashMap<Integer, boolean[]> hash = listaFiltrosAdapter.getmChildCheckStates();
+                        final boolean[] b = hash.get(groupPosition);
+                        Toast.makeText(getApplicationContext(), (b == null? "sim" : "não"), Toast.LENGTH_SHORT).show();
+                    }
+                });
 //
 //                listaBebidas.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
 //
@@ -155,8 +161,10 @@ public class ListaBaresActivity extends BaseActivity {
                                                 int groupPosition, int childPosition, long id) {
 
                         Toast.makeText(getApplicationContext(), listaFiltrosTitulos.get(groupPosition) + " -> "
-                                        + mapaFiltros.get(listaFiltrosTitulos.get(groupPosition)).get(childPosition),
+                                + mapaFiltros.get(listaFiltrosTitulos.get(groupPosition)).get(childPosition),
                                 Toast.LENGTH_SHORT).show();
+
+//                        Toast.makeText(getApplicationContext(), mapaFiltros.get(groupPosition).get(childPosition), Toast.LENGTH_SHORT).show();
 
                         return false;
                     }
