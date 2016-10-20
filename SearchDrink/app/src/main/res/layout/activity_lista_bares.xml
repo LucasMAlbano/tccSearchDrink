@@ -12,31 +12,28 @@
         tools:context=".fragment.DetalhesProvaFragment"
         app:cardCornerRadius="8dp"
         app:cardElevation="10dp"
-        app:cardUseCompatPadding="true">
+        app:cardUseCompatPadding="true"
+        android:background="#FFF">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#FFF">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_margin="16dp"
-                android:layout_alignParentTop="true">
+            android:layout_margin="16dp">
 
 
                 <SearchView
+                    android:id="@+id/lista_bares_search"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"></SearchView>
 
                 <RelativeLayout
+                    android:id="@+id/lista_bares_botoes"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lista_bares_search">
 
                     <Button
-                        android:id="@+id/busca_botao_lista"
+                        android:id="@+id/lista_bares_botao_lista"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="30dp"
@@ -44,7 +41,7 @@
                         android:text="Lista"
                         android:textColor="#F1C332"/>
                     <Button
-                        android:id="@+id/busca_botao_filtros"
+                        android:id="@+id/lista_bares_botao_filtros"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="30dp"
@@ -53,26 +50,57 @@
                         android:text="Filtros"
                         android:textColor="#c4c4c4"/>
 
-                    <ListView
-                        android:id="@+id/busca_lista"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_below="@id/busca_botao_filtros"></ListView>
-
-                    <ExpandableListView
-                        android:id="@+id/listaFiltros"
-                        android:layout_height="match_parent"
-                        android:layout_width="match_parent"
-                        android:layout_marginTop="10dp"
-                        android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft"
-                        android:divider="@android:color/darker_gray"
-                        android:dividerHeight="0.5dp"
-                        android:visibility="gone"
-                        android:layout_below="@+id/busca_botao_filtros"/>
                 </RelativeLayout>
 
-            </LinearLayout>
+
+                <ListView
+                    android:id="@+id/lista_bares_lista"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_below="@id/lista_bares_botoes" />
+
+
+                <LinearLayout
+                    android:id="@+id/lista_bares_filtros"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_below="@+id/lista_bares_botoes"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/lista_bares_text_bar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="Por Bar:" />
+                    <ExpandableListView
+                        android:id="@+id/lista_bares_expandable_bares"
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="5dp"
+                        android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft"
+                        android:divider="@android:color/darker_gray"
+                        android:dividerHeight="0.5dp" />
+
+                    <TextView
+                        android:id="@+id/lista_bares_text_bebida"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="Por Bebida:" />
+                    <ExpandableListView
+                        android:id="@+id/lista_bares_expandable_bebidas"
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="5dp"
+                        android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft"
+                        android:divider="@android:color/darker_gray"
+                        android:dividerHeight="0.5dp" />
+
+                </LinearLayout>
+
 
         </RelativeLayout>
     </android.support.v7.widget.CardView>

@@ -153,6 +153,18 @@ public class BarDAO {
         return  bitmap[0];
     }
 
+    public void enviaCadastroFirebase(Bar bar) {
+
+        Map<String, Object> valoresBar = bar.toMap();
+
+
+        Map<String, Object> childUpdates = new HashMap<>();
+//        childUpdates.put("bares/" + uId + "/perfil/", valoresBar);
+//        childUpdates.put("bares/" + uId, valoresBar);
+
+        dbBar.updateChildren(valoresBar);
+    }
+
 
     @NonNull
     private ContentValues pegaDadosDoAluno(Bar bar) {

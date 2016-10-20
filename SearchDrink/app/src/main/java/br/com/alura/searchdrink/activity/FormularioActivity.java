@@ -1,10 +1,7 @@
 package br.com.alura.searchdrink.activity;
 
-import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -14,29 +11,12 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import br.com.alura.searchdrink.FormularioHelper;
 import br.com.alura.searchdrink.R;
 import br.com.alura.searchdrink.dao.BarDAO;
-import br.com.alura.searchdrink.dao.FiltrosDAO;
+import br.com.alura.searchdrink.dao.FormularioDAO;
 import br.com.alura.searchdrink.modelo.Bar;
 
 public class FormularioActivity extends BaseActivity {
@@ -62,7 +42,7 @@ public class FormularioActivity extends BaseActivity {
 //    private List<String> tiposBares;
 
     private BarDAO barDAO;
-    private FiltrosDAO filtrosDAO;
+    private FormularioDAO formularioDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,10 +59,10 @@ public class FormularioActivity extends BaseActivity {
 
         barDAO = new BarDAO(this, uId);
 
-        filtrosDAO = new FiltrosDAO(this, uId);
+        formularioDAO = new FormularioDAO(this, uId);
 
         Log.i("AsyncTask", "doInbackground 1: " + Thread.currentThread().getName());
-        filtrosDAO.inicializaFormularioHelper(this, barDAO);
+        formularioDAO.inicializaFormularioHelper(this, barDAO);
         Log.i("AsyncTask", "doInbackground 8: " + Thread.currentThread().getName());
 //        Bar bar = barDAO.pegaBar();
 //        helper.preencheFormulario(bar);
@@ -130,7 +110,7 @@ public class FormularioActivity extends BaseActivity {
 
             uriFoto = data.getData();
 
-            filtrosDAO.getHelper().carregaFoto(uriFoto, getContentResolver()/*, storageReference*/);
+            formularioDAO.getHelper().carregaFoto(uriFoto, getContentResolver()/*, storageReference*/);
 
         }
     }
@@ -150,8 +130,8 @@ public class FormularioActivity extends BaseActivity {
 
         switch (item.getItemId()){
             case R.id.menu_formulario_ok:
-                Log.i("helper", filtrosDAO.getHelper() == null? "sim" : "nao");
-                final Bar bar = filtrosDAO.getHelper().pegaBar();
+
+                final Bar bar = formularioDAO.getHelper().pegaBar();
 
                 if (bar != null) {
 
@@ -166,6 +146,8 @@ public class FormularioActivity extends BaseActivity {
 //
 //                        }
 //                    });
+
+                    barDAO.enviaCadastroFirebase(bar);
 
                     barDAO.uploadFotoPerfilFirebase(uriFoto);
 //                    uploadFotoPerfilFirebase();

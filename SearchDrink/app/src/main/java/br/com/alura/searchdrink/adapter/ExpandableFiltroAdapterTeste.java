@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +24,7 @@ import br.com.alura.searchdrink.R;
 
 // Eclipse wanted me to use a sparse array instead of my hashmaps, I just suppressed that suggestion
 //@SuppressLint("UseSparseArrays")
-public class ListaExpansivaFiltrosAdapterTeste extends BaseExpandableListAdapter {
+public class ExpandableFiltroAdapterTeste extends BaseExpandableListAdapter {
 
     private Context mContext;
 
@@ -32,7 +32,7 @@ public class ListaExpansivaFiltrosAdapterTeste extends BaseExpandableListAdapter
 
     private ArrayList<String> mListDataGroup;
 
-    private HashMap<Integer, boolean[]> mChildCheckStates;
+    private HashMap<Integer, boolean[]> childsEstados;
 
     private CheckBox mCheckBox;
     private TextView mGroupText;
@@ -40,14 +40,14 @@ public class ListaExpansivaFiltrosAdapterTeste extends BaseExpandableListAdapter
     private String groupText;
     private String childText;
 
-    public ListaExpansivaFiltrosAdapterTeste(Context context,
-                                          ArrayList<String> listDataGroup, HashMap<String, List<String>> listDataChild) {
+    public ExpandableFiltroAdapterTeste(Context context,
+                                        ArrayList<String> listDataGroup, HashMap<String, List<String>> listDataChild) {
 
         mContext = context;
         mListDataGroup = listDataGroup;
         mListDataChild = listDataChild;
 
-        mChildCheckStates = new HashMap<>();
+        childsEstados = new HashMap<>();
     }
 
     @Override
@@ -77,7 +77,7 @@ public class ListaExpansivaFiltrosAdapterTeste extends BaseExpandableListAdapter
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.list_group_filtro, null);
 
-            mGroupText = (TextView) convertView.findViewById(R.id.listTitleSearch);
+            mGroupText = (TextView) convertView.findViewById(R.id.list_group_filtro_title);
 
             convertView.setTag(mGroupText);
         } else {
@@ -118,7 +118,7 @@ public class ListaExpansivaFiltrosAdapterTeste extends BaseExpandableListAdapter
             LayoutInflater inflater = (LayoutInflater) this.mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.list_item_filtro, null);
 
-            mCheckBox = (CheckBox) convertView.findViewById(R.id.checkBox);
+            mCheckBox = (CheckBox) convertView.findViewById(R.id.list_item_checkbox_bebida);
 
             convertView.setTag(R.layout.list_item_filtro, mCheckBox);
 
@@ -129,9 +129,10 @@ public class ListaExpansivaFiltrosAdapterTeste extends BaseExpandableListAdapter
         mCheckBox.setText(childText);
         mCheckBox.setOnCheckedChangeListener(null);
 
-        if (mChildCheckStates.containsKey(mGroupPosition)) {
-            boolean getChecked[] = mChildCheckStates.get(mGroupPosition);
+        if (childsEstados.containsKey(mGroupPosition)) {
+            boolean getChecked[] = childsEstados.get(mGroupPosition);
             mCheckBox.setChecked(getChecked[mChildPosition]);
+            Log.i("adapter", "if  " + childsEstados.get(mGroupPosition)[mChildPosition]);
 
         } else {
             boolean getChecked[] = new boolean[getChildrenCount(mGroupPosition)];
@@ -139,7 +140,7 @@ public class ListaExpansivaFiltrosAdapterTeste extends BaseExpandableListAdapter
                 getChecked[i] = true;
                 mCheckBox.setChecked(getChecked[i]);
             }
-            mChildCheckStates.put(mGroupPosition, getChecked);
+            childsEstados.put(mGroupPosition, getChecked);
         }
 
         mCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -147,16 +148,16 @@ public class ListaExpansivaFiltrosAdapterTeste extends BaseExpandableListAdapter
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 if (isChecked) {
-
-                    boolean getChecked[] = mChildCheckStates.get(mGroupPosition);
+                    boolean getChecked[] = childsEstados.get(mGroupPosition);
                     getChecked[mChildPosition] = isChecked;
-                    mChildCheckStates.put(mGroupPosition, getChecked);
+                    childsEstados.put(mGroupPosition, getChecked);
+                    Log.i("adapter", "is - " + childsEstados.get(mGroupPosition)[mChildPosition]);
 
                 } else {
-
-                    boolean getChecked[] = mChildCheckStates.get(mGroupPosition);
+                    boolean getChecked[] = childsEstados.get(mGroupPosition);
                     getChecked[mChildPosition] = isChecked;
-                    mChildCheckStates.put(mGroupPosition, getChecked);
+                    childsEstados.put(mGroupPosition, getChecked);
+                    Log.i("adapter", "is lese - " + childsEstados.get(mGroupPosition)[mChildPosition]);
                 }
             }
         });
@@ -174,7 +175,7 @@ public class ListaExpansivaFiltrosAdapterTeste extends BaseExpandableListAdapter
         return false;
     }
 
-    public HashMap<Integer, boolean[]> getmChildCheckStates(){
-        return this.mChildCheckStates;
+    public HashMap<Integer, boolean[]> getChildsEstados(){
+        return this.childsEstados;
     }
 }

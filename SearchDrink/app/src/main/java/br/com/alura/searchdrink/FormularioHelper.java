@@ -79,7 +79,6 @@ public class FormularioHelper {
         mypath = new File(directory, "perfil" + uId + ".jpg");
     }
 
-    // add items into spinner dynamically
     public void addItensEmSpinnerBares() {
         spinnerBares = (Spinner) activity.findViewById(R.id.spinnerBares);
 

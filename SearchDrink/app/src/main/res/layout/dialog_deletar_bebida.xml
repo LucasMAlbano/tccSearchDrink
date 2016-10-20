@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="#FFF">
 
     <TextView
         android:id="@+id/dialog_bebida_nome"
@@ -34,7 +35,6 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/dialog_bebida_preco"
         android:orientation="horizontal"
-        android:background="#C4C4C4"
         android:paddingTop="4dp"
         android:layout_marginTop="10dp">
 
@@ -43,6 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textColor="#ff0000"
             android:text="Confirmar" />
 
         <Button
@@ -50,6 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textColor="#31e711"
             android:text="Cancelar" />
     </LinearLayout>
 

@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -75,7 +77,10 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
         centralizar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.shake);
+                centralizar.startAnimation(animation);
                 new Localizador(getContext(), MapaFragment.this);
+
             }
         });
 

@@ -3,14 +3,11 @@ package br.com.alura.searchdrink.dao;
 import android.content.Context;
 import android.util.Log;
 
-import com.google.android.gms.fitness.Fitness;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,13 +16,12 @@ import java.util.Map;
 
 import br.com.alura.searchdrink.FormularioHelper;
 import br.com.alura.searchdrink.activity.FormularioActivity;
-import br.com.alura.searchdrink.modelo.Bar;
 
 /**
  * Created by Birbara on 10/10/2016.
  */
 
-public class FiltrosDAO {
+public class FormularioDAO {
 
     private final Context context;
     private final String uId;
@@ -34,7 +30,7 @@ public class FiltrosDAO {
 
     DatabaseReference dbFiltrosBar = FirebaseDatabase.getInstance().getReference().child("filtros").child("tipoBar");
 
-    public FiltrosDAO(Context context, String uId){
+    public FormularioDAO(Context context, String uId){
         this.context = context;
         this.uId = uId;
     }
@@ -45,7 +41,6 @@ public class FiltrosDAO {
 
     public void inicializaFormularioHelper(final Context context, final BarDAO barDAO){
 
-        Log.i("AsyncTask", "doInbackground 2: " + Thread.currentThread().getName());
 //        final FormularioHelper[] helper = new FormularioHelper[1];
 
         final List<String> tiposBares = new ArrayList<>();
@@ -53,10 +48,8 @@ public class FiltrosDAO {
         dbFiltrosBar.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.i("AsyncTask", "doInbackground 3: " + Thread.currentThread().getName());
 
 //                synchronized (tiposBares) {
-                    Log.i("AsyncTask", "doInbackground 4: " + Thread.currentThread().getName());
 
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         Map<String, Object> map = (HashMap<String, Object>) snapshot.getValue();
@@ -68,9 +61,9 @@ public class FiltrosDAO {
 //                    tiposBares.notifyAll();
 
 //                }
-                FiltrosDAO.this.helper = new FormularioHelper((FormularioActivity) context, tiposBares, uId);
+                FormularioDAO.this.helper = new FormularioHelper((FormularioActivity) context, tiposBares, uId);
 
-                barDAO.pegaBarEPreencheFormulario(FiltrosDAO.this.helper);
+                barDAO.pegaBarEPreencheFormulario(FormularioDAO.this.helper);
 //                helper[0].preencheFormulario(bar);
 
 
@@ -82,7 +75,6 @@ public class FiltrosDAO {
             }
         });
 
-        Log.i("AsyncTask", "doInbackground 5: " + Thread.currentThread().getName());
 
 //        synchronized (tiposBares){
 //            try {

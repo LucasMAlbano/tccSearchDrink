@@ -22,6 +22,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.ScaleAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -141,10 +144,13 @@ public class PerfilActivity extends BaseActivity
         campoEmailBar = (TextView) v.findViewById(R.id.perfil_emailBar);
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        Button novaBebida = (Button) findViewById(R.id.nova_bebida);
+        final Button novaBebida = (Button) findViewById(R.id.nova_bebida);
         novaBebida.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Animation animation = new ScaleAnimation(2, 1, 2, 1, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                animation.setDuration(200);
+                novaBebida.startAnimation(animation);
                 cadastraNovaBebida(view);
                 showProgressDialog();
                 carregaListaBebidas();
@@ -320,7 +326,10 @@ public class PerfilActivity extends BaseActivity
                     bebidas.add(bebida);
                 }
 //                Toast.makeText(PerfilActivity.this, bebidas.get(0).getIdFirebase(), Toast.LENGTH_LONG).show();
-                bebidasAdapter.notifyDataSetChanged();
+                if(bebidas.size() == 0)
+                    bebidas.add(new Bebida("Você não possui bebida cadastrada", "", 0.0, ""));
+
+                    bebidasAdapter.notifyDataSetChanged();
 
                 hideProgressDialog();
             }
@@ -393,7 +402,7 @@ public class PerfilActivity extends BaseActivity
         dialogSalvar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String nome = String.valueOf(dialogNome.getSelectedItem()).split(": ")[1];
+                String nome = String.valueOf(dialogNome.getSelectedItem());
                 String quantidade = String.valueOf(dialogQuantidade.getSelectedItem());
                 double preco = Double.parseDouble(dialogPreco.getText().toString());
 //                Bebida bebida = new Bebida(nome, preco);
