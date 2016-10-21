@@ -26,6 +26,7 @@ import com.google.firebase.storage.StorageReference;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import br.com.alura.searchdrink.activity.FormularioActivity;
 import br.com.alura.searchdrink.dao.BarDAO;
@@ -38,6 +39,10 @@ public class FormularioHelper {
 
     private final EditText campoNome;
     private final EditText campoEndereco;
+    private final EditText campoNumero;
+    private final EditText campoBairro;
+    private final EditText campoCidade;
+    private final EditText campoEstado;
     private final EditText campoTelefone;
     private final EditText campoSite;
     private final ImageView campoFoto;
@@ -56,6 +61,8 @@ public class FormularioHelper {
 
     private ArrayAdapter<String> spinnerAdapter;
 
+    private BarHelper barHelper = new BarHelper();
+
     public FormularioHelper(final FormularioActivity activity, List<String> tiposBar, String uId) {
 
         this.activity = activity;
@@ -65,6 +72,10 @@ public class FormularioHelper {
 
         this.campoNome = (EditText) activity.findViewById(R.id.formulario_nome);
         this.campoEndereco = (EditText) activity.findViewById(R.id.formulario_endereco);
+        this.campoNumero = (EditText) activity.findViewById(R.id.formulario_numero);
+        this.campoBairro = (EditText) activity.findViewById(R.id.formulario_bairro);
+        this.campoCidade = (EditText) activity.findViewById(R.id.formulario_cidade);
+        this.campoEstado= (EditText) activity.findViewById(R.id.formulario_estado);
         this.campoTelefone = (EditText) activity.findViewById(R.id.formulario_telefone);
         this.campoSite = (EditText) activity.findViewById(R.id.formulario_site);
         this.campoFoto = (ImageView) activity.findViewById(R.id.formulario_foto);
@@ -95,8 +106,11 @@ public class FormularioHelper {
             return null;
         }
 
+        String enderecoCompleto = barHelper.constroiEndereco(campoEndereco.getText().toString(), campoNumero.getText().toString(),
+                campoBairro.getText().toString(), campoCidade.getText().toString(), campoEstado.getText().toString());
+
         bar.setNome(campoNome.getText().toString());
-        bar.setEndereco(campoEndereco.getText().toString());
+        bar.setEndereco(enderecoCompleto);
         bar.setTelefone(campoTelefone.getText().toString());
         bar.setSite(campoSite.getText().toString());
         bar.setCaminhoFoto((Uri) campoFoto.getTag());
@@ -107,9 +121,17 @@ public class FormularioHelper {
 
     public void preencheFormulario(final Bar bar) {
 
+        final Map<String, String> enderecoCompleto = barHelper.devolveEndereco(bar.getEndereco());
+
         this.bar = bar;
         campoNome.setText(bar.getNome());
-        campoEndereco.setText(bar.getEndereco());
+
+        campoEndereco.setText(enderecoCompleto.get("rua"));
+        campoNumero.setText(enderecoCompleto.get("numero"));
+        campoBairro.setText(enderecoCompleto.get("bairro"));
+        campoCidade.setText(enderecoCompleto.get("cidade"));
+        campoEstado.setText(enderecoCompleto.get("estado"));
+
         campoTelefone.setText(bar.getTelefone());
         campoSite.setText(bar.getSite());
         spinnerBares.setPrompt(bar.getTipoBar());
@@ -233,6 +255,38 @@ public class FormularioHelper {
             validador = false;
         } else {
             campoEndereco.setError(null);
+        }
+
+        String numero = campoNumero.getText().toString();
+        if (TextUtils.isEmpty(numero)) {
+            campoNumero.setError(OBRIGATORIO);
+            validador = false;
+        } else {
+            campoNumero.setError(null);
+        }
+
+        String bairro = campoBairro.getText().toString();
+        if (TextUtils.isEmpty(bairro)) {
+            campoBairro.setError(OBRIGATORIO);
+            validador = false;
+        } else {
+            campoBairro.setError(null);
+        }
+
+        String cidade = campoCidade.getText().toString();
+        if (TextUtils.isEmpty(cidade)) {
+            campoCidade.setError(OBRIGATORIO);
+            validador = false;
+        } else {
+            campoCidade.setError(null);
+        }
+
+        String estado = campoEstado.getText().toString();
+        if (TextUtils.isEmpty(estado)) {
+            campoEstado.setError(OBRIGATORIO);
+            validador = false;
+        } else {
+            campoEstado.setError(null);
         }
 
         String telefone = campoTelefone.getText().toString();

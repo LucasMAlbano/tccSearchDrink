@@ -10,10 +10,14 @@ import java.util.Scanner;
  */
 public class WebClient {
 
-    public String post(String json){
+    public static String ApiKey = "AIzaSyAnE8Q44pkOA_ek3gCaS4tATj99LMOuhOM";
+
+    public String post(){
 
         try{
-            URL url = new URL("https://www.caelum.com.br/mobile");
+
+            String s = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=Vancouver+BC|Seattle&destinations=San+Francisco|Victoria+BC&mode=bicycling&language=pt-PT&key=" + ApiKey;
+            URL url = new URL(s);
 
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -22,9 +26,6 @@ public class WebClient {
 
             connection.setDoInput(true);
             connection.setDoOutput(true);
-
-            PrintStream saida = new PrintStream(connection.getOutputStream());
-            saida.println(json);
 
             connection.connect();
 

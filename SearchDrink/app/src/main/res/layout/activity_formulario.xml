@@ -13,7 +13,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="225dp">
+            android:layout_height="170dp">
 
             <ImageView
                 android:id="@+id/formulario_foto"
@@ -30,7 +30,8 @@
                 android:background="@drawable/fundo_camera"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="16dp"/>
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp"/>
         </RelativeLayout>
 
         <EditText
@@ -40,18 +41,67 @@
             android:layout_marginTop="10dp"
             android:hint="@string/campo_nome"/>
 
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Endereço:"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="5dp"
+            android:textSize="15dp"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
         <EditText
             android:id="@+id/formulario_endereco"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="@string/campo_endereco" />
+        <EditText
+            android:id="@+id/formulario_numero"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:layout_marginTop="5dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"
+            android:hint="número" />
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/formulario_bairro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:hint="@string/campo_endereco"/>
+            android:hint="bairro"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/formulario_cidade"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="cidade"/>
+            <EditText
+                android:id="@+id/formulario_estado"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="5dp"
+                android:hint="estado"/>
+        </RelativeLayout>
 
         <EditText
             android:id="@+id/formulario_telefone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:inputType="number"
             android:hint="@string/campo_telefone"/>
 
         <EditText

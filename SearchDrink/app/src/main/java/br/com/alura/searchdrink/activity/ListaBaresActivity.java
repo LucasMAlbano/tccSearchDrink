@@ -24,10 +24,15 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.alura.searchdrink.R;
+import br.com.alura.searchdrink.WebClient;
 import br.com.alura.searchdrink.adapter.ExpandableFiltroAdapterTeste;
 import br.com.alura.searchdrink.modelo.Bar;
+import br.com.alura.searchdrink.task.GeoTask;
 
-public class ListaBaresActivity extends BaseActivity {
+public class ListaBaresActivity extends BaseActivity implements GeoTask.Geo {
+
+    public static String ApiKey = "AIzaSyAnE8Q44pkOA_ek3gCaS4tATj99LMOuhOM";
+
 
     private String TAG = "ListaBaresActivity";
 
@@ -90,8 +95,13 @@ public class ListaBaresActivity extends BaseActivity {
             }
         });
 
+
         carregaFiltroBares();
         carregaFiltroBebidas();
+
+Toast.makeText(this, estabalecimentos.get(1).getEndereco() + " / " + estabalecimentos.get(2).getEndereco(),Toast.LENGTH_SHORT).show();
+        String url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + "ruadrmarianoj.m.ferraz,190,centro,Osasco,SP" + "&destinations=" + "barueri,sp" + "&mode=driving&language=fr-FR&avoid=tolls&key=" + ApiKey;
+        new GeoTask(this).execute(url);
     }
 
 
@@ -247,4 +257,15 @@ public class ListaBaresActivity extends BaseActivity {
             }
         });
     }
+
+    @Override
+    public void setDouble(String result) {
+        String res[]=result.split(",");
+        Double min=Double.parseDouble(res[0])/60;
+        int dist=Integer.parseInt(res[1])/1000;
+        Toast.makeText(this, "Duration= " + (int) (min / 60) + " hr " + (int) (min % 60) + " mins", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Distance= " + dist + " kilometers", Toast.LENGTH_LONG).show();
+
+    }
+
 }

@@ -175,7 +175,7 @@ public class BarDAO {
         dados.put("site", bar.getSite());
 //        dados.put("caminhoFoto", bar.getCaminhoFoto());
         dados.put("email", bar.getEmail());
-        dados.put("senha", bar.getSenha());
+//        dados.put("senha", bar.getSenha());
         return dados;
     }
 }

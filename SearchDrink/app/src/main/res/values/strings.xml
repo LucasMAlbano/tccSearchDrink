@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">Search Drink</string>
 
-    <string name="campo_nome">Nome</string>
-    <string name="campo_endereco">Endereço</string>
-    <string name="campo_telefone">Telefone</string>
-    <string name="campo_site">Site</string>
+    <string name="campo_nome">nome</string>
+    <string name="campo_endereco">endereço</string>
+    <string name="campo_telefone">telefone</string>
+    <string name="campo_site">site</string>
 
     <!--<string name="title_activity_formulario">Formulário</string>-->
     <string name="title_activity_formulario">Edição de Perfil</string>
