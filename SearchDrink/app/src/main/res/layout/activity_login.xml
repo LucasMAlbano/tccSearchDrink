@@ -38,57 +38,83 @@
         <!--android:textStyle="bold"-->
         <!--android:textSize="30dp" />-->
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="email"
-            android:layout_alignParentTop="true"
-            android:textColor="#F1C332"
-            android:id="@+id/login_email"/>
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="senha"
-            android:layout_alignParentBottom="true"
-            android:inputType="textPassword"
-            android:textColor="#F1C332"
-            android:id="@+id/login_senha"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:visibility="gone"
-            android:textColor="#ff0000"
-            android:id="@+id/login_status"/>
-
-        <LinearLayout
+        <CheckBox
+            android:id="@+id/login_cadastro_check"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal">
+            android:text="Cadastro de email?"
+            android:layout_gravity="center"/>
 
-            <Button
+
+        <LinearLayout
+            android:id="@+id/login_cadastro_firebase"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="email"
+                android:layout_alignParentTop="true"
+                android:textColor="#F1C332"
+                android:id="@+id/login_email"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="senha"
+                android:layout_alignParentBottom="true"
+                android:inputType="textPassword"
+                android:textColor="#F1C332"
+                android:id="@+id/login_senha"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:visibility="gone"
+                android:textColor="#ff0000"
+                android:id="@+id/login_status"/>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginRight="15dp"
-                android:text="Entrar"
-                android:id="@+id/login_entrar"
-                android:background="@android:color/transparent"
-                android:textColor="#F1C332" />
+                android:layout_gravity="center_horizontal">
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="15dp"
-                android:text="Cadastrar"
-                android:textAlignment="center"
-                android:id="@+id/login_cadastrar"
-                android:background="@android:color/transparent"
-                android:textColor="#F1C332"/>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginRight="15dp"
+                    android:text="Entrar"
+                    android:id="@+id/login_entrar"
+                    android:background="@android:color/transparent"
+                    android:textColor="#F1C332" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="15dp"
+                    android:text="Cadastrar"
+                    android:textAlignment="center"
+                    android:id="@+id/login_cadastrar"
+                    android:background="@android:color/transparent"
+                    android:textColor="#F1C332"/>
+            </LinearLayout>
+
         </LinearLayout>
+
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/login_facebook"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp" />
 
         <ImageView
             android:layout_width="60dp"

@@ -40,4 +40,7 @@
         <item>1500 ml</item>
         <item>2000 ml</item>
     </string-array>
+
+
+    <string name="facebook_app_id">208226142943702</string>
 </resources>
