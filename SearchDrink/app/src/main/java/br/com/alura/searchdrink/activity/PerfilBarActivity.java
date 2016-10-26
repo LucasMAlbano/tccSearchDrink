@@ -23,7 +23,6 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -37,7 +36,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.vision.text.Text;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -62,7 +60,7 @@ import br.com.alura.searchdrink.modelo.Bar;
 import br.com.alura.searchdrink.modelo.Bebida;
 import br.com.alura.searchdrink.task.ImageLoadTask;
 
-public class PerfilActivity extends BaseActivity
+public class PerfilBarActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private ListView campoListaBebidas;
@@ -83,8 +81,8 @@ public class PerfilActivity extends BaseActivity
 
     private Bar bar;
 
-    private Bitmap bitmap = null;
-    private File mypath;
+//    private Bitmap bitmap = null;
+//    private File mypath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +90,7 @@ public class PerfilActivity extends BaseActivity
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_perfil);
+        setContentView(R.layout.activity_perfil_bar);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -113,12 +111,12 @@ public class PerfilActivity extends BaseActivity
 //                .child("bares").child(uId).child("bebidas");
 
 
-        ContextWrapper cw = new ContextWrapper(getApplicationContext());
-        File directory = cw.getDir("profile", Context.MODE_PRIVATE);
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
-        mypath = new File(directory, "perfil" + uId + ".jpg");
+//        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+//        File directory = cw.getDir("profile", Context.MODE_PRIVATE);
+//        if (!directory.exists()) {
+//            directory.mkdir();
+//        }
+//        mypath = new File(directory, "perfil" + uId + ".jpg");
 
 
 
@@ -171,9 +169,9 @@ public class PerfilActivity extends BaseActivity
         bebidasAdapter = new BebidasAdapter(this, bebidas);
         campoListaBebidas.setAdapter(bebidasAdapter);
 
-        ImageView profilePicture = (ImageView) findViewById(R.id.perfil_foto);
-        String imageUrl = getIntent().getExtras().getString("profile_picture");
-        new ImageLoadTask(imageUrl, profilePicture).execute();
+//        ImageView profilePicture = (ImageView) findViewById(R.id.perfil_foto);
+//        String imageUrl = getIntent().getExtras().getString("profile_picture");
+//        new ImageLoadTask(imageUrl, profilePicture).execute();
     }
 
     @Override
@@ -184,7 +182,7 @@ public class PerfilActivity extends BaseActivity
 
         iniciaPerfil();
 
-        //        Picasso.with(this).load(bar.getCaminhoFoto()).into(campoFotoPerfil);
+        //        Picasso.with(this).load(bar.getUriFoto()).into(campoFotoPerfil);
 
 
     }
@@ -296,13 +294,16 @@ public class PerfilActivity extends BaseActivity
                 String endereco = String.valueOf(mapBar.get("endereco"));
                 String site = String.valueOf(mapBar.get("site"));
                 String telefone = String.valueOf(mapBar.get("telefone"));
-                String uriFotoPerfil = String.valueOf(mapBar.get("uriFotoPerfil"));
+                String uriFotoPerfil = String.valueOf(mapBar.get("uriFoto"));
+                String tipoBar = String.valueOf(mapBar.get("tipoBar"));
 
                 campoBemVindo.setText("Bem vindo(a) " + nome + "!");
                 campoNomeBar.setText(nome);
                 campoEmailBar.setText(email);
 
-                bar = new Bar(nome, email, endereco, site, telefone, Uri.parse(uriFotoPerfil));
+                bar = new Bar(uId, nome, email, uriFotoPerfil, endereco, telefone, site, tipoBar);
+
+                new ImageLoadTask(uriFotoPerfil, campoFotoPerfil).execute();
             }
 
             @Override
@@ -330,7 +331,7 @@ public class PerfilActivity extends BaseActivity
 
                     bebidas.add(bebida);
                 }
-//                Toast.makeText(PerfilActivity.this, bebidas.get(0).getIdFirebase(), Toast.LENGTH_LONG).show();
+//                Toast.makeText(PerfilBarActivity.this, bebidas.get(0).getIdFirebase(), Toast.LENGTH_LONG).show();
                 if(bebidas.size() == 0)
                     bebidas.add(new Bebida("Você não possui bebida cadastrada", "", 0.0, ""));
 
@@ -347,7 +348,7 @@ public class PerfilActivity extends BaseActivity
     }
 
     private void cadastraNovaBebida(View view) {
-        final Dialog dialog = new Dialog(PerfilActivity.this);
+        final Dialog dialog = new Dialog(PerfilBarActivity.this);
         dialog.setContentView(R.layout.dialog_cadastrar_bebida);
         dialog.setTitle("Adicionar Bebida");
 
@@ -384,7 +385,7 @@ public class PerfilActivity extends BaseActivity
                     }
                 }
 
-                ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(PerfilActivity.this,
+                ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(PerfilBarActivity.this,
                         android.R.layout.simple_spinner_item, b);
                 spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 dialogNome.setAdapter(spinnerAdapter);
@@ -450,7 +451,7 @@ public class PerfilActivity extends BaseActivity
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
 
-                final Dialog dialog = new Dialog(PerfilActivity.this);
+                final Dialog dialog = new Dialog(PerfilBarActivity.this);
                 dialog.setContentView(R.layout.dialog_editar_bebida);
                 dialog.setTitle("Editar Bebida");
 
@@ -468,8 +469,8 @@ public class PerfilActivity extends BaseActivity
                 Button dialogSalvar = (Button) dialog.findViewById(R.id.dialog_bebida_salvar);
                 Button dialogCancelar = (Button) dialog.findViewById(R.id.dialog_bebida_cancelar);
 
-//                Toast.makeText(PerfilActivity.this, String.valueOf(index), Toast.LENGTH_SHORT).show();
-                Toast.makeText(PerfilActivity.this, bebida.getIdFirebase(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(PerfilBarActivity.this, String.valueOf(index), Toast.LENGTH_SHORT).show();
+                Toast.makeText(PerfilBarActivity.this, bebida.getIdFirebase(), Toast.LENGTH_SHORT).show();
 
                 dialogSalvar.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -513,7 +514,7 @@ public class PerfilActivity extends BaseActivity
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
 
-                final Dialog dialog = new Dialog(PerfilActivity.this);
+                final Dialog dialog = new Dialog(PerfilBarActivity.this);
                 dialog.setContentView(R.layout.dialog_deletar_bebida);
                 dialog.setTitle("Confirmar para deletar...");
 
@@ -555,58 +556,58 @@ public class PerfilActivity extends BaseActivity
 
     private void carregaFotoPerfil() {
 
-        if (mypath != null){
-            campoFotoPerfil.setImageBitmap(BitmapFactory.decodeFile(mypath.getAbsolutePath()));
-            campoFotoPerfil.setScaleType(ImageView.ScaleType.FIT_XY);
-            campoFotoPerfil.setTag(Uri.parse(mypath.getPath()));
-//            campoFotoPerfil.setVisibility(View.VISIBLE);
-        }
-
-        baixaFotoPerfilFirebase();
+//        if (mypath != null){
+//            campoFotoPerfil.setImageBitmap(BitmapFactory.decodeFile(mypath.getAbsolutePath()));
+//            campoFotoPerfil.setScaleType(ImageView.ScaleType.FIT_XY);
+//            campoFotoPerfil.setTag(Uri.parse(mypath.getPath()));
+////            campoFotoPerfil.setVisibility(View.VISIBLE);
+//        }
+//
+//        baixaFotoPerfilFirebase();
 
     }
 
-    private void baixaFotoPerfilFirebase() {
-        try {
-
-            final File localFile = File.createTempFile("images", "jpg");
-
-            storageRef.child("perfil").getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-
-                    bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                    bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
-
-//                    campoFotoPerfil.setVisibility(View.VISIBLE);
-                    campoFotoPerfil.setImageBitmap(bitmap);
-                    campoFotoPerfil.setScaleType(ImageView.ScaleType.FIT_XY);
-                    campoFotoPerfil.setTag(Uri.parse(localFile.getPath()));
-
-                    //salvando imagem no app
-
-                    FileOutputStream fos = null;
-                    try {
-                        fos = new FileOutputStream(mypath);
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-                        fos.close();
-                    } catch (Exception e) {
-                        Log.e("SAVE_IMAGE", e.getMessage(), e);
-                    }
-
-                    Toast.makeText(PerfilActivity.this, "Sucesso ao fazer download de foto perfil" + bitmap == null ? "null":"nao nulo", Toast.LENGTH_LONG).show();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(PerfilActivity.this, "Falha ao fazer download de foto perfil", Toast.LENGTH_LONG).show();
-                }
-            });
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    private void baixaFotoPerfilFirebase() {
+//        try {
+//
+//            final File localFile = File.createTempFile("images", "jpg");
+//
+//            storageRef.child("perfil").getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+//                @Override
+//                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+//
+//                    bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+//                    bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+//
+////                    campoFotoPerfil.setVisibility(View.VISIBLE);
+//                    campoFotoPerfil.setImageBitmap(bitmap);
+//                    campoFotoPerfil.setScaleType(ImageView.ScaleType.FIT_XY);
+//                    campoFotoPerfil.setTag(Uri.parse(localFile.getPath()));
+//
+//                    //salvando imagem no app
+//
+//                    FileOutputStream fos = null;
+//                    try {
+//                        fos = new FileOutputStream(mypath);
+//                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+//                        fos.close();
+//                    } catch (Exception e) {
+//                        Log.e("SAVE_IMAGE", e.getMessage(), e);
+//                    }
+//
+//                    Toast.makeText(PerfilBarActivity.this, "Sucesso ao fazer download de foto perfil" + bitmap == null ? "null":"nao nulo", Toast.LENGTH_LONG).show();
+//                }
+//            }).addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception e) {
+//                    Toast.makeText(PerfilBarActivity.this, "Falha ao fazer download de foto perfil", Toast.LENGTH_LONG).show();
+//                }
+//            });
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 
     private void iniciaPerfil() {

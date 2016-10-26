@@ -140,10 +140,11 @@ public class TarefaDownloadLocalizacaoBares extends AsyncTask<DatabaseReference,
                         String telefone = String.valueOf(map.get("telefone"));
                         String site = String.valueOf(map.get("site"));
                         String email = String.valueOf(map.get("email"));
+                        String uriFotoPerfil = String.valueOf(map.get("uriFotoPerfil"));
                         String tipoBar = String.valueOf(map.get("tipoBar"));
 
                         if (endereco != null) {
-                            Bar bar = new Bar(nome, endereco, telefone, site, email, tipoBar);
+                            Bar bar = new Bar(snapshot.getKey(), nome, email, uriFotoPerfil, endereco, telefone, site, tipoBar);
                             estabelecimentos.add(bar);
                         }
                     }

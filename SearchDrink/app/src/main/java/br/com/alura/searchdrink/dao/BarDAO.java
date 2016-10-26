@@ -42,9 +42,13 @@ public class BarDAO {
     private DatabaseReference dbBar;
     private StorageReference storageReference;
 
+    private String uId;
+
     public BarDAO(Context context, String uId){
 
         this.context = context;
+
+        this.uId = uId;
 
         dbBar = FirebaseDatabase.getInstance().getReference().child("bares").child(uId);
         storageReference = FirebaseStorage.getInstance().getReference().child(uId);
@@ -83,9 +87,11 @@ public class BarDAO {
                 String telefone = mapBar.get("telefone");
                 String site = mapBar.get("site");
                 String email = mapBar.get("email");
+                String uriFotoPerfil = String.valueOf(mapBar.get("uriFoto"));
                 String tipoBar = mapBar.get("tipoBar");
 
-                bar[0] = new Bar(nome, endereco, telefone, site, email, tipoBar);
+
+                bar[0] = new Bar(uId, nome, email, uriFotoPerfil, endereco, telefone, site, tipoBar);
 
                 helper.preencheFormulario(bar[0]);
             }
@@ -100,58 +106,58 @@ public class BarDAO {
 //        return helper[0];
     }
 
-    public void uploadFotoPerfilFirebase(Uri uriFoto) {
-        if(uriFoto != null) {
+//    public void uploadFotoPerfilFirebase(Uri uriFoto) {
+//        if(uriFoto != null) {
+//
+//            StorageReference riversRef = storageReference.child(uriFoto.getLastPathSegment());
+//            UploadTask uploadTask = storageReference.child("perfil").putFile(uriFoto);
+//
+//            uploadTask.addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception exception) {
+//                    // Handle unsuccessful uploads
+//                    Toast.makeText(context, "Falha ao fazer upload de foto", Toast.LENGTH_LONG).show();
+//                }
+//            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                @Override
+//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+//                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+//                    dbBar.child("uriFotoPerfil").setValue(downloadUrl);
+//                    Toast.makeText(context, "Sucesso ao fazer upload de foto", Toast.LENGTH_LONG).show();
+//                }
+//            });
+//        }
+//    }
 
-            StorageReference riversRef = storageReference.child(uriFoto.getLastPathSegment());
-            UploadTask uploadTask = storageReference.child("perfil").putFile(uriFoto);
-
-            uploadTask.addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle unsuccessful uploads
-                    Toast.makeText(context, "Falha ao fazer upload de foto", Toast.LENGTH_LONG).show();
-                }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                    dbBar.child("uriFotoPerfil").setValue(downloadUrl);
-                    Toast.makeText(context, "Sucesso ao fazer upload de foto", Toast.LENGTH_LONG).show();
-                }
-            });
-        }
-    }
-
-    public Bitmap downloadFotoPerfilFirebase(){
-
-        final Bitmap[] bitmap = new Bitmap[1];
-
-        try {
-            final File localFile = File.createTempFile("images", "jpg");
-            storageReference.child("perfil").getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-
-                    bitmap[0] = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                    bitmap[0] = Bitmap.createScaledBitmap(bitmap[0], 200, 200, true);
-
-//                    Toast.makeText(PerfilActivity.this, "Sucesso ao fazer download de foto perfil" + bitmap == null ? "null":"nao nulo", Toast.LENGTH_LONG).show();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(context, "Falha ao fazer download de foto perfil", Toast.LENGTH_LONG).show();
-                }
-            });
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return  bitmap[0];
-    }
+//    public Bitmap downloadFotoPerfilFirebase(){
+//
+//        final Bitmap[] bitmap = new Bitmap[1];
+//
+//        try {
+//            final File localFile = File.createTempFile("images", "jpg");
+//            storageReference.child("perfil").getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+//                @Override
+//                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+//
+//                    bitmap[0] = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+//                    bitmap[0] = Bitmap.createScaledBitmap(bitmap[0], 200, 200, true);
+//
+////                    Toast.makeText(PerfilBarActivity.this, "Sucesso ao fazer download de foto perfil" + bitmap == null ? "null":"nao nulo", Toast.LENGTH_LONG).show();
+//                }
+//            }).addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception e) {
+//                    Toast.makeText(context, "Falha ao fazer download de foto perfil", Toast.LENGTH_LONG).show();
+//                }
+//            });
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return  bitmap[0];
+//    }
 
     public void enviaCadastroFirebase(Bar bar) {
 
@@ -173,7 +179,7 @@ public class BarDAO {
         dados.put("endereco", bar.getEndereco());
         dados.put("telefone", bar.getTelefone());
         dados.put("site", bar.getSite());
-//        dados.put("caminhoFoto", bar.getCaminhoFoto());
+//        dados.put("caminhoFoto", bar.getUriFoto());
         dados.put("email", bar.getEmail());
 //        dados.put("senha", bar.getSenha());
         return dados;

@@ -1,16 +1,13 @@
 package br.com.alura.searchdrink.activity;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 
 import com.google.firebase.database.DatabaseReference;
 
@@ -33,7 +30,8 @@ public class FormularioActivity extends BaseActivity {
 //    private StorageReference storageReference;
 
     private String uId;
-    private Uri uriFoto = null;
+
+//    private Uri uriFoto = null;
 
 //    private File mypath;
 
@@ -87,32 +85,32 @@ public class FormularioActivity extends BaseActivity {
 //        mypath = new File(directory, "perfil" + uId + ".jpg");
 
 
-        Button botaoFoto = (Button)findViewById(R.id.formulario_botao_foto);
-        botaoFoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent intent = new Intent();
-                // Show only images, no videos or anything else
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                // Always show the chooser (if there are multiple options available)
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), CODIGO_GALERIA);
-            }
-        });
+//        Button botaoFoto = (Button)findViewById(R.id.formulario_botao_foto);
+//        botaoFoto.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                Intent intent = new Intent();
+//                // Show only images, no videos or anything else
+//                intent.setType("image/*");
+//                intent.setAction(Intent.ACTION_GET_CONTENT);
+//                // Always show the chooser (if there are multiple options available)
+//                startActivityForResult(Intent.createChooser(intent, "Select Picture"), CODIGO_GALERIA);
+//            }
+//        });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == CODIGO_GALERIA && resultCode == RESULT_OK && data != null && data.getData() != null) {
-
-            uriFoto = data.getData();
-
-            formularioDAO.getHelper().carregaFoto(uriFoto, getContentResolver()/*, storageReference*/);
-
-        }
+//        if (requestCode == CODIGO_GALERIA && resultCode == RESULT_OK && data != null && data.getData() != null) {
+//
+//            uriFoto = data.getData();
+//
+//            formularioDAO.getHelper().carregaFoto(uriFoto, getContentResolver()/*, storageReference*/);
+//
+//        }
     }
 
     @Override
@@ -149,11 +147,11 @@ public class FormularioActivity extends BaseActivity {
 
                     barDAO.enviaCadastroFirebase(bar);
 
-                    barDAO.uploadFotoPerfilFirebase(uriFoto);
+//                    barDAO.uploadFotoPerfilFirebase(uriFoto);
 //                    uploadFotoPerfilFirebase();
 
                     if (tipo != null && tipo.equals("cadastro")) {
-                        Intent vaiParaPerfil = new Intent(FormularioActivity.this, PerfilActivity.class);
+                        Intent vaiParaPerfil = new Intent(FormularioActivity.this, PerfilBarActivity.class);
                         startActivity(vaiParaPerfil);
                     }
 

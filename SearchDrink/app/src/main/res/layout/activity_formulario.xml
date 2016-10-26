@@ -11,28 +11,28 @@
         android:orientation="vertical"
         android:weightSum="1">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="170dp">
+        <!--<RelativeLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="170dp">-->
 
-            <ImageView
-                android:id="@+id/formulario_foto"
-                android:layout_width="match_parent"
-                android:layout_height="170dp"
-                android:src="@drawable/person"
-                android:background="#00A8EC" />
+            <!--<ImageView-->
+                <!--android:id="@+id/formulario_foto"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="170dp"-->
+                <!--android:src="@drawable/person"-->
+                <!--android:background="#00A8EC" />-->
 
-            <Button
-                android:id="@+id/formulario_botao_foto"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:clickable="true"
-                android:background="@drawable/fundo_camera"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="16dp"/>
-        </RelativeLayout>
+            <!--<Button-->
+                <!--android:id="@+id/formulario_botao_foto"-->
+                <!--android:layout_width="56dp"-->
+                <!--android:layout_height="56dp"-->
+                <!--android:clickable="true"-->
+                <!--android:background="@drawable/fundo_camera"-->
+                <!--android:layout_alignParentBottom="true"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_marginRight="16dp"-->
+                <!--android:layout_marginBottom="16dp"/>-->
+        <!--</RelativeLayout>-->
 
         <EditText
             android:id="@+id/formulario_nome"
@@ -102,7 +102,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:inputType="number"
-            android:hint="@string/campo_telefone"/>
+            android:hint="(DDD) Tefone"/>
 
         <EditText
             android:id="@+id/formulario_site"

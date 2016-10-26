@@ -18,6 +18,10 @@
         android:layout_height="match_parent"
         android:background="#FFF">
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -103,20 +107,33 @@
 
         </LinearLayout>
 
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/login_button_google"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="------------ or ------------"
+            android:layout_gravity="center_horizontal"/>
+
         <com.facebook.login.widget.LoginButton
             android:id="@+id/login_button_facebook"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="30dp" />
 
-        <CheckBox
-            android:id="@+id/login_cadastro_check"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cadastro de email?"
-            android:layout_gravity="center"/>
+        <!--<CheckBox-->
+            <!--android:id="@+id/login_cadastro_check"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Cadastro de email?"-->
+            <!--android:layout_gravity="center"/>-->
 
         <ImageView
             android:layout_width="60dp"
@@ -134,6 +151,8 @@
             android:textSize="17dp"/>
 
         </LinearLayout>
+
+        </ScrollView>
 
     <!--<LinearLayout-->
         <!--android:layout_width="wrap_content"-->

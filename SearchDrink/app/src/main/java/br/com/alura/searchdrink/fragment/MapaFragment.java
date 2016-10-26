@@ -88,19 +88,24 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-
-        this.mapa = googleMap;
+    public void onResume() {
+        super.onResume();
 
         TarefaDownloadLocalizacaoBares tarefaDownload = new TarefaDownloadLocalizacaoBares(getContext()/*, bares*/);
         Log.i("AsyncTask", "AsyncTask senado chamado Thread: " + Thread.currentThread().getName());
         tarefaDownload.execute(database);
         Log.i("AsyncTask", "AsyncTask senado chamado Thread: " + Thread.currentThread().getName());
 
+        bares = tarefaDownload.getEstabelecimentos();
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+        this.mapa = googleMap;
+
 
         new Localizador(getContext(), MapaFragment.this);
-
-        bares = tarefaDownload.getEstabelecimentos();
     }
 
 

@@ -1,8 +1,5 @@
 package br.com.alura.searchdrink.modelo;
 
-import android.net.Uri;
-
-import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -10,7 +7,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Created by Birbara on 20/07/2016.
@@ -24,7 +20,7 @@ public class Bar implements Serializable{
     private String endereco;
     private String telefone;
     private String site;
-    private Uri caminhoFoto;
+    private String uriFoto;
     private String email;
     private String tipoBar;
 
@@ -33,42 +29,49 @@ public class Bar implements Serializable{
     private List<Bebida> bebidas;
 
 
-    public Bar(String nome, String email){
-//        this.uId = uId;
-        this.nome = nome;
-        this.email = email;
-    }
+//    public Bar(String nome, String email){
+////        this.uId = uId;
+//        this.nome = nome;
+//        this.email = email;
+//    }
 
-    public Bar(String uId, String nome, String email){
+    public Bar(){}
+
+    public Bar(String uId, String nome, String email, String uriFoto, String endereco, String telefone, String site, String tipoBar){
         this.uId = uId;
         this.nome = nome;
         this.email = email;
-    }
-
-    public Bar(String email){
-        this.email = email;
-    }
-
-
-    public Bar(String nome, String endereco, String telefone, String site, String email, String tipoBar) {
-        this.nome = nome;
+        this.uriFoto = uriFoto;
         this.endereco = endereco;
         this.telefone = telefone;
         this.site = site;
-        this.email = email;
         this.tipoBar = tipoBar;
     }
 
-    public Bar (){}
+//    public Bar(String email){
+//        this.email = email;
+//    }
 
-    public Bar(String nome, String email, String endereco, String site, String telefone, Uri uriFotoPerfil) {
-        this.nome = nome;
-        this.email = email;
-        this.endereco = endereco;
-        this.site = site;
-        this.telefone = telefone;
-        this.caminhoFoto = uriFotoPerfil;
-    }
+
+//    public Bar(String nome, String endereco, String telefone, String site, String email, String tipoBar) {
+//        this.nome = nome;
+//        this.endereco = endereco;
+//        this.telefone = telefone;
+//        this.site = site;
+//        this.email = email;
+//        this.tipoBar = tipoBar;
+//    }
+//
+//    public Bar (){}
+//
+//    public Bar(String nome, String email, String endereco, String site, String telefone, String uriFoto) {
+//        this.nome = nome;
+//        this.email = email;
+//        this.endereco = endereco;
+//        this.site = site;
+//        this.telefone = telefone;
+//        this.uriFoto = uriFoto;
+//    }
 
 
     public String getCoordenada() {
@@ -78,7 +81,6 @@ public class Bar implements Serializable{
     public void setCoordenada(String coordenada) {
         this.coordenada = coordenada;
     }
-
 
     public String getTipoBar() {
         return tipoBar;
@@ -96,21 +98,21 @@ public class Bar implements Serializable{
         this.bebidas = bebidas;
     }
 
-    public Uri getCaminhoFoto() {
-        return caminhoFoto;
+    public String getUriFoto() {
+        return uriFoto;
     }
 
-    public void setCaminhoFoto(Uri caminhoFoto) {
-        this.caminhoFoto = caminhoFoto;
+    public void setUriFoto(String uriFoto) {
+        this.uriFoto = uriFoto;
     }
 
-//    public long getuId() {
-//        return uId;
-//    }
+    public String getuId() {
+        return uId;
+    }
 
-//    public void setuId(long uId) {
-//        this.uId = uId;
-//    }
+    public void setuId(String uId) {
+        this.uId = uId;
+    }
 
     public String getNome() {
         return nome;

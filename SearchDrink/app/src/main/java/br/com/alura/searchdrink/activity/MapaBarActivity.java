@@ -1,10 +1,8 @@
 package br.com.alura.searchdrink.activity;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -14,20 +12,24 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.clans.fab.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
+import java.util.List;
 
 import br.com.alura.searchdrink.Localizador;
 import br.com.alura.searchdrink.fragment.MapaFragment;
 import br.com.alura.searchdrink.R;
+import br.com.alura.searchdrink.modelo.Bar;
 
 //import com.google.android.gms.maps.SupportMapFragment;
 
@@ -37,11 +39,15 @@ public class MapaBarActivity extends BaseActivity {
     private static final int REQUEST_PERMISSOES = 1;
     private MapaFragment mapaFragment;
 
-//    DatabaseReference database;
+    DatabaseReference database;
 
     FloatingActionMenu botaoMenu;
     FloatingActionButton floatingLogin, floatingPesquisar/*, floatingListar*/;
     ImageButton centralizar;
+
+    private String uId;
+    private String uriFoto;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +57,15 @@ public class MapaBarActivity extends BaseActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_mapa_bar);
 
-//        database = FirebaseDatabase.getInstance().getReference().child("bares");
+
+        uId = getUid();
+
+//        DatasHelper dataHelper = new DatasHelper();
+//        uId = dataHelper.pegauId(getIntent());
+//        uriFoto = dataHelper.pegaUrlFoto(getIntent());
+
+
+        database = FirebaseDatabase.getInstance().getReference().child("bares");
 
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction tx = manager.beginTransaction();
@@ -79,12 +93,9 @@ public class MapaBarActivity extends BaseActivity {
 
         floatingLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-//                Intent vaiParaLogin = new Intent(MapaBarActivity.this, PerfilActivity.class);
-//                startActivity(vaiParaLogin);
-                FirebaseAuth.getInstance().signOut();
-                Intent vaiParaLogin = new Intent(MapaBarActivity.this, LoginActivity.class);
-                startActivity(vaiParaLogin);
-
+//                boolean ehBar = verificaSeEhBar(uId);
+//                Toast.makeText(MapaBarActivity.this, String.valueOf(ehBar), Toast.LENGTH_SHORT).show();
+                vaiParaPerfil(uId);
             }
         });
         floatingPesquisar.setOnClickListener(new View.OnClickListener() {
@@ -99,6 +110,55 @@ public class MapaBarActivity extends BaseActivity {
 //
 //            }
 //        });
+    }
+
+    private void vaiParaPerfil(final String uId) {
+
+        database.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                boolean verificador = false;
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    if (snapshot.getKey().equals(uId)){
+                        verificador = true;
+                        break;
+                    }
+                }
+
+                Toast.makeText(MapaBarActivity.this, String.valueOf(verificador), Toast.LENGTH_SHORT).show();
+
+                if (verificador) {
+                    Intent vaiParaPerfilBar = new Intent(MapaBarActivity.this, PerfilBarActivity.class);
+                    startActivity(vaiParaPerfilBar);
+                }
+                else{
+                    Intent vaiParaPerfilUsuario = new Intent(MapaBarActivity.this, PerfilUsuarioActivity.class);
+                    startActivity(vaiParaPerfilUsuario);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private boolean verificaSeEhBar(String uId) {
+
+        List<Bar> estabelecimentos = null;
+        while (estabelecimentos == null) {
+            estabelecimentos = mapaFragment.getEstabelecimentos();
+        }
+
+        for(Bar bar : estabelecimentos){
+            if(bar.getuId().equals(uId))
+                return true;
+        }
+
+        return false;
     }
 
     @Override

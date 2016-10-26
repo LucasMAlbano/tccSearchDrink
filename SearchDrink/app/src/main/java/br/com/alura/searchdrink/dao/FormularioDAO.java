@@ -1,6 +1,8 @@
 package br.com.alura.searchdrink.dao;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
@@ -30,6 +32,11 @@ public class FormularioDAO {
 
     DatabaseReference dbFiltrosBar = FirebaseDatabase.getInstance().getReference().child("filtros").child("tipoBar");
 
+    @VisibleForTesting
+    public ProgressDialog mProgressDialog;
+
+
+
     public FormularioDAO(Context context, String uId){
         this.context = context;
         this.uId = uId;
@@ -42,6 +49,8 @@ public class FormularioDAO {
     public void inicializaFormularioHelper(final Context context, final BarDAO barDAO){
 
 //        final FormularioHelper[] helper = new FormularioHelper[1];
+
+        showProgressDialog();
 
         final List<String> tiposBares = new ArrayList<>();
 
@@ -66,6 +75,7 @@ public class FormularioDAO {
                 barDAO.pegaBarEPreencheFormulario(FormularioDAO.this.helper);
 //                helper[0].preencheFormulario(bar);
 
+                hideProgressDialog();
 
             }
 
@@ -113,4 +123,20 @@ public class FormularioDAO {
 //            }
 //        };
 //    }
+
+    public void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(context);
+            mProgressDialog.setMessage("Carregando...");
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.show();
+    }
+
+    public void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+    }
 }

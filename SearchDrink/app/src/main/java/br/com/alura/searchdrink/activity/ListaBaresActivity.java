@@ -99,7 +99,7 @@ public class ListaBaresActivity extends BaseActivity implements GeoTask.Geo {
         carregaFiltroBares();
         carregaFiltroBebidas();
 
-Toast.makeText(this, estabalecimentos.get(1).getEndereco() + " / " + estabalecimentos.get(2).getEndereco(),Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, estabalecimentos.get(0).getEndereco() + " / " + estabalecimentos.get(1).getEndereco(),Toast.LENGTH_SHORT).show();
         String url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + "ruadrmarianoj.m.ferraz,190,centro,Osasco,SP" + "&destinations=" + "barueri,sp" + "&mode=driving&language=fr-FR&avoid=tolls&key=" + ApiKey;
         new GeoTask(this).execute(url);
     }

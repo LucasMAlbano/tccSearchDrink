@@ -71,8 +71,8 @@ public class BebidasAdapter extends BaseAdapter {
 //        }
 
 //        ImageView campoFoto = (ImageView) view.findViewById(R.id.item_foto);
-//        if(bebida.getCaminhoFoto() != null) {
-//            Bitmap bitmap = BitmapFactory.decodeFile(bebida.getCaminhoFoto());
+//        if(bebida.getUriFoto() != null) {
+//            Bitmap bitmap = BitmapFactory.decodeFile(bebida.getUriFoto());
 //            bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
 //            campoFoto.setImageBitmap(bitmap);
 //            campoFoto.setScaleType(ImageView.ScaleType.FIT_XY);
