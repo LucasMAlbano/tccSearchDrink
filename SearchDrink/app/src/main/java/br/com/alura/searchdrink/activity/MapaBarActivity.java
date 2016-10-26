@@ -19,6 +19,7 @@ import android.widget.ImageButton;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.clans.fab.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -78,6 +79,9 @@ public class MapaBarActivity extends BaseActivity {
 
         floatingLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+//                Intent vaiParaLogin = new Intent(MapaBarActivity.this, PerfilActivity.class);
+//                startActivity(vaiParaLogin);
+                FirebaseAuth.getInstance().signOut();
                 Intent vaiParaLogin = new Intent(MapaBarActivity.this, LoginActivity.class);
                 startActivity(vaiParaLogin);
 

@@ -45,8 +45,9 @@
 
         <ImageView
             android:id="@+id/perfil_foto"
-            android:layout_width="match_parent"
+            android:layout_width="170dp"
             android:layout_height="170dp"
+            android:layout_gravity="center_horizontal"
             android:src="@drawable/person"
             android:layout_marginTop="20dp" />
         <!--android:background="#00A8EC"-->

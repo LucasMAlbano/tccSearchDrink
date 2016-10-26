@@ -9,15 +9,26 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -31,12 +42,18 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private static final String TAG = "login";
     private static String OBRIGATORIO = "Obrigatório.";
 
-    private FirebaseAuth auth;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference database;
+
+    private CallbackManager mCallbackManager;
 
     private EditText campoEmail;
     private EditText campoSenha;
     private TextView campoStatus;
+    private CheckBox cadastroCheckBox;
+    private LinearLayout cadastroFirebase;
+    private LoginButton buttonFacebook;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,27 +67,77 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
         setContentView(R.layout.activity_login);
 
+        database = FirebaseDatabase.getInstance().getReference().child("bares");
+        mAuth = FirebaseAuth.getInstance();
+
+        FirebaseUser mUser = mAuth.getCurrentUser();
+        if (mUser != null) {
+            // User is signed in
+            Intent intent = new Intent(getApplicationContext(), MapaBarActivity.class);
+            String uid = mAuth.getCurrentUser().getUid();
+            String image=mAuth.getCurrentUser().getPhotoUrl().toString();
+            intent.putExtra("user_id", uid);
+            if(image!=null || image!=""){
+                intent.putExtra("profile_picture",image);
+            }
+            startActivity(intent);
+            finish();
+            Log.d(TAG, "onAuthStateChanged:signed_in:" + mUser.getUid());
+        }
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser mUser = firebaseAuth.getCurrentUser();
+                if (mUser != null) {
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + mUser.getUid());
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                }
+
+            }
+        };
+
+        //FaceBook
+        mCallbackManager = CallbackManager.Factory.create();
+        LoginButton loginButton = (LoginButton) findViewById(R.id.login_button_facebook);
+        loginButton.setReadPermissions("email", "public_profile");
+        loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Log.d(TAG, "facebook:onSuccess:" + loginResult);
+                signInWithFacebook(loginResult.getAccessToken());
+            }
+
+            @Override
+            public void onCancel() {
+                Log.d(TAG, "facebook:onCancel");
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Log.d(TAG, "facebook:onError", error);
+            }
+        });
 
 
-        database = FirebaseDatabase.getInstance().getReference();
-        auth = FirebaseAuth.getInstance();
 
-//        storage = FirebaseStorage.getInstance();
 
-//        authListener = new FirebaseAuth.AuthStateListener() {
-//            @Override
-//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                FirebaseUser user = firebaseAuth.getCurrentUser();
-//                if(user != null){
-//                    // User is signed in
-//                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-//                }
-//                else{
-//                    // User is signed out
-//                    Log.d(TAG, "onAuthStateChanged:signed_out");
-//                }
-//            }
-//        };
+        cadastroFirebase = (LinearLayout) findViewById(R.id.login_cadastro_firebase);
+
+        cadastroCheckBox = (CheckBox) findViewById(R.id.login_cadastro_check);
+        cadastroCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    cadastroFirebase.setVisibility(View.VISIBLE);
+                } else {
+                    cadastroFirebase.setVisibility(View.GONE);
+                }
+            }
+        });
 
         campoEmail = (EditText) findViewById(R.id.login_email);
         campoSenha = (EditText) findViewById(R.id.login_senha);
@@ -88,11 +155,100 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     protected void onStart() {
         super.onStart();
 
-        if (auth.getCurrentUser() != null) {
-            onAuthSuccess();
+
+        mAuth.addAuthStateListener(mAuthListener);
+
+//        if (mAuth.getCurrentUser() != null) {
+//            onAuthSuccess();
+//        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
         }
     }
 
+    //FaceBook
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+    //
+
+    private void signInWithFacebook(AccessToken token) {
+        Log.d(TAG, "signInWithFacebook:" + token);
+
+        showProgressDialog();
+
+
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "signInWithCredential", task.getException());
+                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }else{
+                            String uid=task.getResult().getUser().getUid();
+                            String name=task.getResult().getUser().getDisplayName();
+                            String email=task.getResult().getUser().getEmail();
+                            String image=task.getResult().getUser().getPhotoUrl().toString();
+
+                            //Create a new User and Save it in Firebase database
+                            Bar user = new Bar(uid,name,email);
+
+                            database.child(uid).setValue(user);
+
+                            Intent intent = new Intent(getApplicationContext(), PerfilActivity.class);
+                            intent.putExtra("user_id",uid);
+                            intent.putExtra("profile_picture",image);
+                            startActivity(intent);
+                            finish();
+                        }
+
+                        hideProgressDialog();
+                    }
+                });
+    }
+
+
+    private void handleFacebookAccessToken(AccessToken token) {
+        Log.d(TAG, "handleFacebookAccessToken:" + token);
+
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "signInWithCredential", task.getException());
+                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                        else{
+                            Intent vaiParaMapa = new Intent(LoginActivity.this, MapaBarActivity.class);
+                            startActivity(vaiParaMapa);
+
+                            finish();
+                        }
+                    }
+                });
+    }
 
     private void entraConta() {
         Log.d(TAG, "login");
@@ -105,7 +261,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         String email = campoEmail.getText().toString();
         String senha = campoSenha.getText().toString();
 
-        auth.signInWithEmailAndPassword(email, senha)
+        mAuth.signInWithEmailAndPassword(email, senha)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -138,7 +294,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         String email = campoEmail.getText().toString();
         String senha = campoSenha.getText().toString();
 
-        auth.createUserWithEmailAndPassword(email, senha)
+        mAuth.createUserWithEmailAndPassword(email, senha)
                 .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -211,9 +367,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     @Override
     public void onClick(View view) {
         int i = view.getId();
+
         if (i == R.id.login_entrar) {
             entraConta();
-        } else if (i == R.id.login_cadastrar) {
+        }
+
+        else if (i == R.id.login_cadastrar) {
             cadastraConta();
         }
     }

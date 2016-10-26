@@ -60,6 +60,7 @@ import br.com.alura.searchdrink.R;
 import br.com.alura.searchdrink.adapter.BebidasAdapter;
 import br.com.alura.searchdrink.modelo.Bar;
 import br.com.alura.searchdrink.modelo.Bebida;
+import br.com.alura.searchdrink.task.ImageLoadTask;
 
 public class PerfilActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -169,6 +170,10 @@ public class PerfilActivity extends BaseActivity
         bebidas = new ArrayList<>();
         bebidasAdapter = new BebidasAdapter(this, bebidas);
         campoListaBebidas.setAdapter(bebidasAdapter);
+
+        ImageView profilePicture = (ImageView) findViewById(R.id.perfil_foto);
+        String imageUrl = getIntent().getExtras().getString("profile_picture");
+        new ImageLoadTask(imageUrl, profilePicture).execute();
     }
 
     @Override

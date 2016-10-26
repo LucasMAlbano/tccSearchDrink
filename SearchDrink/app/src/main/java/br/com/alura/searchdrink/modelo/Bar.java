@@ -18,7 +18,8 @@ import java.util.Objects;
 @IgnoreExtraProperties
 public class Bar implements Serializable{
 
-//    private String uId;
+    private String uId;
+
     private String nome;
     private String endereco;
     private String telefone;
@@ -31,8 +32,15 @@ public class Bar implements Serializable{
 
     private List<Bebida> bebidas;
 
+
     public Bar(String nome, String email){
 //        this.uId = uId;
+        this.nome = nome;
+        this.email = email;
+    }
+
+    public Bar(String uId, String nome, String email){
+        this.uId = uId;
         this.nome = nome;
         this.email = email;
     }

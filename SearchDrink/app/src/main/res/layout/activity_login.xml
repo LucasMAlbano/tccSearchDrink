@@ -39,12 +39,7 @@
         <!--android:textSize="30dp" />-->
 
 
-        <CheckBox
-            android:id="@+id/login_cadastro_check"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cadastro de email?"
-            android:layout_gravity="center"/>
+
 
 
         <LinearLayout
@@ -109,12 +104,19 @@
         </LinearLayout>
 
         <com.facebook.login.widget.LoginButton
-            android:id="@+id/login_facebook"
+            android:id="@+id/login_button_facebook"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
             android:layout_marginBottom="30dp" />
+
+        <CheckBox
+            android:id="@+id/login_cadastro_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cadastro de email?"
+            android:layout_gravity="center"/>
 
         <ImageView
             android:layout_width="60dp"
