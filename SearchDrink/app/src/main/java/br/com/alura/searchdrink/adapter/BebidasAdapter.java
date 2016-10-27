@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -53,10 +54,14 @@ public class BebidasAdapter extends BaseAdapter {
             view = inflater.inflate(R.layout.list_item_bebida, parent, false);
         }
 
-        TextView campoNome = (TextView) view.findViewById(R.id.item_nome);
+        ImageView campoFoto = (ImageView) view.findViewById(R.id.item_bebida_foto);
+        final String[] tiposBebida = bebida.getNome().split(":");
+        preencheCampoFotoBebida(campoFoto, tiposBebida[0]);
+
+        TextView campoNome = (TextView) view.findViewById(R.id.item_bebida_nome);
         campoNome.setText(bebida.getNome() + " - " + bebida.getQuantidade());
 
-        TextView campoPreco = (TextView) view.findViewById(R.id.item_preco);
+        TextView campoPreco = (TextView) view.findViewById(R.id.item_bebida_preco);
         campoPreco.setText(String.valueOf(bebida.getPreco()));
 
 //        TextView campoIdFirebase = (TextView) view.findViewById(R.id.item_idFirebase);
@@ -79,5 +84,29 @@ public class BebidasAdapter extends BaseAdapter {
 //        }
 
         return view;
+    }
+
+    private void preencheCampoFotoBebida(ImageView campoFoto, String tipoBebida) {
+        if(tipoBebida.equals("cerveja"))
+            campoFoto.setBackgroundResource(R.mipmap.ic_cerveja);
+
+        else if (tipoBebida.equals("chopp"))
+            campoFoto.setBackgroundResource(R.mipmap.ic_chopp);
+
+        else if (tipoBebida.equals("catuaba") || tipoBebida.equals("pinga") || tipoBebida.equals("tequila") ||
+                tipoBebida.equals("vodka") || tipoBebida.equals("wisky"))
+            campoFoto.setBackgroundResource(R.mipmap.ic_wisky);
+
+        else if (tipoBebida.equals("drinks"))
+            campoFoto.setBackgroundResource(R.mipmap.ic_drink);
+
+        else if (tipoBebida.equals("isotonicos"))
+            campoFoto.setBackgroundResource(R.mipmap.ic_isotonico);
+
+        else if (tipoBebida.equals("refrigerantes"))
+            campoFoto.setBackgroundResource(R.mipmap.ic_refri);
+
+        else if (tipoBebida.equals("sucos"))
+            campoFoto.setBackgroundResource(R.mipmap.ic_suco);
     }
 }

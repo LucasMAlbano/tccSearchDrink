@@ -9,7 +9,7 @@
         android:layout_height="80dp"
         android:layout_marginTop="7dp"
         android:background="@drawable/ic_bebida"
-        android:id="@+id/item_foto"/>
+        android:id="@+id/item_bebida_foto"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -25,7 +25,7 @@
             android:textStyle="bold"
             android:fontFamily="casual"
             android:paddingLeft="10dp"
-            android:id="@+id/item_nome"
+            android:id="@+id/item_bebida_nome"
             android:textColor="#F1C332"/>
 
         <LinearLayout
@@ -47,7 +47,7 @@
                 android:textSize="24sp"
                 android:fontFamily="casual"
                 android:paddingTop="8dp"
-                android:id="@+id/item_preco"
+                android:id="@+id/item_bebida_preco"
                 android:textColor="#F1C332"/>
         </LinearLayout>
 

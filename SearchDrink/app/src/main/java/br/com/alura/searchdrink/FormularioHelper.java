@@ -8,12 +8,14 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -116,7 +118,7 @@ public class FormularioHelper {
         this.bar = bar;
 
         final Map<String, String> enderecoCompleto;
-        if (bar.getEndereco() != null) {
+        if (!bar.getEndereco().equals(null) && !bar.getEndereco().equals("null") && !bar.getEndereco().equals("")) {
             enderecoCompleto = barHelper.devolveEndereco(bar.getEndereco());
 
             campoEndereco.setText(enderecoCompleto.get("rua"));
@@ -124,12 +126,13 @@ public class FormularioHelper {
             campoBairro.setText(enderecoCompleto.get("bairro"));
             campoCidade.setText(enderecoCompleto.get("cidade"));
             campoEstado.setText(enderecoCompleto.get("estado"));
+
+            campoNome.setText(bar.getNome());
+            campoTelefone.setText(bar.getTelefone());
+            campoSite.setText(bar.getSite());
+            spinnerBares.setPrompt(bar.getTipoBar());
         }
 
-        campoNome.setText(bar.getNome());
-        campoTelefone.setText(bar.getTelefone());
-        campoSite.setText(bar.getSite());
-        spinnerBares.setPrompt(bar.getTipoBar());
 
 //        if (mypath != null){
 //            campoFoto.setImageBitmap(BitmapFactory.decodeFile(mypath.getAbsolutePath()));
@@ -288,6 +291,14 @@ public class FormularioHelper {
             validador = false;
         } else {
             campoTelefone.setError(null);
+        }
+
+        String site = campoSite.getText().toString();
+        if (TextUtils.isEmpty(site)) {
+            campoSite.setError(OBRIGATORIO);
+            validador = false;
+        } else {
+            campoSite.setError(null);
         }
 
         String spinner = spinnerBares.getSelectedItem().toString();

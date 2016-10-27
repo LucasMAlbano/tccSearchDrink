@@ -15,6 +15,7 @@ import java.util.Map;
 public class Bar implements Serializable{
 
     private String uId;
+    private long id;
 
     private String nome;
     private String endereco;
@@ -153,6 +154,13 @@ public class Bar implements Serializable{
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public long getId(){return this.id;}
+
+    private void setId(long id){
+        this.id = id;
+    }
+
 
 
     @Exclude

@@ -34,6 +34,7 @@
                 <!--android:layout_marginBottom="16dp"/>-->
         <!--</RelativeLayout>-->
 
+
         <EditText
             android:id="@+id/formulario_nome"
             android:layout_width="match_parent"
@@ -46,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Endereço:"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="20dp"
             android:layout_marginLeft="5dp"
             android:textSize="15dp"/>
 
@@ -57,7 +58,7 @@
             android:id="@+id/formulario_endereco"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:hint="@string/campo_endereco" />
         <EditText
             android:id="@+id/formulario_numero"
@@ -101,7 +102,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:inputType="number"
+            android:inputType="phone"
             android:hint="(DDD) Tefone"/>
 
         <EditText
@@ -132,7 +133,7 @@
         android:layout_height="wrap_content"
         android:text="Tipo de bar:"
         android:textSize="15dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:layout_marginLeft="5dp"/>
         <Spinner
             android:id="@+id/spinnerBares"

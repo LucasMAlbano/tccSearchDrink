@@ -15,6 +15,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import br.com.alura.searchdrink.R;
 import br.com.alura.searchdrink.modelo.Bar;
 
@@ -34,7 +37,7 @@ public class PerfilUsuarioActivity extends BaseActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_perfil_usuario);
 
-        dbUser = FirebaseDatabase.getInstance().getReference().child("users");
+        dbUser = FirebaseDatabase.getInstance().getReference().child("users").child(getUid());
         dbBar = FirebaseDatabase.getInstance().getReference().child("bares");
 
         buttonSouBar = (Button) findViewById(R.id.perfil_usuario_button_sou_bar);
@@ -46,10 +49,22 @@ public class PerfilUsuarioActivity extends BaseActivity {
                 dbUser.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        Bar bar = dataSnapshot.getValue(Bar.class);
+
+                        Map<String, Object> mapBar = (HashMap<String, Object>)dataSnapshot.getValue();
+                        String nome = String.valueOf(mapBar.get("nome"));
+                        String email = String.valueOf(mapBar.get("email"));
+                        String endereco = String.valueOf(mapBar.get("endereco"));
+                        String site = String.valueOf(mapBar.get("site"));
+                        String telefone = String.valueOf(mapBar.get("telefone"));
+                        String uriFotoPerfil = String.valueOf(mapBar.get("uriFoto"));
+                        String tipoBar = String.valueOf(mapBar.get("tipoBar"));
+
+                        Bar bar = new Bar(dataSnapshot.getKey(), nome, email, uriFotoPerfil, endereco, telefone, site, tipoBar);
+
                         dbBar.child(dataSnapshot.getKey()).setValue(bar);
 
-                        Intent intent = new Intent(PerfilUsuarioActivity.this, PerfilBarActivity.class);
+                        Intent intent = new Intent(PerfilUsuarioActivity.this, FormularioActivity.class);
+                        intent.putExtra("tipo", "cadastro");
                         startActivity(intent);
                     }
 

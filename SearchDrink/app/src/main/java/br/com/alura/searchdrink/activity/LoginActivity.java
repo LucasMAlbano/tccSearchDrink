@@ -20,18 +20,24 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.Profile;
 import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInApi;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.cast.framework.SessionManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.plus.Plus;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -163,6 +169,10 @@ public class LoginActivity extends BaseActivity
     //
 
     private void signInWithGoogle() {
+
+        if (mGoogleApiClient.isConnected())
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN_GOOGLE);
     }
@@ -214,7 +224,6 @@ public class LoginActivity extends BaseActivity
 
         showProgressDialog();
 
-
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -227,8 +236,9 @@ public class LoginActivity extends BaseActivity
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Log.w(TAG, "signInWithCredential", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                            Toast.makeText(LoginActivity.this, "Falha na autenticação / Você já pode ter sido cadastrado com outro provedor!",
                                     Toast.LENGTH_SHORT).show();
+
                         }else{
                             String uid=task.getResult().getUser().getUid();
                             String name=task.getResult().getUser().getDisplayName();
@@ -454,6 +464,7 @@ public class LoginActivity extends BaseActivity
         //login com Google
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -464,15 +475,6 @@ public class LoginActivity extends BaseActivity
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-        if(mGoogleApiClient.isConnected()) {
-            Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
-                    new ResultCallback<Status>() {
-                        @Override
-                        public void onResult(Status status) {
-                            // ...
-                        }
-                    });
-        }
 
         loginButtonGoogle = (SignInButton)findViewById(R.id.login_button_google);
         loginButtonGoogle.setOnClickListener(new View.OnClickListener() {
@@ -487,6 +489,7 @@ public class LoginActivity extends BaseActivity
 
     private void inicializaLoginComFacebook() {
         //login com FaceBook
+        LoginManager.getInstance().logOut();
         mCallbackManager = CallbackManager.Factory.create();
         loginButtonFacebook = (LoginButton) findViewById(R.id.login_button_facebook);
         loginButtonFacebook.setReadPermissions("email", "public_profile");

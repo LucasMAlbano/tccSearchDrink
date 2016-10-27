@@ -10,7 +10,7 @@ import java.util.Map;
 public class BarHelper {
 
     public String constroiEndereco(String rua, String numero, String bairro, String cidade, String estado){
-        return rua + "," + "," + numero + "," + bairro + "," + cidade + "," + estado;
+        return rua + "," + numero + "," + bairro + "," + cidade + "," + estado;
     }
 
     public Map<String, String> devolveEndereco(String endereco) {
