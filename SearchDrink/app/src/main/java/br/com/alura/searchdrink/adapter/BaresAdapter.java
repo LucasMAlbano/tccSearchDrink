@@ -5,13 +5,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
 import br.com.alura.searchdrink.R;
 import br.com.alura.searchdrink.modelo.Bar;
 import br.com.alura.searchdrink.modelo.Bebida;
+import br.com.alura.searchdrink.task.ImageLoadTask;
 
 /**
  * Created by Birbara on 04/08/2016.
@@ -54,11 +57,16 @@ public class BaresAdapter extends BaseAdapter {
             view = inflater.inflate(R.layout.list_item_bar, parent, false);
         }
 
+        if (!bar.getUriFoto().equals(null) || !bar.getUriFoto().equals("null") || !bar.getUriFoto().equals("")) {
+            ImageView campoFotoPerfil = (ImageView) view.findViewById(R.id.item_bar_foto);
+            new ImageLoadTask(bar.getUriFoto(), campoFotoPerfil).execute();
+        }
+
         TextView campoNome = (TextView) view.findViewById(R.id.item_bar_nome);
         campoNome.setText(bar.getNome());
 
         TextView campoEndereco= (TextView) view.findViewById(R.id.item_bar_endereco);
-        campoEndereco.setText(String.valueOf(bar.getEndereco()));
+        campoEndereco.setText(bar.getEndereco().split(",")[0] );
 
         return view;
     }

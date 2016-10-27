@@ -25,6 +25,8 @@ import java.util.Map;
 
 import br.com.alura.searchdrink.R;
 import br.com.alura.searchdrink.WebClient;
+import br.com.alura.searchdrink.adapter.BaresAdapter;
+import br.com.alura.searchdrink.adapter.BebidasAdapter;
 import br.com.alura.searchdrink.adapter.ExpandableFiltroAdapterTeste;
 import br.com.alura.searchdrink.modelo.Bar;
 import br.com.alura.searchdrink.task.GeoTask;
@@ -44,6 +46,8 @@ public class ListaBaresActivity extends BaseActivity implements GeoTask.Geo {
 
     private ExpandableFiltroAdapterTeste bebidasAdapter;
     private ExpandableFiltroAdapterTeste baresAdapter;
+
+    private BaresAdapter adapter;
 
     private DatabaseReference dbFiltrosBar;
     private DatabaseReference dbFiltroBebidas;
@@ -104,6 +108,13 @@ public class ListaBaresActivity extends BaseActivity implements GeoTask.Geo {
         new GeoTask(this).execute(url);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        adapter = new BaresAdapter(this, estabalecimentos);
+        listaEstabelecimentos.setAdapter(adapter);
+    }
 
     private void carregaFiltroBares(){
 

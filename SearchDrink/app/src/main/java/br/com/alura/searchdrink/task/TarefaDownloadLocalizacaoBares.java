@@ -140,7 +140,7 @@ public class TarefaDownloadLocalizacaoBares extends AsyncTask<DatabaseReference,
                         String telefone = String.valueOf(map.get("telefone"));
                         String site = String.valueOf(map.get("site"));
                         String email = String.valueOf(map.get("email"));
-                        String uriFotoPerfil = String.valueOf(map.get("uriFotoPerfil"));
+                        String uriFotoPerfil = String.valueOf(map.get("uriFoto"));
                         String tipoBar = String.valueOf(map.get("tipoBar"));
 
                         if (endereco != null) {

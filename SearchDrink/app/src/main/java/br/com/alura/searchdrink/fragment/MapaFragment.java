@@ -63,6 +63,8 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
 
     private List<Bar> bares;
 
+    private TarefaDownloadLocalizacaoBares tarefaDownload;
+
     public MapaFragment(/*DatabaseReference database, */ImageButton centralizar){
 //        this.database = database;
         this.centralizar = centralizar;
@@ -84,17 +86,17 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
             }
         });
 
+        tarefaDownload = new TarefaDownloadLocalizacaoBares(getContext()/*, bares*/);
+        Log.i("AsyncTask", "AsyncTask senado chamado Thread: " + Thread.currentThread().getName());
+        tarefaDownload.execute(database);
+        Log.i("AsyncTask", "AsyncTask senado chamado Thread: " + Thread.currentThread().getName());
+
         getMapAsync(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        TarefaDownloadLocalizacaoBares tarefaDownload = new TarefaDownloadLocalizacaoBares(getContext()/*, bares*/);
-        Log.i("AsyncTask", "AsyncTask senado chamado Thread: " + Thread.currentThread().getName());
-        tarefaDownload.execute(database);
-        Log.i("AsyncTask", "AsyncTask senado chamado Thread: " + Thread.currentThread().getName());
 
         bares = tarefaDownload.getEstabelecimentos();
     }
