@@ -172,6 +172,8 @@ public class Bar implements Serializable{
         resultado.put("telefone", telefone);
         resultado.put("site", site);
         resultado.put("tipoBar", tipoBar);
+        resultado.put("uId", uId);
+        resultado.put("uriFoto", uriFoto);
 
         return resultado;
     }

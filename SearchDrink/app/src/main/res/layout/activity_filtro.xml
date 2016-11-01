@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/filtro_bebidas">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Selecione o tipo de bebida desejada"
+                android:textSize="18sp"
+                android:layout_gravity="center_horizontal" />
+
+
+
+            <!--<Button-->
+                <!--android:layout_width="160dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Cerveja"-->
+                <!--android:layout_marginTop="20dp"-->
+                <!--android:id="@+id/filtro_button_cerveja"-->
+                <!--android:layout_gravity="center_horizontal" />-->
+
+            <!--<Button-->
+                <!--android:layout_width="160dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Destilado"-->
+                <!--android:id="@+id/filtro_button_destilado"-->
+                <!--android:layout_gravity="center_horizontal" />-->
+
+            <!--<Button-->
+                <!--android:layout_width="160dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Drink"-->
+                <!--android:id="@+id/filtro_button_drink"-->
+                <!--android:layout_gravity="center_horizontal" />-->
+
+            <!--<Button-->
+                <!--android:layout_width="160dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Suco"-->
+                <!--android:id="@+id/filtro_button_suco"-->
+                <!--android:layout_gravity="center_horizontal" />-->
+
+            <!--<Button-->
+                <!--android:layout_width="160dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Refrigerante"-->
+                <!--android:id="@+id/filtro_button_refrigerante"-->
+                <!--android:layout_gravity="center_horizontal" />-->
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:visibility="gone"
+                    android:id="@+id/filtro_bebidaSelecionada"/>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="18sp"
+                    android:text="x"
+                    android:textColor="#ff0000"
+                    android:visibility="gone"
+                    android:id="@+id/filtro_button_removerBebidaSelecionada"/>
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/filtro_bares">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textSize="18sp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Selecione o(s) tipo(s) de bar desejado"
+                android:layout_gravity="center_horizontal" />
+
+            <!--<CheckBox-->
+                <!--android:layout_width="131dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Botecão"-->
+                <!--android:id="@+id/checkBox"-->
+                <!--android:layout_marginTop="20dp"-->
+                <!--android:layout_gravity="center_horizontal"-->
+                <!--android:checked="false" />-->
+
+            <!--<CheckBox-->
+                <!--android:layout_width="131dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Bar Balada"-->
+                <!--android:id="@+id/checkBox2"-->
+                <!--android:layout_gravity="center_horizontal"-->
+                <!--android:checked="false" />-->
+
+            <!--<CheckBox-->
+                <!--android:layout_width="131dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Bar restaurante"-->
+                <!--android:id="@+id/checkBox3"-->
+                <!--android:layout_gravity="center_horizontal"-->
+                <!--android:checked="false" />-->
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/filtro_button_ok"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="OK"
+            android:textColor="@color/color_app"
+            android:background="#000"/>
+
+    </LinearLayout>
+</ScrollView>

@@ -74,23 +74,32 @@
             app:menu_shadowYOffset="4dp"
             app:menu_showShadow="true">
 
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/floating_login"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/ic_login"
-            app:fab_colorNormal="#dec719"
-            android:layout_margin="5dp"
-            app:fab_size="mini"
-            android:scaleType="fitCenter"/>
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/floating_filtrar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_filtrar"
+                app:fab_colorNormal="#d686de"
+                app:fab_size="mini" />
 
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/floating_pesquisar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/ic_listar"
-            app:fab_colorNormal="#000"
-            app:fab_size="mini" />
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/floating_pesquisar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_pesquisar"
+                app:fab_colorNormal="#dec719"
+                app:fab_size="mini" />
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/floating_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_login"
+                app:fab_colorNormal="#2ffadb"
+                android:layout_margin="5dp"
+                app:fab_size="mini"
+                android:scaleType="fitCenter"/>
+
 
         <!--<com.github.clans.fab.FloatingActionButton-->
             <!--android:id="@+id/floating_listar"-->

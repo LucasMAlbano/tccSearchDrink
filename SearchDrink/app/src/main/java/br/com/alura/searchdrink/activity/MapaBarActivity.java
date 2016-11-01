@@ -42,12 +42,11 @@ public class MapaBarActivity extends BaseActivity {
     DatabaseReference database;
 
     FloatingActionMenu botaoMenu;
-    FloatingActionButton floatingLogin, floatingPesquisar/*, floatingListar*/;
+    FloatingActionButton floatingLogin, floatingFiltrar, floatingPesquisar;/*, floatingListar*/
     ImageButton centralizar;
 
     private String uId;
     private String uriFoto;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +87,7 @@ public class MapaBarActivity extends BaseActivity {
 
         botaoMenu = (FloatingActionMenu) findViewById(R.id.button_menu);
         floatingLogin = (FloatingActionButton) findViewById(R.id.floating_login);
+        floatingFiltrar = (FloatingActionButton) findViewById(R.id.floating_filtrar);
         floatingPesquisar = (FloatingActionButton) findViewById(R.id.floating_pesquisar);
 //        floatingListar = (FloatingActionButton) findViewById(R.id.floating_listar);
 
@@ -98,18 +98,18 @@ public class MapaBarActivity extends BaseActivity {
                 vaiParaPerfil(uId);
             }
         });
-        floatingPesquisar.setOnClickListener(new View.OnClickListener() {
+        floatingFiltrar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent vaiParaLista = new Intent(MapaBarActivity.this, ListaBaresActivity.class);
-                vaiParaLista.putExtra("lista", (Serializable) mapaFragment.getEstabelecimentos());
+                vaiParaLista.putExtra("estabelecimentos", (Serializable) mapaFragment.getEstabelecimentos());
                 startActivity(vaiParaLista);
             }
         });
-//        floatingListar.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//
-//            }
-//        });
+        floatingPesquisar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     private void vaiParaPerfil(final String uId) {

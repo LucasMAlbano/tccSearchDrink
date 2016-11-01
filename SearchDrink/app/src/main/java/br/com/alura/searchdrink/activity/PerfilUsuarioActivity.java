@@ -53,19 +53,17 @@ public class PerfilUsuarioActivity extends BaseActivity {
                         Map<String, Object> mapBar = (HashMap<String, Object>)dataSnapshot.getValue();
                         String nome = String.valueOf(mapBar.get("nome"));
                         String email = String.valueOf(mapBar.get("email"));
-                        String endereco = String.valueOf(mapBar.get("endereco"));
-                        String site = String.valueOf(mapBar.get("site"));
-                        String telefone = String.valueOf(mapBar.get("telefone"));
                         String uriFotoPerfil = String.valueOf(mapBar.get("uriFoto"));
-                        String tipoBar = String.valueOf(mapBar.get("tipoBar"));
 
-                        Bar bar = new Bar(dataSnapshot.getKey(), nome, email, uriFotoPerfil, endereco, telefone, site, tipoBar);
+                        Bar bar = new Bar(dataSnapshot.getKey(), nome, email, uriFotoPerfil, null, null, null, null);
 
                         dbBar.child(dataSnapshot.getKey()).setValue(bar);
 
                         Intent intent = new Intent(PerfilUsuarioActivity.this, FormularioActivity.class);
                         intent.putExtra("tipo", "cadastro");
                         startActivity(intent);
+
+                        finish();
                     }
 
                     @Override
@@ -81,6 +79,7 @@ public class PerfilUsuarioActivity extends BaseActivity {
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(PerfilUsuarioActivity.this, LoginActivity.class));
+                finish();
             }
         });
     }

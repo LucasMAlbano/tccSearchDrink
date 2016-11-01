@@ -31,6 +31,7 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -85,6 +86,7 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
 
             }
         });
+
 
         tarefaDownload = new TarefaDownloadLocalizacaoBares(getContext()/*, bares*/);
         Log.i("AsyncTask", "AsyncTask senado chamado Thread: " + Thread.currentThread().getName());

@@ -8,7 +8,7 @@
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_margin="7dp"
-        android:background="@drawable/ic_bebida"
+        android:background="@mipmap/ic_bebida"
         android:id="@+id/item_bebida_foto"/>
 
     <LinearLayout

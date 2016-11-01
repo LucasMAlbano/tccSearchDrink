@@ -27,6 +27,7 @@ import java.util.Map;
 import br.com.alura.searchdrink.R;
 import br.com.alura.searchdrink.fragment.MapaFragment;
 import br.com.alura.searchdrink.modelo.Bar;
+import br.com.alura.searchdrink.modelo.Bebida;
 
 /**
  * Created by Birbara on 30/09/2016.
@@ -78,15 +79,15 @@ public class TarefaDownloadLocalizacaoBares extends AsyncTask<DatabaseReference,
 
         if (bares.size() != 0) {
             //adiciona local do bar
-            int i = 0;
+//            int i = 0;
             for (Bar bar : bares) {
 //            Toast.makeText(context, "dentro do for", Toast.LENGTH_LONG).show();
 //            Toast.makeText(context, bar.getNome() + " - " + bar.getEndereco(), Toast.LENGTH_LONG).show();
                 LatLng coordenada = pegaCoordenadaDoEndereco(bar.getEndereco());
                 if (coordenada != null) {
 
-                    estabelecimentos.get(i).setCoordenada(coordenada.latitude+","+coordenada.longitude);
-                    i++;
+//                    estabelecimentos.get(i).setCoordenada(coordenada.latitude+","+coordenada.longitude);
+//                    i++;
 
                     MarkerOptions marcador = new MarkerOptions();
                     marcador.position(coordenada);
@@ -145,6 +146,18 @@ public class TarefaDownloadLocalizacaoBares extends AsyncTask<DatabaseReference,
 
                         if (endereco != null) {
                             Bar bar = new Bar(snapshot.getKey(), nome, email, uriFotoPerfil, endereco, telefone, site, tipoBar);
+
+                            for (DataSnapshot snapshot2 : snapshot.child(snapshot.getKey()).child("bebidas").getChildren()){
+                                Map <String, Object> mapBebidas = (HashMap<String, Object>)snapshot.getValue();
+                                String nomeBebida = String.valueOf(mapBebidas.get("nome"));
+                                String quantidade = String.valueOf(mapBebidas.get("quantidade"));
+                                double preco = Double.parseDouble(String.valueOf(mapBebidas.get("preco")));
+                                String idBebida = snapshot.getKey();
+                                Bebida bebida = new Bebida(nomeBebida, quantidade, preco, idBebida);
+
+                                bar.getBebidas().add(bebida);
+                            }
+
                             estabelecimentos.add(bar);
                         }
                     }

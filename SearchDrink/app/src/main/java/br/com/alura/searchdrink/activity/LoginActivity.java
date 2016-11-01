@@ -53,6 +53,7 @@ import java.text.BreakIterator;
 
 import br.com.alura.searchdrink.R;
 import br.com.alura.searchdrink.modelo.Bar;
+import br.com.alura.searchdrink.modelo.User;
 
 public class LoginActivity extends BaseActivity
         implements View.OnClickListener,
@@ -203,7 +204,7 @@ public class LoginActivity extends BaseActivity
                             String image=task.getResult().getUser().getPhotoUrl().toString();
 
                             //Create a new User and Save it in Firebase database
-                            Bar user = new Bar(uid,name,email, image, null, null, null, null);
+                            User user = new User(uid,name,email, image);
 
                             database.child(uid).setValue(user);
 
@@ -246,7 +247,7 @@ public class LoginActivity extends BaseActivity
                             String image=task.getResult().getUser().getPhotoUrl().toString();
 
                             //Create a new User and Save it in Firebase database
-                            Bar user = new Bar(uid,name,email, image, null, null, null, null);
+                            User user = new User(uid,name,email, image);
 
                             database.child(uid).setValue(user);
 
@@ -407,7 +408,8 @@ public class LoginActivity extends BaseActivity
     }
 
     private void writeNewUser(FirebaseUser user) {
-        Bar usuario = new Bar(user.getUid(), usernameFromEmail(user.getEmail()), user.getEmail(), null, null, null, null, null);
+//        Bar usuario = new Bar(user.getUid(), usernameFromEmail(user.getEmail()), user.getEmail(), null, null, null, null, null);
+        User usuario = new User(user.getUid(), usernameFromEmail(user.getEmail()),user.getEmail(), null);
 
         database.child("bares").child(user.getUid()).setValue(usuario);
     }

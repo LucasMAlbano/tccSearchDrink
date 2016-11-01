@@ -59,7 +59,7 @@ public class ListaAlunosActivity extends AppCompatActivity {
 
         listaAlunos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> lista, View item, int position, long id) { //AdapterView<?> adapterView = lista, View view = item, int i = posicao, long l = id
+            public void onItemClick(AdapterView<?> lista, View item, int position, long id) { //AdapterView<?> adapterView = tiposBebidas, View view = item, int i = posicao, long l = id
 
                 Bar bar = (Bar) lista.getItemAtPosition(position);
 
