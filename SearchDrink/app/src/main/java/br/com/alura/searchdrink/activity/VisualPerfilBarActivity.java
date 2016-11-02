@@ -1,8 +1,11 @@
 package br.com.alura.searchdrink.activity;
 
+import android.app.Dialog;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -35,6 +38,8 @@ public class VisualPerfilBarActivity extends BaseActivity {
     private DatabaseReference dbBar;
     private DatabaseReference dbUser;
 
+    private boolean deuNota = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +48,7 @@ public class VisualPerfilBarActivity extends BaseActivity {
         bar = (Bar) getIntent().getSerializableExtra("bar");
 
         dbBar = FirebaseDatabase.getInstance().getReference().child("bares").child(bar.getuId()).child("notas");
-        dbBar = FirebaseDatabase.getInstance().getReference().child("users").child(getUid()).child("notas");
+        dbUser = FirebaseDatabase.getInstance().getReference().child("users").child(getUid()).child("notas");
 
         campoNome = (TextView) findViewById(R.id.visual_perfil_nome);
         campoEndereco = (TextView) findViewById(R.id.visual_perfil_endereco);
@@ -104,7 +109,53 @@ public class VisualPerfilBarActivity extends BaseActivity {
                                 notasBar.put(snapshot.getKey(), Double.parseDouble(nota));
                         }
 
-                        
+                        if (notasUsuario.size() != 0 && notasBar.size() != 0){
+                            for (Map.Entry<String, Double> r : notasUsuario.entrySet()){
+                                if (notasBar.containsKey(r.getKey())){
+                                    deuNota = true;
+                                }
+                            }
+                        }
+
+                        botaoDarNota.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                if (deuNota == true){
+                                    botaoDarNota.setText("Mudar sua nota");
+                                }
+                                else{
+                                    final Dialog dialog = new Dialog(VisualPerfilBarActivity.this);
+                                    dialog.setContentView(R.layout.dialog_dar_nota);
+                                    dialog.setTitle("Dar Nota");
+
+                                    final RatingBar dialogNota = (RatingBar) dialog.findViewById(R.id.dialog_dar_nota_nota);
+                                    final Button dialogSalvar = (Button) dialog.findViewById(R.id.dialog_dar_nota_botao_salvar);
+                                    final Button dialogCancelar = (Button) dialog.findViewById(R.id.dialog_dar_nota_botao_cancelar);
+
+                                    dialogSalvar.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+
+                                            String idNota = dbBar.push().getKey();
+
+                                            Map<String, Object> childUpdates = new HashMap<>();
+                                            childUpdates.put(idNota, Double.valueOf(dialogNota.getRating()));
+                                            dbBar.updateChildren(childUpdates);
+                                            dbUser.updateChildren(childUpdates);
+                                        }
+                                    });
+
+                                    dialogCancelar.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+
+                                    dialog.show();
+                                }
+                            }
+                        });
                     }
 
                     @Override
