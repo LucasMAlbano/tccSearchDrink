@@ -37,7 +37,7 @@ public class TarefaDownloadLocalizacaoBares extends AsyncTask<DatabaseReference,
 
     private final Context context;
 
-    private List<Bar> estabelecimentos;
+    public static List<Bar> estabelecimentos;
 
     private ProgressDialog progresso;
 
@@ -131,10 +131,10 @@ public class TarefaDownloadLocalizacaoBares extends AsyncTask<DatabaseReference,
 
                 synchronized (estabelecimentos) {
 
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    for (DataSnapshot snapshotBares : dataSnapshot.getChildren()) {
                         Log.i("AsyncTask", "doInbackground 3: " + Thread.currentThread().getName());
 
-                        Map<String, Object> map = (HashMap<String, Object>) snapshot.getValue();
+                        Map<String, Object> map = (HashMap<String, Object>) snapshotBares.getValue();
 
                         String nome = String.valueOf(map.get("nome"));
                         String endereco = String.valueOf(map.get("endereco"));
@@ -145,14 +145,16 @@ public class TarefaDownloadLocalizacaoBares extends AsyncTask<DatabaseReference,
                         String tipoBar = String.valueOf(map.get("tipoBar"));
 
                         if (endereco != null) {
-                            Bar bar = new Bar(snapshot.getKey(), nome, email, uriFotoPerfil, endereco, telefone, site, tipoBar);
+                            Bar bar = new Bar(snapshotBares.getKey(), nome, email, uriFotoPerfil, endereco, telefone, site, tipoBar);
 
-                            for (DataSnapshot snapshot2 : snapshot.child(snapshot.getKey()).child("bebidas").getChildren()){
-                                Map <String, Object> mapBebidas = (HashMap<String, Object>)snapshot.getValue();
+
+                            for (DataSnapshot snapshot2 : snapshotBares.child("bebidas").getChildren()){
+
+                                Map <String, Object> mapBebidas = (HashMap<String, Object>)snapshot2.getValue();
                                 String nomeBebida = String.valueOf(mapBebidas.get("nome"));
                                 String quantidade = String.valueOf(mapBebidas.get("quantidade"));
                                 double preco = Double.parseDouble(String.valueOf(mapBebidas.get("preco")));
-                                String idBebida = snapshot.getKey();
+                                String idBebida = snapshotBares.getKey();
                                 Bebida bebida = new Bebida(nomeBebida, quantidade, preco, idBebida);
 
                                 bar.getBebidas().add(bebida);
@@ -176,9 +178,9 @@ public class TarefaDownloadLocalizacaoBares extends AsyncTask<DatabaseReference,
         };
     }
 
-    public List<Bar> getEstabelecimentos(){
-        return this.estabelecimentos;
-    }
+//    public List<Bar> getEstabelecimentos(){
+//        return this.estabelecimentos;
+//    }
 }
 
 //        dbs[0].addValueEventListener(new ValueEventListener() {

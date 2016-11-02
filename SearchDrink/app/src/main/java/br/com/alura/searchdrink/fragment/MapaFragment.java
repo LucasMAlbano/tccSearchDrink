@@ -100,7 +100,7 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
     public void onResume() {
         super.onResume();
 
-        bares = tarefaDownload.getEstabelecimentos();
+//        bares = tarefaDownload.getEstabelecimentos();
     }
 
     @Override

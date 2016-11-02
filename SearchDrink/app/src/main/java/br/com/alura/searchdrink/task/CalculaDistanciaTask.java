@@ -21,21 +21,34 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import br.com.alura.searchdrink.modelo.Bar;
+
 /**
  * Created by SRIVASTAVA on 1/9/2016.
  */
 /*The instance of this class is called by "MainActivty",to get the time taken reach the destination from Google Distance Matrix API in background.
   This class contains interface "Geo" to call the function setDouble(String) defined in "MainActivity.class" to display the result.*/
-public class GeoTask extends AsyncTask<String, Void, String> {
+public class CalculaDistanciaTask extends AsyncTask<String, Void, String> {
+
+    private final Bar bar;
+
     ProgressDialog pd;
+
     Context mContext;
+
     Double duration;
+
     Geo geo1;
+
     //constructor is used to get the context.
-    public GeoTask(Context mContext) {
+    public CalculaDistanciaTask(Context mContext, Bar bar) {
         this.mContext = mContext;
         geo1= (Geo) mContext;
+
+        this.bar = bar;
+
     }
+
     //This function is executed before before "doInBackground(String...params)" is executed to dispaly the progress dialog
     @Override
     protected void onPreExecute() {
@@ -45,13 +58,14 @@ public class GeoTask extends AsyncTask<String, Void, String> {
         pd.setCancelable(false);
         pd.show();
     }
+
     //This function is executed after the execution of "doInBackground(String...params)" to dismiss the dispalyed progress dialog and call "setDouble(Double)" defined in "MainActivity.java"
     @Override
     protected void onPostExecute(String aDouble) {
         super.onPostExecute(aDouble);
         if(aDouble!=null)
         {
-            geo1.setDouble(aDouble);
+            geo1.setDouble(aDouble, this.bar);
             pd.dismiss();
         }
         else
@@ -106,7 +120,7 @@ public class GeoTask extends AsyncTask<String, Void, String> {
         return null;
     }
     public interface Geo{
-        public void setDouble(String min);
+        public void setDouble(String min, Bar bar);
     }
 
 }

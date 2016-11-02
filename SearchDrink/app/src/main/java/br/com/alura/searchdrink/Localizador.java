@@ -18,6 +18,8 @@ import br.com.alura.searchdrink.fragment.MapaFragment;
  */
 public class Localizador implements GoogleApiClient.ConnectionCallbacks, LocationListener {
 
+    public static LatLng coordenada = null;
+
     private final GoogleApiClient client;
     private final MapaFragment mapaFragment;
 
@@ -51,7 +53,7 @@ public class Localizador implements GoogleApiClient.ConnectionCallbacks, Locatio
     @Override
     public void onLocationChanged(Location location) {
 
-        LatLng coordenada = new LatLng(location.getLatitude(), location.getLongitude());
+        coordenada = new LatLng(location.getLatitude(), location.getLongitude());
         mapaFragment.centralizaEm(coordenada);
     }
 }

@@ -25,26 +25,26 @@
                 android:layout_margin="10dp">
 
                 <ImageView
-                    android:id="@+id/visual_lista_foto"
+                    android:id="@+id/visual_perfil_foto"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:src="@drawable/person"/>
 
                 <TextView
-                    android:id="@+id/visual_lista_nome"
+                    android:id="@+id/visual_perfil_nome"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Nome"
                     android:layout_marginLeft="120dp" />
 
                 <TextView
-                    android:id="@+id/visual_lista_endereco"
+                    android:id="@+id/visual_perfil_endereco"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:text="Endereco"
                     android:layout_marginLeft="120dp"
-                    android:layout_below="@+id/visual_lista_nome"/>
+                    android:layout_below="@+id/visual_perfil_nome"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -52,7 +52,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginLeft="120dp"
                     android:text="Estilo:"
-                    android:layout_below="@+id/visual_lista_endereco"/>
+                    android:layout_below="@+id/visual_perfil_endereco"/>
 
                 <TextView
                     android:id="@+id/visual_lista_tipo_bar"
@@ -61,19 +61,19 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginLeft="165dp"
                     android:text="tipo bar"
-                    android:layout_below="@+id/visual_lista_endereco"/>
+                    android:layout_below="@+id/visual_perfil_endereco"/>
 
                 <Button
-                    android:id="@+id/visual_lista_button_ligar"
+                    android:id="@+id/visual_perfil_botao_ligar"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:text="ligar"
                     android:textColor="#FFF"
                     android:background="#1ec123"
-                    android:layout_below="@id/visual_lista_foto"/>
+                    android:layout_below="@id/visual_perfil_foto"/>
                 <Button
-                    android:id="@+id/visual_lista_button_site"
+                    android:id="@+id/visual_perfil_botao_site"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -81,10 +81,10 @@
                     android:text="Visitar Site"
                     android:textColor="#FFF"
                     android:background="#ec6905"
-                    android:layout_below="@+id/visual_lista_foto"/>
+                    android:layout_below="@+id/visual_perfil_foto"/>
 
                 <RatingBar
-                    android:id="@+id/visual_lista_nota"
+                    android:id="@+id/visual_perfil_nota"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="false"
@@ -93,20 +93,30 @@
                     android:numStars="5"
                     android:layout_marginTop="10dp"
                     android:layout_marginLeft="40dp"
-                    android:layout_below="@+id/visual_lista_button_site"/>
+                    android:layout_below="@+id/visual_perfil_botao_site"/>
+
+                <Button
+                    android:id="@+id/visual_perfil_botao_nota"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Dar nota"
+                    android:textSize="15sp"
+                    android:textColor="@color/color_app"
+                    android:layout_below="@id/visual_perfil_nota"
+                    android:layout_centerInParent="true"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:text="Bebidas:"
-                    android:layout_below="@+id/visual_lista_nota"/>
+                    android:layout_below="@+id/visual_perfil_botao_nota"/>
                 <ListView
-                    android:id="@+id/visual_lista_bebidas"
+                    android:id="@+id/visual_perfil_lista_bebidas"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="45dp"
-                    android:layout_below="@+id/visual_lista_nota"></ListView>
+                    android:layout_below="@+id/visual_perfil_botao_nota"></ListView>
 
             </RelativeLayout>
 

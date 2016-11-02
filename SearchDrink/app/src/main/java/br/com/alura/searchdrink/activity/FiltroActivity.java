@@ -1,35 +1,35 @@
 package br.com.alura.searchdrink.activity;
 
-        import android.content.Intent;
-        import android.os.Bundle;
-        import android.util.Log;
-        import android.view.Gravity;
-        import android.view.View;
-        import android.widget.AdapterView;
-        import android.widget.ArrayAdapter;
-        import android.widget.Button;
-        import android.widget.CheckBox;
-        import android.widget.CompoundButton;
-        import android.widget.LinearLayout;
-        import android.widget.Spinner;
-        import android.widget.TextView;
-        import android.widget.Toast;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
-        import com.google.firebase.database.DataSnapshot;
-        import com.google.firebase.database.DatabaseError;
-        import com.google.firebase.database.DatabaseReference;
-        import com.google.firebase.database.FirebaseDatabase;
-        import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-        import java.io.Serializable;
-        import java.util.ArrayList;
-        import java.util.HashMap;
-        import java.util.List;
-        import java.util.Map;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-        import br.com.alura.searchdrink.R;
-        import br.com.alura.searchdrink.adapter.BaresAdapter;
-        import br.com.alura.searchdrink.modelo.Bar;
+import br.com.alura.searchdrink.R;
+import br.com.alura.searchdrink.adapter.BaresAdapter;
+import br.com.alura.searchdrink.modelo.Bar;
 
 /**
  * Created by danilo on 28/10/2016.
@@ -103,7 +103,7 @@ public class FiltroActivity extends BaseActivity{
                         !campoBebidaSelecianada.getText().equals("null") && !campoBebidaSelecianada.getText().equals("")){
 //                    Intent vaiParaListaBares = new Intent(FiltroActivity.this, ListaBaresActivity.class);
 //                    vaiParaListaBares.putExtra("bebida", campoBebidaSelecianada.getText());
-//                    vaiParaListaBares.putExtra("bares", mapaBaresChecados);
+//                    vaiParaListaBares.putExtra("estabelecimentos", mapaBaresChecados);
 //                    vaiParaListaBares.putExtra("estabelecimentos", (Serializable) estabelecimentos);
 //                    startActivity(vaiParaListaBares);
                     ListaBaresActivity.bebidaSelecionada = campoBebidaSelecianada.getText().toString();
@@ -217,14 +217,14 @@ public class FiltroActivity extends BaseActivity{
                         if (snapshot.getKey().equals("bebidas geladas") || snapshot.getKey().equals("bebidas quentes")) {
                             for (DataSnapshot snapshot2 : snapshot1.getChildren()) {
                                 Map<String, Object> map = (HashMap<String, Object>) snapshot2.getValue();
-                                String nome = String.valueOf(map.get("nome"));
+                                String nome = String.valueOf(snapshot1.getKey() + ": " + map.get("nome"));
 
                                 tiposBebidas.add(nome);
                             }
 
                         } else {
                             Map<String, Object> map = (HashMap<String, Object>) snapshot1.getValue();
-                            String nome = String.valueOf(map.get("nome"));
+                            String nome = String.valueOf(snapshot.getKey() + ": " + map.get("nome"));
 
                             tiposBebidas.add(nome);
                         }

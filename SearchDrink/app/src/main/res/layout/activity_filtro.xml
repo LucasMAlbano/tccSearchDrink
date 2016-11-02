@@ -9,10 +9,10 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/filtro_bebidas">
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/filtro_bebidas">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -26,40 +26,40 @@
 
 
             <!--<Button-->
-                <!--android:layout_width="160dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="Cerveja"-->
-                <!--android:layout_marginTop="20dp"-->
-                <!--android:id="@+id/filtro_button_cerveja"-->
-                <!--android:layout_gravity="center_horizontal" />-->
+            <!--android:layout_width="160dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Cerveja"-->
+            <!--android:layout_marginTop="20dp"-->
+            <!--android:id="@+id/filtro_button_cerveja"-->
+            <!--android:layout_gravity="center_horizontal" />-->
 
             <!--<Button-->
-                <!--android:layout_width="160dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="Destilado"-->
-                <!--android:id="@+id/filtro_button_destilado"-->
-                <!--android:layout_gravity="center_horizontal" />-->
+            <!--android:layout_width="160dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Destilado"-->
+            <!--android:id="@+id/filtro_button_destilado"-->
+            <!--android:layout_gravity="center_horizontal" />-->
 
             <!--<Button-->
-                <!--android:layout_width="160dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="Drink"-->
-                <!--android:id="@+id/filtro_button_drink"-->
-                <!--android:layout_gravity="center_horizontal" />-->
+            <!--android:layout_width="160dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Drink"-->
+            <!--android:id="@+id/filtro_button_drink"-->
+            <!--android:layout_gravity="center_horizontal" />-->
 
             <!--<Button-->
-                <!--android:layout_width="160dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="Suco"-->
-                <!--android:id="@+id/filtro_button_suco"-->
-                <!--android:layout_gravity="center_horizontal" />-->
+            <!--android:layout_width="160dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Suco"-->
+            <!--android:id="@+id/filtro_button_suco"-->
+            <!--android:layout_gravity="center_horizontal" />-->
 
             <!--<Button-->
-                <!--android:layout_width="160dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="Refrigerante"-->
-                <!--android:id="@+id/filtro_button_refrigerante"-->
-                <!--android:layout_gravity="center_horizontal" />-->
+            <!--android:layout_width="160dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Refrigerante"-->
+            <!--android:id="@+id/filtro_button_refrigerante"-->
+            <!--android:layout_gravity="center_horizontal" />-->
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -103,29 +103,29 @@
                 android:layout_gravity="center_horizontal" />
 
             <!--<CheckBox-->
-                <!--android:layout_width="131dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="Botecão"-->
-                <!--android:id="@+id/checkBox"-->
-                <!--android:layout_marginTop="20dp"-->
-                <!--android:layout_gravity="center_horizontal"-->
-                <!--android:checked="false" />-->
+            <!--android:layout_width="131dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Botecão"-->
+            <!--android:id="@+id/checkBox"-->
+            <!--android:layout_marginTop="20dp"-->
+            <!--android:layout_gravity="center_horizontal"-->
+            <!--android:checked="false" />-->
 
             <!--<CheckBox-->
-                <!--android:layout_width="131dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="Bar Balada"-->
-                <!--android:id="@+id/checkBox2"-->
-                <!--android:layout_gravity="center_horizontal"-->
-                <!--android:checked="false" />-->
+            <!--android:layout_width="131dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Bar Balada"-->
+            <!--android:id="@+id/checkBox2"-->
+            <!--android:layout_gravity="center_horizontal"-->
+            <!--android:checked="false" />-->
 
             <!--<CheckBox-->
-                <!--android:layout_width="131dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="Bar restaurante"-->
-                <!--android:id="@+id/checkBox3"-->
-                <!--android:layout_gravity="center_horizontal"-->
-                <!--android:checked="false" />-->
+            <!--android:layout_width="131dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Bar restaurante"-->
+            <!--android:id="@+id/checkBox3"-->
+            <!--android:layout_gravity="center_horizontal"-->
+            <!--android:checked="false" />-->
 
         </LinearLayout>
 

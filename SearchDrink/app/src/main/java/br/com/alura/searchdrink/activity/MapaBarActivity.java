@@ -101,7 +101,7 @@ public class MapaBarActivity extends BaseActivity {
         floatingFiltrar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent vaiParaLista = new Intent(MapaBarActivity.this, ListaBaresActivity.class);
-                vaiParaLista.putExtra("estabelecimentos", (Serializable) mapaFragment.getEstabelecimentos());
+//                vaiParaLista.putExtra("estabelecimentos", (Serializable) mapaFragment.getEstabelecimentos());
                 startActivity(vaiParaLista);
             }
         });

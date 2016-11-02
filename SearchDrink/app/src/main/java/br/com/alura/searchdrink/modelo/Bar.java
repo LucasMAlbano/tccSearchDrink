@@ -4,6 +4,7 @@ import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,9 @@ public class Bar implements Serializable{
 
     private String coordenada;
 
-    private List<Bebida> bebidas;
+    private List<Bebida> bebidas = new ArrayList<>();
+
+    private Map<String, Double> notas = new HashMap<>();
 
 
 //    public Bar(String nome, String email){
@@ -161,6 +164,9 @@ public class Bar implements Serializable{
         this.id = id;
     }
 
+    public Map<String, Double> getNotas() {
+        return notas;
+    }
 
 
     @Exclude

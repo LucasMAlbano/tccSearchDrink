@@ -1,9 +1,9 @@
 package br.com.alura.searchdrink.activity;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -11,70 +11,58 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.android.gms.maps.model.LatLng;
 
-import java.io.Serializable;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
+import br.com.alura.searchdrink.Localizador;
 import br.com.alura.searchdrink.R;
 import br.com.alura.searchdrink.adapter.BaresAdapter;
+import br.com.alura.searchdrink.fragment.MapaFragment;
 import br.com.alura.searchdrink.modelo.Bar;
-import br.com.alura.searchdrink.task.GeoTask;
+import br.com.alura.searchdrink.modelo.Bebida;
+import br.com.alura.searchdrink.task.CalculaDistanciaTask;
+import br.com.alura.searchdrink.task.TarefaDownloadLocalizacaoBares;
 
-public class ListaBaresActivity extends BaseActivity implements GeoTask.Geo {
+public class ListaBaresActivity extends BaseActivity implements CalculaDistanciaTask.Geo {
 
     public static String ApiKey = "AIzaSyAnE8Q44pkOA_ek3gCaS4tATj99LMOuhOM";
 
     private String TAG = "ListaBaresActivity";
 
+
+    private List<Bar> estabalecimentos;
+    public static List<Bar> estabalecimentosFiltrados = new ArrayList<>();
+
     public static String bebidaSelecionada = null;
     public static HashMap<String, Boolean> mapaBaresSelecionados = null;
-
-//    private ExpandableListView expandableFiltroBebidas;
-//    private ExpandableListView expandableFiltroBares;
 
     private ListView listaEstabelecimentos;
     private Button buscaLista;
     private Button buscaFiltros;
+    private LinearLayout linearOpcoes;
+    private LinearLayout linearFiltros;
 
-//    private ExpandableFiltroAdapterTeste bebidasAdapter;
-//    private ExpandableFiltroAdapterTeste baresAdapter;
-
-    private BaresAdapter adapter;
-
-
-//    private HashMap<String, List<String>> mapaFiltrosBebidas = new HashMap<>();
-//    private HashMap<String, List<String>> mapaFiltrosBares= new HashMap<>();
-
-//    private ArrayList<String> filtrosTitulosBebidas;
-//    private ArrayList<String> filtrosTitulosBares;
-
-    private List<Bar> estabalecimentos;
-
-//    List<String> tiposBebidas = new ArrayList<>();
-
-    private SeekBar valor = null;
-    private SeekBar distancia = null;
-    private TextView mostravalor = null;
-    private TextView mostradistancia = null;
+    private SeekBar seekBarValor = null;
+    private SeekBar seekBarDistancia = null;
+    private TextView campoMostraSeekBarValor = null;
+    private TextView campoMostraSeekBarDistancia = null;
     private Button botaoSelecionarFiltros;
     private TextView campoStatusFiltro;
     private Button botaoRemoverFiltros;
+
+    private BaresAdapter baresAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,16 +70,16 @@ public class ListaBaresActivity extends BaseActivity implements GeoTask.Geo {
         setContentView(R.layout.activity_lista_bares_);
 
         Intent veioMapaBar = getIntent();
-        estabalecimentos = (List<Bar>) veioMapaBar.getSerializableExtra("estabelecimentos");
+//        estabalecimentos = (List<Bar>) veioMapaBar.getSerializableExtra("estabelecimentos");
+        estabalecimentos = TarefaDownloadLocalizacaoBares.estabelecimentos;
 
         listaEstabelecimentos = (ListView) findViewById(R.id.lista_bares_lista);
-        adapter = new BaresAdapter(this, estabalecimentos);
-        listaEstabelecimentos.setAdapter(adapter);
+        baresAdapter = new BaresAdapter(this, estabalecimentos);
+        listaEstabelecimentos.setAdapter(baresAdapter);
 
-//        expandableFiltroBebidas = (ExpandableListView) findViewById(R.id.lista_bares_expandable_bebidas);
-//        expandableFiltroBares = (ExpandableListView) findViewById(R.id.lista_bares_expandable_bares);
+        linearOpcoes = (LinearLayout) findViewById(R.id.lista_bares_opcoes);
 
-        final LinearLayout lf = (LinearLayout) findViewById(R.id.lista_bares_filtros);
+        linearFiltros = (LinearLayout) findViewById(R.id.lista_bares_filtros);
 
         buscaLista = (Button) findViewById(R.id.lista_bares_botao_lista);
         buscaFiltros = (Button) findViewById(R.id.lista_bares_botao_filtros);
@@ -102,7 +90,7 @@ public class ListaBaresActivity extends BaseActivity implements GeoTask.Geo {
                 buscaLista.setTextColor(Color.parseColor("#F1C332"));
                 buscaFiltros.setTextColor(Color.parseColor("#c4c4c4"));
                 listaEstabelecimentos.setVisibility(View.VISIBLE);
-                lf.setVisibility(View.GONE);
+                linearFiltros.setVisibility(View.GONE);
             }
         });
         buscaFiltros.setOnClickListener(new View.OnClickListener() {
@@ -110,30 +98,29 @@ public class ListaBaresActivity extends BaseActivity implements GeoTask.Geo {
             public void onClick(View view) {
                 buscaFiltros.setTextColor(Color.parseColor("#F1C332"));
                 buscaLista.setTextColor(Color.parseColor("#c4c4c4"));
-                lf.setVisibility(View.VISIBLE);
+                linearFiltros.setVisibility(View.VISIBLE);
                 listaEstabelecimentos.setVisibility(View.GONE);
             }
         });
 
-
-//        carregaFiltroBares();
-//        carregaFiltroBebidas();
-
 //        Toast.makeText(this, estabalecimentos.get(0).getEndereco() + " / " + estabalecimentos.get(1).getEndereco(),Toast.LENGTH_SHORT).show();
 //        String url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + "ruadrmarianoj.m.ferraz,190,centro,Osasco,SP" + "&destinations=" + "barueri,sp" + "&mode=driving&language=fr-FR&avoid=tolls&key=" + ApiKey;
-//        new GeoTask(this).execute(url);
+//        new CalculaDistanciaTask(this).execute(url);
 
         listaEstabelecimentos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> lista, View item, int position, long id) { //AdapterView<?> adapterView = tiposBebidas, View view = item, int i = posicao, long l = id
                 Bar bar = (Bar) lista.getItemAtPosition(position);
-                carregaPerfilBar(bar);
+
+                Intent intent = new Intent(ListaBaresActivity.this, VisualPerfilBarActivity.class);
+                intent.putExtra("bar", bar);
+                startActivity(intent);
             }
         });
 
 
-
         filtroDanilo();
+
         botaoSelecionarFiltros = (Button) findViewById(R.id.lista_bares_button_busca);
         botaoSelecionarFiltros.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -142,8 +129,6 @@ public class ListaBaresActivity extends BaseActivity implements GeoTask.Geo {
                 startActivity(it);
             }
         });
-
-
 
         registerForContextMenu(listaEstabelecimentos);
     }
@@ -154,31 +139,15 @@ public class ListaBaresActivity extends BaseActivity implements GeoTask.Geo {
 
         if (bebidaSelecionada != null){
 
-            campoStatusFiltro = (TextView) findViewById(R.id.lista_bares_statusFiltro);
-            botaoRemoverFiltros = (Button) findViewById(R.id.lista_bares_botao_removerFiltros);
-            campoStatusFiltro.setVisibility(View.VISIBLE);
-            botaoRemoverFiltros.setVisibility(View.VISIBLE);
-            botaoSelecionarFiltros.setVisibility(View.GONE);
-
-            List<String> l = new ArrayList<>();
+            List<String> listaBaresSelecionados = new ArrayList<>();
             for (Map.Entry<String, Boolean> r : mapaBaresSelecionados.entrySet()){
                 if (r.getValue().equals(true))
-                    l.add(r.getKey());
+                    listaBaresSelecionados.add(r.getKey());
             }
 
-            campoStatusFiltro.setText("Bebida: " + bebidaSelecionada + "\nBares: " + l);
-            botaoRemoverFiltros.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    bebidaSelecionada = null;
-                    mapaBaresSelecionados = null;
-                    campoStatusFiltro.setVisibility(View.GONE);
-                    botaoRemoverFiltros.setVisibility(View.GONE);
-                    botaoSelecionarFiltros.setVisibility(View.VISIBLE);
-                }
-            });
+            inicializaEPegaFiltros(listaBaresSelecionados);
 
-
+            aplicaFiltros(listaBaresSelecionados);
         }
     }
 
@@ -196,7 +165,9 @@ public class ListaBaresActivity extends BaseActivity implements GeoTask.Geo {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
 
-                carregaPerfilBar(bar);
+                Intent intent = new Intent(ListaBaresActivity.this, VisualPerfilBarActivity.class);
+                intent.putExtra("bar", bar);
+                startActivity(intent);
 
                 return false;
             }
@@ -204,193 +175,119 @@ public class ListaBaresActivity extends BaseActivity implements GeoTask.Geo {
 
     }
 
-    private void carregaPerfilBar(Bar bar) {
+    private void inicializaEPegaFiltros(List<String> listaBaresSelecionados) {
+        campoStatusFiltro = (TextView) findViewById(R.id.lista_bares_statusFiltro);
+        botaoRemoverFiltros = (Button) findViewById(R.id.lista_bares_botao_removerFiltros);
+        campoStatusFiltro.setVisibility(View.VISIBLE);
+        botaoRemoverFiltros.setVisibility(View.VISIBLE);
+        botaoSelecionarFiltros.setVisibility(View.GONE);
+        linearOpcoes.setVisibility(View.VISIBLE);
 
-        Intent intent = new Intent(this, VisualPerfilBarActivity.class);
-        intent.putExtra("bar", bar);
-        startActivity(intent);
-
-//        final Dialog dialog = newDialog(ListaBaresActivity.this);
-//        dialog.setContentView(R.layout.dialog_lista_bar);
-//        dialog.setTitle("Perfil " + bar.getNome());
-//
-//        final TextView campoNome = (TextView) dialog.findViewById(R.id.dialog_lista_nome);
-//        final TextView campoEndereco = (TextView) dialog.findViewById(R.id.dialog_lista_endereco);
-//        final TextView campoTipoBar = (TextView) dialog.findViewById(R.id.dialog_lista_tipo_bar);
-//
-//        final Button buttonLigar = (Button) dialog.findViewById(R.id.dialog_lista_button_ligar);
-//        final Button buttonSite = (Button) dialog.findViewById(R.id.dialog_lista_button_site);
-//
-//        final ListView tiposBebidas = (ListView) dialog.findViewById(R.id.dialog_lista_bebidas);
-//        List<Bebida> bebidas = new ArrayList<Bebida>();
-//        bebidas.add(new Bebida("teste", "teste", 0.0, "teste"));
-//        BebidasAdapter bebidasAdapter = new BebidasAdapter(ListaBaresActivity.this, bebidas);
-//        tiposBebidas.setAdapter(bebidasAdapter);
-//
-//        campoNome.setText(bar.getNome());
-//        campoEndereco.setText(bar.getEndereco());
-//        campoTipoBar.setText(bar.getTipoBar());
+        campoStatusFiltro.setText("Bebida: " + bebidaSelecionada + "\nBares: " + listaBaresSelecionados);
+        botaoRemoverFiltros.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bebidaSelecionada = null;
+                mapaBaresSelecionados = null;
+                campoStatusFiltro.setVisibility(View.GONE);
+                botaoRemoverFiltros.setVisibility(View.GONE);
+                botaoSelecionarFiltros.setVisibility(View.VISIBLE);
+                linearOpcoes.setVisibility(View.GONE);
+            }
+        });
     }
 
-//    private void carregaFiltroBares(){
-//
-//        final List<String> tiposBares = new ArrayList<>();
-////        for (Bar bar : estabalecimentos) {
-////            if(bar.getTipoBar() != null && !tiposBares.contains(bar.getTipoBar()))  tiposBares.add(bar.getTipoBar());
-////        }
-////
-////        String titulo = "tipos de bares";
-////
-////        mapaFiltrosBares.put(titulo, tiposBares);
-////
-////        filtrosTitulosBares = new ArrayList<String>();
-////        filtrosTitulosBares.add(titulo);
-////
-////        baresAdapter = new ExpandableFiltroAdapterTeste(ListaBaresActivity.this, filtrosTitulosBares, mapaFiltrosBares);
-////        expandableFiltroBares.setAdapter(baresAdapter);
-//
-//        dbFiltrosBar.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                    Map<String, Object> map = (HashMap<String, Object>) snapshot.getValue();
-//                    String tipo = String.valueOf(map.get("nome"));
-//                    tiposBares.add(tipo);
-//                }
-//
-//                String titulo = "tipos de bares";
-//
-//                mapaFiltrosBares.put(titulo, tiposBares);
-//
-//                filtrosTitulosBares = new ArrayList<String>();
-//                filtrosTitulosBares.add(titulo);
-//
-//                baresAdapter = new ExpandableFiltroAdapterTeste(ListaBaresActivity.this, filtrosTitulosBares, mapaFiltrosBares);
-//                expandableFiltroBares.setAdapter(baresAdapter);
-//
-//
-//                final HashMap<Integer, boolean[]> hash = baresAdapter.getChildsEstados();
-//                Log.i("carrega bares", (hash == null? "hash é nulo" : "hash não é nulo"));
-//                final boolean[] b = hash.get(0);
-//                Log.i("carrega bares", (b == null? "b é nulo" : "b não é nulo"));
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-//            }
-//        });
-//    }
-//
-//    private void carregaFiltroBebidas() {
-//
-//        showProgressDialog();
-//
-//        dbFiltroBebidas.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//
-//                    List<String> tiposBebidas = new ArrayList<>();
-//                    String nomeTitulo = snapshot.getKey();
-//
-//                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-//
-//                        if (snapshot.getKey().equals("bebidas geladas") || snapshot.getKey().equals("bebidas quentes")) {
-//                            for (DataSnapshot snapshot2 : snapshot1.getChildren()) {
-//                                Map<String, Object> map = (HashMap<String, Object>) snapshot2.getValue();
-//                                String nome = String.valueOf(map.get("nome"));
-//
-//                                tiposBebidas.add(nome);
-//                            }
-//
-//                        } else {
-//                            Map<String, Object> map = (HashMap<String, Object>) snapshot1.getValue();
-//                            String nome = String.valueOf(map.get("nome"));
-//
-//                            tiposBebidas.add(nome);
-//                        }
-//                    }
-//
-//                    mapaFiltrosBebidas.put(nomeTitulo, tiposBebidas);
-//                }
-//
-//                filtrosTitulosBebidas = new ArrayList<String>(mapaFiltrosBebidas.keySet());
-//                bebidasAdapter = new ExpandableFiltroAdapterTeste(ListaBaresActivity.this, filtrosTitulosBebidas, mapaFiltrosBebidas);
-//                expandableFiltroBebidas.setAdapter(bebidasAdapter);
-//
-//                final HashMap<Integer, boolean[]> hash = bebidasAdapter.getChildsEstados();
-//                Log.i("resolucao 1", (hash == null? "hash é nulo" : "hash não é nulo"));
-//                final boolean[] b = hash.get(0);
-//                Log.i("resolucao 1", (b == null? "b é nulo" : "b não é nulo"));
-//
-//                hideProgressDialog();
-//
-//                expandableFiltroBebidas.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-//                    @Override
-//                    public void onGroupExpand(int groupPosition) {
-//                        Toast.makeText(getApplicationContext(),
-//                                filtrosTitulosBebidas.get(groupPosition) + " List Expanded.",
-//                                Toast.LENGTH_SHORT).show();
-//
-//                        final HashMap<Integer, boolean[]> hash = bebidasAdapter.getChildsEstados();
-//                        Log.i("resolucao 2", (hash == null? "hash é nulo" : "hash não é nulo"));
-//                        final boolean[] b = hash.get(0);
-//                        Log.i("resolucao 2", (b == null? "b é nulo" : "b não é nulo"));
-//                    }
-//                });
-////
-//                expandableFiltroBebidas.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
-//                    @Override
-//                    public void onGroupCollapse(int groupPosition) {
-//                        Toast.makeText(getApplicationContext(),
-//                                filtrosTitulosBebidas.get(groupPosition) + " List Collapsed.",
-//                                Toast.LENGTH_SHORT).show();
-//
-//                        final HashMap<Integer, boolean[]> hash = bebidasAdapter.getChildsEstados();
-//                        Log.i("resolucao 3", (hash == null? "hash é nulo" : "hash não é nulo"));
-//                        final boolean[] b = hash.get(0);
-//                        Log.i("resolucao 3", (b == null? "b é nulo" : "b não é nulo"));
-//                    }
-//                });
-//
-//                expandableFiltroBebidas.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-//                    @Override
-//                    public boolean onChildClick(ExpandableListView parent, View v,
-//                                                int groupPosition, int childPosition, long id) {
-//
-////                        Toast.makeText(getApplicationContext(), filtrosTitulosBebidas.get(groupPosition) + " -> "
-////                                + mapaFiltrosBebidas.get(filtrosTitulosBebidas.get(groupPosition)).get(childPosition),
-////                                Toast.LENGTH_SHORT).show();
-//
-////                        Toast.makeText(getApplicationContext(), mapaFiltrosBebidas.get(groupPosition).get(childPosition), Toast.LENGTH_SHORT).show();
-//
-//                        final HashMap<Integer, boolean[]> hash = bebidasAdapter.getChildsEstados();
-//                        Log.i("resolucao 4", (hash == null? "hash é nulo" : "hash não é nulo"));
-//                        final boolean[] b = hash.get(0);
-//                        Log.i("resolucao 4", (b == null? "b é nulo" : "b não é nulo"));
-//
-//                        return false;
-//                    }
-//                });
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-//            }
-//        });
-//    }
+    private void aplicaFiltros(final List<String> listaBaresSelecionados) {
+
+        Button botaoAplicarFiltros = (Button) findViewById(R.id.lista_bares_aplicarFiltros);
+        botaoAplicarFiltros.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                showProgressDialog();
+
+                if(estabalecimentosFiltrados.size() != 0)
+                    estabalecimentosFiltrados.removeAll(estabalecimentosFiltrados);
+
+                for (Bar bar : estabalecimentos) {
+                    if (listaBaresSelecionados.contains(bar.getTipoBar())) {
+
+                        Log.i("entrou aqui 1", bar.getNome());
+
+                        if (seekBarValor.getProgress() == 0 && seekBarDistancia.getProgress() != 0) {
+                            calculaDistanciaDaCoordenada(Localizador.coordenada, bar);
+                            Log.i("entrou aqui 2", bar.getNome() + " - v: " + String.valueOf(seekBarValor.getProgress()) + " - d: " + String.valueOf(seekBarDistancia.getProgress()));
+                        }
+
+                        else if (seekBarDistancia.getProgress() == 0 && seekBarValor.getProgress() != 0) {
+                            Log.i("entrou aqui 3", bar.getNome() + " - v: " + String.valueOf(seekBarValor.getProgress()) + " - d: " + String.valueOf(seekBarDistancia.getProgress()));
+                            for (Bebida bebida : bar.getBebidas()) {
+                                if (bebida.getNome().equals(bebidaSelecionada) && bebida.getPreco() <= seekBarValor.getProgress()) {
+                                    Log.i("entrou aqui 4", bar.getNome() + " - v: " + String.valueOf(seekBarValor.getProgress()) + " - d: " + String.valueOf(seekBarDistancia.getProgress()));
+                                    estabalecimentosFiltrados.add(bar);
+                                }
+                            }
+                        }
+
+                        else if (seekBarValor.getProgress() == 0 && seekBarDistancia.getProgress() == 0) {
+                            Log.i("entrou aqui 5", bar.getNome() + " - v: " + String.valueOf(seekBarValor.getProgress()) + " - d: " + String.valueOf(seekBarDistancia.getProgress()));
+                            for (Bebida bebida : bar.getBebidas()) {
+                                if (bebida.getNome().equals(bebidaSelecionada)) {
+                                    Log.i("entrou aqui 5.1", bar.getNome() + " - v: " + String.valueOf(seekBarValor.getProgress()) + " - d: " + String.valueOf(seekBarDistancia.getProgress()));
+                                    estabalecimentosFiltrados.add(bar);
+                                }
+                            }
+                        }
+
+                        else {
+                            Log.i("entrou aqui 6", bar.getNome() + " - v: " + String.valueOf(seekBarValor.getProgress()) + " - d: " + String.valueOf(seekBarDistancia.getProgress()));
+                            for (Bebida bebida : bar.getBebidas()) {
+                                if (bebida.getNome().equals(bebidaSelecionada) && bebida.getPreco() <= seekBarValor.getProgress()) {
+                                    Log.i("entrou aqui 7", bar.getNome() + " - v: " + String.valueOf(seekBarValor.getProgress()) + " - d: " + String.valueOf(seekBarDistancia.getProgress()));
+                                    estabalecimentosFiltrados.add(bar);
+                                    if (!estabalecimentosFiltrados.contains(bar)) {
+                                        Log.i("entrou aqui 7.1", bar.getNome() + " - v: " + String.valueOf(seekBarValor.getProgress()) + " - d: " + String.valueOf(seekBarDistancia.getProgress()));
+                                        calculaDistanciaDaCoordenada(Localizador.coordenada, bar);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (estabalecimentosFiltrados.size() != 0) {
+                    Log.i("entrou aqui 8", String.valueOf(estabalecimentosFiltrados.size()));
+                    listaEstabelecimentos.setAdapter(null);
+                    baresAdapter.notifyDataSetChanged();
+
+                    baresAdapter = new BaresAdapter(ListaBaresActivity.this, estabalecimentosFiltrados);
+                    listaEstabelecimentos.setAdapter(baresAdapter);
+
+                }
+                else{
+                    Toast.makeText(ListaBaresActivity.this, "Nenhum bar encontrado", Toast.LENGTH_LONG).show();
+                }
+
+                listaEstabelecimentos.setVisibility(View.VISIBLE);
+                linearFiltros.setVisibility(View.GONE);
+                buscaLista.setTextColor(Color.parseColor("#F1C332"));
+                buscaFiltros.setTextColor(Color.parseColor("#c4c4c4"));
+
+                hideProgressDialog();
+            }
+        });
+    }
 
     @Override
-    public void setDouble(String result) {
+    public void setDouble(String result, Bar bar) {
         String res[]=result.split(",");
-        Double min=Double.parseDouble(res[0])/60;
+//        Double min=Double.parseDouble(res[0])/60;
         int dist=Integer.parseInt(res[1])/1000;
-        Toast.makeText(this, "Duration= " + (int) (min / 60) + " hr " + (int) (min % 60) + " mins", Toast.LENGTH_LONG).show();
+
+        if (dist < seekBarDistancia.getProgress()){
+            estabalecimentosFiltrados.add(bar);
+        }
+//        Toast.makeText(this, "Duration= " + (int) (min / 60) + " hr " + (int) (min % 60) + " mins", Toast.LENGTH_LONG).show();
         Toast.makeText(this, "Distance= " + dist + " kilometers", Toast.LENGTH_LONG).show();
 
     }
@@ -398,16 +295,21 @@ public class ListaBaresActivity extends BaseActivity implements GeoTask.Geo {
 
     private void filtroDanilo() {
 
-        valor = (SeekBar) findViewById(R.id.lista_bares_seekBar_valor);
-        distancia = (SeekBar) findViewById(R.id.lista_bares_seekBar_distancia);
-        mostravalor = (TextView) findViewById(R.id.lista_bares_mostraValor);
-        mostradistancia = (TextView) findViewById(R.id.lista_bares_mostraDistancia);
+        seekBarValor = (SeekBar) findViewById(R.id.lista_bares_seekBar_valor);
+        seekBarDistancia = (SeekBar) findViewById(R.id.lista_bares_seekBar_distancia);
+        campoMostraSeekBarValor = (TextView) findViewById(R.id.lista_bares_mostraValor);
+        campoMostraSeekBarDistancia = (TextView) findViewById(R.id.lista_bares_mostraDistancia);
 
-        distancia.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int progresChanged2 = 0;
-
+        seekBarValor.setProgress(0);
+        seekBarValor.setMax(100);
+        seekBarValor.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                progresChanged2 = progress;
+
+                progress = progress / 10;
+                progress = progress * 10;
+                campoMostraSeekBarValor.setText("R$ " + String.valueOf(progress));
+                seekBar.setProgress(progress);
             }
 
             @Override
@@ -415,75 +317,66 @@ public class ListaBaresActivity extends BaseActivity implements GeoTask.Geo {
 
             }
 
-            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+            @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
-
-                int x = distancia.getMax();
-                int media = x / 4;
-
-                for (int i = 1; i < 20; i++) {
-                    if (progresChanged2 == 0) {
-                        progresChanged2 = 0;
-                        break;
-                    }
-                    if (progresChanged2 < media) {
-                        progresChanged2 = media;
-                        break;
-                    }
-                    if (progresChanged2 > media * i && progresChanged2 < media * (i + 1)) {
-                        progresChanged2 = media * (i + 1);
-                        break;
-                    }
-                }
-                distancia.setProgress(progresChanged2);
-                mostradistancia.setText("" + progresChanged2);
-
-                Toast.makeText(ListaBaresActivity.this, "Distância:" + progresChanged2, Toast.LENGTH_SHORT).show();
+                Toast.makeText(ListaBaresActivity.this, "Valor: R$ " + seekBar.getProgress(),
+                        Toast.LENGTH_SHORT).show();
             }
-
         });
 
-        valor.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int progressChanged = 0;
-
+        seekBarDistancia.setProgress(0);
+        seekBarDistancia.setMax(50);
+        seekBarDistancia.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                progressChanged = progress;
+                progress = progress / 10;
+                progress = progress * 10;
+                campoMostraSeekBarDistancia.setText(String.valueOf(progress) + " km");
+                seekBar.setProgress(progress);
             }
 
+            @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
+
             }
 
+            @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
-                int x = valor.getMax();
-                int media = x / 10;
-
-                for (int i = 1; i < 20; i++) {
-                    if(progressChanged == 0){
-                        progressChanged = 0;
-                        break;
-                    }
-                    if (progressChanged < media) {
-                        progressChanged = media;
-                        break;
-                    }
-                    if (progressChanged > media * i && progressChanged < media * (i + 1)) {
-                        progressChanged = media * (i + 1);
-                        break;
-                    }
-                }
-
-                valor.setProgress(progressChanged);
-                mostravalor.setText("" + progressChanged);
-
-                Toast.makeText(ListaBaresActivity.this, "Valor:" + progressChanged,
+                Toast.makeText(ListaBaresActivity.this, "Distância:" + seekBar.getProgress()+ " km",
                         Toast.LENGTH_SHORT).show();
             }
 
-
-
         });
+    }
+
+    private void calculaDistanciaDaCoordenada(LatLng coordenada, Bar bar) {
+
+        if (coordenada != null ) {
+            try {
+                Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+                List<Address> addresses = geocoder.getFromLocation(coordenada.latitude, coordenada.longitude, 1);
+
+                if (!addresses.isEmpty()) {
+                    String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                    String city = addresses.get(0).getLocality();
+                    String state = addresses.get(0).getAdminArea();
+//                    String country = addresses.get(0).getCountryName();
+//                    String postalCode = addresses.get(0).getPostalCode();
+//                    String knownName = addresses.get(0).getFeatureName();
+
+                    String meuEndereco = address.split("-")[0] + "," +address.split("-")[1] + "," + city + "," + state;
+                    meuEndereco = meuEndereco.replace(" ", "");
+//                    ruadrmarianoj.m.ferraz,190,centro,Osasco,SP
+
+                    String destino = bar.getEndereco().replace(" ", "");
+
+                    String url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + meuEndereco + "&destinations=" + destino + "&mode=driving&language=fr-FR&avoid=tolls&key=" + ApiKey;
+                    new CalculaDistanciaTask(ListaBaresActivity.this, bar).execute(url);
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
