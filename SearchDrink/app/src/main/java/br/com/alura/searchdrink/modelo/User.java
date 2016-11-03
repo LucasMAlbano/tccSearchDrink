@@ -20,7 +20,7 @@ public class User implements Serializable{
     private String email;
     private String uriFoto;
 
-    private Map<String, Double> notas = new HashMap<>();
+    private Map<String, Nota> notas = new HashMap<>();
 
     public User(String uId, String nome, String email, String uriFoto){
         this.uId = uId;
@@ -61,7 +61,7 @@ public class User implements Serializable{
         this.uriFoto = uriFoto;
     }
 
-    public Map<String, Double> getNotas() {
+    public Map<String, Nota> getNotas() {
         return notas;
     }
 

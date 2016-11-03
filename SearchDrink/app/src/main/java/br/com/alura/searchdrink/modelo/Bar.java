@@ -30,7 +30,7 @@ public class Bar implements Serializable{
 
     private List<Bebida> bebidas = new ArrayList<>();
 
-    private Map<String, Double> notas = new HashMap<>();
+    private Map<String, Nota> notas = new HashMap<>();
 
 
 //    public Bar(String nome, String email){
@@ -158,13 +158,15 @@ public class Bar implements Serializable{
         this.email = email;
     }
 
+    @Exclude
     public long getId(){return this.id;}
 
+    @Exclude
     private void setId(long id){
         this.id = id;
     }
 
-    public Map<String, Double> getNotas() {
+    public Map<String, Nota> getNotas() {
         return notas;
     }
 

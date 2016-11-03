@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,9 +42,10 @@ public class ListaBaresActivity extends BaseActivity implements CalculaDistancia
 
     private String TAG = "ListaBaresActivity";
 
+    public static List<Bar> estabalecimentosFiltrados = new ArrayList<>();
+    public static Bar bar;
 
     private List<Bar> estabalecimentos;
-    public static List<Bar> estabalecimentosFiltrados = new ArrayList<>();
 
     public static String bebidaSelecionada = null;
     public static HashMap<String, Boolean> mapaBaresSelecionados = null;
@@ -110,10 +112,10 @@ public class ListaBaresActivity extends BaseActivity implements CalculaDistancia
         listaEstabelecimentos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> lista, View item, int position, long id) { //AdapterView<?> adapterView = tiposBebidas, View view = item, int i = posicao, long l = id
-                Bar bar = (Bar) lista.getItemAtPosition(position);
+                bar = (Bar) lista.getItemAtPosition(position);
 
                 Intent intent = new Intent(ListaBaresActivity.this, VisualPerfilBarActivity.class);
-                intent.putExtra("bar", bar);
+//                intent.putExtra("bar", (Serializable) bar);
                 startActivity(intent);
             }
         });
