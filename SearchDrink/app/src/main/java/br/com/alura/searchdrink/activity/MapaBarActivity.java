@@ -146,20 +146,20 @@ public class MapaBarActivity extends BaseActivity {
         });
     }
 
-    private boolean verificaSeEhBar(String uId) {
-
-        List<Bar> estabelecimentos = null;
-        while (estabelecimentos == null) {
-            estabelecimentos = mapaFragment.getEstabelecimentos();
-        }
-
-        for(Bar bar : estabelecimentos){
-            if(bar.getuId().equals(uId))
-                return true;
-        }
-
-        return false;
-    }
+//    private boolean verificaSeEhBar(String uId) {
+//
+//        List<Bar> estabelecimentos = null;
+//        while (estabelecimentos == null) {
+//            estabelecimentos = mapaFragment.getEstabelecimentos();
+//        }
+//
+//        for(Bar bar : estabelecimentos){
+//            if(bar.getuId().equals(uId))
+//                return true;
+//        }
+//
+//        return false;
+//    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

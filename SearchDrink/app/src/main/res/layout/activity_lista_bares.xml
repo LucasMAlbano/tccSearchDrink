@@ -21,85 +21,222 @@
             android:layout_margin="16dp">
 
 
-                <SearchView
-                    android:id="@+id/lista_bares_search"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"></SearchView>
+            <!--<SearchView-->
+            <!--android:id="@+id/lista_bares_search"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"></SearchView>-->
 
-                <RelativeLayout
-                    android:id="@+id/lista_bares_botoes"
+            <RelativeLayout
+                android:id="@+id/lista_bares_botoes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                >
+                <!--android:layout_below="@+id/lista_bares_search"-->
+
+                <Button
+                    android:id="@+id/lista_bares_botao_lista"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/lista_bares_search">
+                    android:layout_marginLeft="30dp"
+                    android:background="@android:color/transparent"
+                    android:text="Lista"
+                    android:textColor="#F1C332"/>
+                <Button
+                    android:id="@+id/lista_bares_botao_filtros"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="30dp"
+                    android:layout_alignParentRight="true"
+                    android:background="@android:color/transparent"
+                    android:text="Filtros"
+                    android:textColor="#c4c4c4"/>
 
-                    <Button
-                        android:id="@+id/lista_bares_botao_lista"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="30dp"
-                        android:background="@android:color/transparent"
-                        android:text="Lista"
-                        android:textColor="#F1C332"/>
-                    <Button
-                        android:id="@+id/lista_bares_botao_filtros"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="30dp"
-                        android:layout_alignParentRight="true"
-                        android:background="@android:color/transparent"
-                        android:text="Filtros"
-                        android:textColor="#c4c4c4"/>
-
-                </RelativeLayout>
+            </RelativeLayout>
 
 
-                <ListView
-                    android:id="@+id/lista_bares_lista"
+            <ListView
+                android:id="@+id/lista_bares_lista"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/lista_bares_botoes"
+                android:visibility="visible"/>
+
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:id="@+id/lista_bares_filtros"
+                android:layout_below="@+id/lista_bares_botoes"
+                android:visibility="gone">
+
+                <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:layout_below="@id/lista_bares_botoes" />
+                    android:textColor="@color/color_app"
+                    android:text="Selecionar Bebida/Bar"
+                    android:id="@+id/lista_bares_button_busca"
+                    android:layout_gravity="center_horizontal" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/lista_bares_statusFiltro"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="10sp"
+                        android:visibility="gone"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="4"/>
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:textSize="12sp"
+                        android:text="x"
+                        android:textColor="#ff0000"
+                        android:id="@+id/lista_bares_botao_removerFiltros"
+                        android:visibility="gone"
+                        android:layout_weight="1"/>
+                </LinearLayout>
 
 
                 <LinearLayout
-                    android:id="@+id/lista_bares_filtros"
+                    android:id="@+id/lista_bares_opcoes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_below="@+id/lista_bares_botoes"
                     android:visibility="gone">
 
                     <TextView
-                        android:id="@+id/lista_bares_text_bar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:text="Por Bar:" />
-                    <ExpandableListView
-                        android:id="@+id/lista_bares_expandable_bares"
-                        android:layout_height="match_parent"
+                        android:layout_marginTop="20dp"
+                        android:text="Valor até"
+                        android:typeface="serif"
+                        android:textStyle="bold"
+                        android:layout_gravity="center_horizontal" />
+
+
+                    <SeekBar
                         android:layout_width="match_parent"
-                        android:layout_marginTop="5dp"
-                        android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft"
-                        android:divider="@android:color/darker_gray"
-                        android:dividerHeight="0.5dp" />
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:id="@+id/lista_bares_seekBar_valor"
+                        android:text="0"/>
+
+
+                    <RelativeLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="18dp"
+                        android:layout_margin="10dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_gravity="center_horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_weight="0.03"
+                            android:layout_alignParentLeft="true" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="100"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_alignParentRight="true"
+                            android:layout_weight="0.03" />
+
+                    </RelativeLayout>
 
                     <TextView
-                        android:id="@+id/lista_bares_text_bebida"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:text="Por Bebida:" />
-                    <ExpandableListView
-                        android:id="@+id/lista_bares_expandable_bebidas"
-                        android:layout_height="match_parent"
-                        android:layout_width="match_parent"
-                        android:layout_marginTop="5dp"
-                        android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft"
-                        android:divider="@android:color/darker_gray"
-                        android:dividerHeight="0.5dp" />
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="R$ 0"
+                        android:id="@+id/lista_bares_mostraValor"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/textView8"
+                        android:layout_toStartOf="@+id/textView8"
+                        android:layout_gravity="center_horizontal" />
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Distância em relação a mim"
+                        android:typeface="serif"
+                        android:textStyle="bold"
+                        android:layout_marginTop="20dp"
+                        android:layout_gravity="center_horizontal" />
+
+                    <SeekBar
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="0"
+                        android:id="@+id/lista_bares_seekBar_distancia" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="0 km"
+                        android:id="@+id/lista_bares_mostraDistancia"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/textView8"
+                        android:layout_toStartOf="@+id/textView8"
+                        android:layout_gravity="center_horizontal" />
+
+                    <RelativeLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_gravity="center_horizontal" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_weight="0.03"
+                            android:layout_alignParentLeft="true" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="50"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_alignParentRight="true"
+                            android:layout_weight="0.03" />
+
+                    </RelativeLayout>
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="Aplicar Filtros"
+                        android:textColor="@color/color_app"
+                        android:id="@+id/lista_bares_aplicarFiltros"
+                        android:layout_gravity="center_horizontal" />
                 </LinearLayout>
+
+
+            </LinearLayout>
 
 
         </RelativeLayout>

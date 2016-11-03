@@ -1,7 +1,9 @@
 package br.com.alura.searchdrink.activity;
 
 import android.app.Dialog;
+import android.nfc.Tag;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -14,15 +16,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import br.com.alura.searchdrink.R;
 import br.com.alura.searchdrink.adapter.BebidasAdapter;
 import br.com.alura.searchdrink.modelo.Bar;
-import br.com.alura.searchdrink.modelo.Bebida;
 import br.com.alura.searchdrink.modelo.Nota;
 
 public class VisualPerfilBarActivity extends BaseActivity {
@@ -35,11 +34,12 @@ public class VisualPerfilBarActivity extends BaseActivity {
     private Button botaoSite;
     private Button botaoDarNota;
     private ListView listaBebidas;
+    private RatingBar campoNotaBar;
 
     private DatabaseReference dbBar;
     private DatabaseReference dbUser;
 
-    private boolean deuNota = false;
+    private String uId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +50,10 @@ public class VisualPerfilBarActivity extends BaseActivity {
 //        bar = (Bar) getIntent().getSerializableExtra("bar");
         bar = ListaBaresActivity.bar;
 
+        uId = getUid();
+
         dbBar = FirebaseDatabase.getInstance().getReference().child("bares").child(bar.getuId()).child("notas");
-        dbUser = FirebaseDatabase.getInstance().getReference().child("users").child(getUid()).child("notas");
+        dbUser = FirebaseDatabase.getInstance().getReference().child("users").child(uId).child("notas");
 
         campoNome = (TextView) findViewById(R.id.visual_perfil_nome);
         campoEndereco = (TextView) findViewById(R.id.visual_perfil_endereco);
@@ -61,6 +63,8 @@ public class VisualPerfilBarActivity extends BaseActivity {
         botaoSite = (Button) findViewById(R.id.visual_perfil_botao_site);
         botaoDarNota = (Button) findViewById(R.id.visual_perfil_botao_nota);
 
+        campoNotaBar = (RatingBar) findViewById(R.id.visual_perfil_nota);
+
         listaBebidas = (ListView) findViewById(R.id.visual_perfil_lista_bebidas);
 
     }
@@ -69,7 +73,7 @@ public class VisualPerfilBarActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
 
-        pegaNotaUsuarioEComparaSeJaDeuNota();
+        adicionaOuModificaNotaData();
 
         BebidasAdapter bebidasAdapter = new BebidasAdapter(VisualPerfilBarActivity.this, bar.getBebidas());
         listaBebidas.setAdapter(bebidasAdapter);
@@ -77,15 +81,20 @@ public class VisualPerfilBarActivity extends BaseActivity {
         campoNome.setText(bar.getNome());
         campoEndereco.setText(bar.getEndereco());
         campoTipoBar.setText(bar.getTipoBar().toUpperCase());
+
+        campoNotaBar.setRating((float)bar.getMediaNotas());
+        campoNotaBar.setEnabled(false);
     }
 
-    private void pegaNotaUsuarioEComparaSeJaDeuNota() {
+    private void adicionaOuModificaNotaData() {
 
         final Map<String, Nota> notasUsuario = new HashMap<>();
         final Map<String, Nota> notasBar= new HashMap<>();
 
+        final boolean[] deuNota = {false};
         final Nota[] notaDada = new Nota[1];
 
+        //comeca varrendo as notas do usuario
         dbUser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -93,14 +102,17 @@ public class VisualPerfilBarActivity extends BaseActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Map<String, Object> map = (HashMap<String, Object>) snapshot.getValue();
 
-                    String nota = String.valueOf(map.get("nota"));
+                    String idNota = String.valueOf(map.get("uId"));
+                    String valorNota = String.valueOf(map.get("valorNota"));
 
-                    if (!nota.equals(null) && !nota.equals("null") && !nota.equals("") ) {
-                        Nota n = new Nota(Double.parseDouble(nota),snapshot.getKey());
-                        notasUsuario.put(snapshot.getKey(), n);
+                    //adiciona ao mapa de notas do usuario
+                    if (!valorNota.equals(null) && !valorNota.equals("null") && !valorNota.equals("")) {
+                        Nota n = new Nota(Double.parseDouble(valorNota),idNota);
+                        notasUsuario.put(idNota, n);
                     }
                 }
 
+                //varre as notas do bar
                 dbBar.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -108,19 +120,23 @@ public class VisualPerfilBarActivity extends BaseActivity {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             Map<String, Object> map = (HashMap<String, Object>) snapshot.getValue();
 
-                            String nota = String.valueOf(map.get("nota"));
+                            String idNota = String.valueOf(map.get("uId"));
+                            String valorNota = String.valueOf(map.get("valorNota"));
 
-                            if (!nota.equals(null) && !nota.equals("null") && !nota.equals("")) {
-                                Nota n = new Nota(Double.parseDouble(nota),snapshot.getKey());
-                                notasBar.put(snapshot.getKey(), n);
+                            //adiciona ao mapa de notas do bar
+                            if (!valorNota.equals(null) && !valorNota.equals("null") && !valorNota.equals("")) {
+                                Nota n = new Nota(Double.parseDouble(valorNota),idNota);
+                                notasBar.put(idNota, n);
                             }
                         }
 
+                        //compara se o usuario ja deu nota para o bar
                         if (notasUsuario.size() != 0 && notasBar.size() != 0){
                             for (Map.Entry<String, Nota> r : notasUsuario.entrySet()){
                                 if (notasBar.containsKey(r.getKey())){
-                                    deuNota = true;
+                                    deuNota[0] = true;
                                     notaDada[0] = new Nota(r.getValue().getValorNota(), r.getValue().getuId());
+                                    botaoDarNota.setText("Mudar sua nota");
                                 }
                             }
                         }
@@ -128,66 +144,68 @@ public class VisualPerfilBarActivity extends BaseActivity {
                         botaoDarNota.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                if (deuNota == true){
-                                    botaoDarNota.setText("Mudar sua nota");
-                                }
-                                else{
-                                    final Dialog dialog = new Dialog(VisualPerfilBarActivity.this);
-                                    dialog.setContentView(R.layout.dialog_dar_nota);
-                                    dialog.setTitle("Dar Nota");
 
-                                    final RatingBar dialogNota = (RatingBar) dialog.findViewById(R.id.dialog_dar_nota_nota);
-                                    final Button dialogSalvar = (Button) dialog.findViewById(R.id.dialog_dar_nota_botao_salvar);
-                                    final Button dialogCancelar = (Button) dialog.findViewById(R.id.dialog_dar_nota_botao_cancelar);
+                                final Dialog dialog = new Dialog(VisualPerfilBarActivity.this);
+                                dialog.setContentView(R.layout.dialog_dar_nota);
+                                dialog.setTitle(botaoDarNota.getText());
 
-                                    dialogSalvar.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
+                                final RatingBar dialogNota = (RatingBar) dialog.findViewById(R.id.dialog_dar_nota_nota);
+                                final Button dialogSalvar = (Button) dialog.findViewById(R.id.dialog_dar_nota_botao_salvar);
+                                final Button dialogCancelar = (Button) dialog.findViewById(R.id.dialog_dar_nota_botao_cancelar);
 
-                                            if (deuNota == false) {
-                                                String idNota = dbBar.push().getKey();
-                                                Nota notaNova = new Nota(dialogNota.getRating(), idNota);
+                                if (deuNota[0] == true)
+                                    dialogNota.setRating((float)notaDada[0].getValorNota());
 
-                                                Map<String, Object> valoresNota = notaNova.toMap();
+                                dialogSalvar.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
 
-                                                Map<String, Object> childUpdates = new HashMap<>();
-                                                childUpdates.put(idNota, valoresNota);
+                                        //adiciona nova nota inexistente do usuario para o bar
+                                        if (deuNota[0] == false) {
+                                            String idNota = dbBar.push().getKey();
+                                            Nota notaNova = new Nota(dialogNota.getRating(), idNota);
 
-                                                dbBar.updateChildren(childUpdates);
-                                                dbUser.updateChildren(childUpdates);
+                                            Map<String, Object> valoresNota = notaNova.toMap();
 
-                                                notaDada[0] = notaNova;
-                                                deuNota = true;
-                                            }
+                                            Map<String, Object> childUpdates = new HashMap<>();
+                                            childUpdates.put(idNota, valoresNota);
 
-                                            else{
-                                                dialogNota.setRating((float)notaDada[0].getValorNota());
+                                            dbBar.updateChildren(childUpdates);
+                                            dbUser.updateChildren(childUpdates);
 
-                                                String idNota = notaDada[0].getuId();
-                                                Nota notaModificada = new Nota(dialogNota.getRating(), notaDada[0].getuId());
-
-                                                Map<String, Object> valoresNota = notaModificada.toMap();
-
-                                                Map<String, Object> childUpdates = new HashMap<>();
-                                                childUpdates.put(idNota, valoresNota);
-
-                                                dbBar.updateChildren(childUpdates);
-                                                dbUser.updateChildren(childUpdates);
-                                            }
-
-                                            dialog.dismiss();
+                                            notaDada[0] = notaNova;
+                                            deuNota[0] = true;
                                         }
-                                    });
 
-                                    dialogCancelar.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            dialog.dismiss();
+                                        //edita a nota do usuario para o bar
+                                        else {
+                                            String idNota = notaDada[0].getuId();
+                                            Nota notaModificada = new Nota(Double.valueOf(dialogNota.getRating()), idNota);
+
+                                            Log.i("perfil", String.valueOf(notaModificada.getValorNota()));
+                                            Map<String, Object> valoresNota = notaModificada.toMap();
+
+                                            Map<String, Object> childUpdates = new HashMap<>();
+                                            childUpdates.put(idNota, valoresNota);
+
+                                            dbBar.updateChildren(childUpdates);
+                                            dbUser.updateChildren(childUpdates);
+
+                                            notaDada[0] = notaModificada;
                                         }
-                                    });
 
-                                    dialog.show();
-                                }
+                                        dialog.dismiss();
+                                    }
+                                });
+
+                                dialogCancelar.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        dialog.dismiss();
+                                    }
+                                });
+
+                                dialog.show();
                             }
                         });
                     }

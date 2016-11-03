@@ -32,6 +32,8 @@ public class Bar implements Serializable{
 
     private Map<String, Nota> notas = new HashMap<>();
 
+    private double mediaNotas;
+
 
 //    public Bar(String nome, String email){
 ////        this.uId = uId;
@@ -168,6 +170,14 @@ public class Bar implements Serializable{
 
     public Map<String, Nota> getNotas() {
         return notas;
+    }
+
+    public void setMediaNotas(double mediaNotas){
+        this.mediaNotas = mediaNotas;
+    }
+
+    public double getMediaNotas(){
+        return this.mediaNotas;
     }
 
 

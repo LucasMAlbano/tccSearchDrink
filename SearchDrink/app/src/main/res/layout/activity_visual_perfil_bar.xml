@@ -87,7 +87,6 @@
                     android:id="@+id/visual_perfil_nota"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:clickable="false"
                     android:layout_gravity="center"
                     android:max="10"
                     android:numStars="5"

@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,6 +68,9 @@ public class BaresAdapter extends BaseAdapter {
 
         TextView campoEndereco= (TextView) view.findViewById(R.id.item_bar_endereco);
         campoEndereco.setText(bar.getEndereco().split(",")[0] );
+
+        RatingBar campoNota = (RatingBar) view.findViewById(R.id.item_bar_nota);
+        campoNota.setRating((float) bar.getMediaNotas());
 
         return view;
     }

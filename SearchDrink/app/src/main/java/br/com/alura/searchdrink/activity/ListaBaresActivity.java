@@ -20,7 +20,6 @@ import android.widget.Toast;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,11 +29,10 @@ import java.util.Map;
 import br.com.alura.searchdrink.Localizador;
 import br.com.alura.searchdrink.R;
 import br.com.alura.searchdrink.adapter.BaresAdapter;
-import br.com.alura.searchdrink.fragment.MapaFragment;
 import br.com.alura.searchdrink.modelo.Bar;
 import br.com.alura.searchdrink.modelo.Bebida;
 import br.com.alura.searchdrink.task.CalculaDistanciaTask;
-import br.com.alura.searchdrink.task.TarefaDownloadLocalizacaoBares;
+import br.com.alura.searchdrink.task.DownloadLocalizacaoBaresTask;
 
 public class ListaBaresActivity extends BaseActivity implements CalculaDistanciaTask.Geo {
 
@@ -69,11 +67,11 @@ public class ListaBaresActivity extends BaseActivity implements CalculaDistancia
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lista_bares_);
+        setContentView(R.layout.activity_lista_bares);
 
         Intent veioMapaBar = getIntent();
 //        estabalecimentos = (List<Bar>) veioMapaBar.getSerializableExtra("estabelecimentos");
-        estabalecimentos = TarefaDownloadLocalizacaoBares.estabelecimentos;
+        estabalecimentos = DownloadLocalizacaoBaresTask.estabelecimentos;
 
         listaEstabelecimentos = (ListView) findViewById(R.id.lista_bares_lista);
         baresAdapter = new BaresAdapter(this, estabalecimentos);

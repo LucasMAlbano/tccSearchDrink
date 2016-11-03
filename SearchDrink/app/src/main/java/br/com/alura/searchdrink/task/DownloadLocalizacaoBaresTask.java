@@ -28,12 +28,13 @@ import br.com.alura.searchdrink.R;
 import br.com.alura.searchdrink.fragment.MapaFragment;
 import br.com.alura.searchdrink.modelo.Bar;
 import br.com.alura.searchdrink.modelo.Bebida;
+import br.com.alura.searchdrink.modelo.Nota;
 
 /**
  * Created by Birbara on 30/09/2016.
  */
 
-public class TarefaDownloadLocalizacaoBares extends AsyncTask<DatabaseReference, Void, List<Bar>> {
+public class DownloadLocalizacaoBaresTask extends AsyncTask<DatabaseReference, Void, List<Bar>> {
 
     private final Context context;
 
@@ -41,7 +42,7 @@ public class TarefaDownloadLocalizacaoBares extends AsyncTask<DatabaseReference,
 
     private ProgressDialog progresso;
 
-    public TarefaDownloadLocalizacaoBares(Context context/*, List<Bar> bares*/){
+    public DownloadLocalizacaoBaresTask(Context context/*, List<Bar> bares*/){
 //        this.estabelecimentos = bares;
         this.context = context;
     }
@@ -131,6 +132,7 @@ public class TarefaDownloadLocalizacaoBares extends AsyncTask<DatabaseReference,
 
                 synchronized (estabelecimentos) {
 
+                    //pega os bares
                     for (DataSnapshot snapshotBares : dataSnapshot.getChildren()) {
                         Log.i("AsyncTask", "doInbackground 3: " + Thread.currentThread().getName());
 
@@ -147,10 +149,10 @@ public class TarefaDownloadLocalizacaoBares extends AsyncTask<DatabaseReference,
                         if (endereco != null) {
                             Bar bar = new Bar(snapshotBares.getKey(), nome, email, uriFotoPerfil, endereco, telefone, site, tipoBar);
 
+                            // pega as bebidas
+                            for (DataSnapshot snapshotBebidas : snapshotBares.child("bebidas").getChildren()){
 
-                            for (DataSnapshot snapshot2 : snapshotBares.child("bebidas").getChildren()){
-
-                                Map <String, Object> mapBebidas = (HashMap<String, Object>)snapshot2.getValue();
+                                Map <String, Object> mapBebidas = (HashMap<String, Object>)snapshotBebidas.getValue();
                                 String nomeBebida = String.valueOf(mapBebidas.get("nome"));
                                 String quantidade = String.valueOf(mapBebidas.get("quantidade"));
                                 double preco = Double.parseDouble(String.valueOf(mapBebidas.get("preco")));
@@ -159,6 +161,27 @@ public class TarefaDownloadLocalizacaoBares extends AsyncTask<DatabaseReference,
 
                                 bar.getBebidas().add(bebida);
                             }
+
+                            //pega as notas
+                            for (DataSnapshot snapshotNotas : snapshotBares.child("notas").getChildren()){
+
+                                Map<String, Object> mapNotas = (HashMap<String, Object>) snapshotNotas.getValue();
+                                String idNota = String.valueOf(mapNotas.get("uId"));
+                                String valorNota = String.valueOf(mapNotas.get("valorNota"));
+
+                                //adiciona ao mapa de notas do bar
+                                if (!valorNota.equals(null) && !valorNota.equals("null") && !valorNota.equals("")) {
+                                    Nota nota = new Nota(Double.parseDouble(valorNota),idNota);
+                                    bar.getNotas().put(idNota, nota);
+                                }
+                            }
+
+                            //faz a media das notas
+                            double media = 0;
+                            for (Map.Entry<String, Nota> r : bar.getNotas().entrySet()) {
+                                media += r.getValue().getValorNota();
+                            }
+                            bar.setMediaNotas(media / bar.getNotas().size());
 
                             estabelecimentos.add(bar);
                         }
