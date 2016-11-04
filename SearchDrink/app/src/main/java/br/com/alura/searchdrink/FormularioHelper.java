@@ -107,7 +107,7 @@ public class FormularioHelper {
         bar.setEndereco(enderecoCompleto);
         bar.setTelefone(campoTelefone.getText().toString());
         bar.setSite(campoSite.getText().toString());
-//        bar.setUriFoto(campoFoto.getTag().toString());
+//        barClicado.setUriFoto(campoFoto.getTag().toString());
         bar.setTipoBar(String.valueOf(spinnerBares.getSelectedItem()));
 
         return bar;

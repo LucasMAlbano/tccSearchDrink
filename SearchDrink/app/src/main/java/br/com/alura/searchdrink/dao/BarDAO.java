@@ -102,7 +102,7 @@ public class BarDAO {
             }
         });
 
-//        return bar[0];
+//        return barClicado[0];
 //        return helper[0];
     }
 
@@ -179,9 +179,9 @@ public class BarDAO {
         dados.put("endereco", bar.getEndereco());
         dados.put("telefone", bar.getTelefone());
         dados.put("site", bar.getSite());
-//        dados.put("caminhoFoto", bar.getUriFoto());
+//        dados.put("caminhoFoto", barClicado.getUriFoto());
         dados.put("email", bar.getEmail());
-//        dados.put("senha", bar.getSenha());
+//        dados.put("senha", barClicado.getSenha());
         return dados;
     }
 }

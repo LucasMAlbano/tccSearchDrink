@@ -65,29 +65,42 @@
 
                 <Button
                     android:id="@+id/visual_perfil_botao_ligar"
-                    android:layout_width="150dp"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:text="ligar"
+                    android:textSize="13dp"
                     android:textColor="#FFF"
                     android:background="#1ec123"
                     android:layout_below="@id/visual_perfil_foto"/>
                 <Button
                     android:id="@+id/visual_perfil_botao_site"
-                    android:layout_width="150dp"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_centerHorizontal="true"
+                    android:text="Visitar Site"
+                    android:textSize="13dp"
+                    android:textColor="#FFF"
+                    android:background="#ec6905"
+                    android:layout_below="@+id/visual_perfil_foto"/>
+                <Button
+                    android:id="@+id/visual_perfil_botao_mapa"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:layout_alignParentRight="true"
-                    android:text="Visitar Site"
+                    android:text="Me leve até la"
+                    android:textSize="13dp"
                     android:textColor="#FFF"
-                    android:background="#ec6905"
+                    android:background="@color/color_app"
                     android:layout_below="@+id/visual_perfil_foto"/>
 
                 <RatingBar
                     android:id="@+id/visual_perfil_nota"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_centerHorizontal="true"
                     android:max="10"
                     android:numStars="5"
                     android:layout_marginTop="10dp"
@@ -101,6 +114,7 @@
                     android:text="Dar nota"
                     android:textSize="15sp"
                     android:textColor="@color/color_app"
+                    android:background="#000000"
                     android:layout_below="@id/visual_perfil_nota"
                     android:layout_centerInParent="true"/>
 

@@ -2,6 +2,7 @@ package br.com.alura.searchdrink.fragment;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -14,6 +15,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -29,6 +31,10 @@ import br.com.alura.searchdrink.task.DownloadLocalizacaoBaresTask;
  * Created by Birbara on 31/08/2016.
  */
 public class MapaFragment extends SupportMapFragment implements OnMapReadyCallback {
+
+    public static List<Bar> estabelecimentos;
+
+    public static Bar barClicado;
 
     private DatabaseReference database;
 
@@ -74,6 +80,7 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
     public void onResume() {
         super.onResume();
 
+
 //        bares = tarefaDownload.getEstabelecimentos();
     }
 
@@ -104,7 +111,8 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
         }
     }
 
-//    public List<Bar> getEstabelecimentos(){
+
+    //    public List<Bar> getEstabelecimentos(){
 //        return this.bares;
 //    }
 }

@@ -52,6 +52,8 @@ public class Bar implements Serializable{
         this.telefone = telefone;
         this.site = site;
         this.tipoBar = tipoBar;
+
+        this.mediaNotas = 0;
     }
 
 //    public Bar(String email){

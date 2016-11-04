@@ -9,7 +9,10 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -29,6 +32,7 @@ import java.util.Map;
 import br.com.alura.searchdrink.Localizador;
 import br.com.alura.searchdrink.R;
 import br.com.alura.searchdrink.adapter.BaresAdapter;
+import br.com.alura.searchdrink.fragment.MapaFragment;
 import br.com.alura.searchdrink.modelo.Bar;
 import br.com.alura.searchdrink.modelo.Bebida;
 import br.com.alura.searchdrink.task.CalculaDistanciaTask;
@@ -41,12 +45,13 @@ public class ListaBaresActivity extends BaseActivity implements CalculaDistancia
     private String TAG = "ListaBaresActivity";
 
     public static List<Bar> estabalecimentosFiltrados = new ArrayList<>();
-    public static Bar bar;
+    public static Bar barClicado;
 
-    private List<Bar> estabalecimentos;
+//    private List<Bar> estabalecimentos;
 
     public static String bebidaSelecionada = null;
     public static HashMap<String, Boolean> mapaBaresSelecionados = null;
+    public static BaresAdapter baresAdapter;
 
     private ListView listaEstabelecimentos;
     private Button buscaLista;
@@ -62,20 +67,22 @@ public class ListaBaresActivity extends BaseActivity implements CalculaDistancia
     private TextView campoStatusFiltro;
     private Button botaoRemoverFiltros;
 
-    private BaresAdapter baresAdapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_lista_bares);
 
-        Intent veioMapaBar = getIntent();
+//        Intent veioMapaBar = getIntent();
 //        estabalecimentos = (List<Bar>) veioMapaBar.getSerializableExtra("estabelecimentos");
-        estabalecimentos = DownloadLocalizacaoBaresTask.estabelecimentos;
+
+//        estabalecimentos = DownloadLocalizacaoBaresTask.estabelecimentos;
 
         listaEstabelecimentos = (ListView) findViewById(R.id.lista_bares_lista);
-        baresAdapter = new BaresAdapter(this, estabalecimentos);
-        listaEstabelecimentos.setAdapter(baresAdapter);
+//        baresAdapter = new BaresAdapter(this, MapaFragment.estabelecimentos);
+//        listaEstabelecimentos.setAdapter(baresAdapter);
 
         linearOpcoes = (LinearLayout) findViewById(R.id.lista_bares_opcoes);
 
@@ -110,10 +117,10 @@ public class ListaBaresActivity extends BaseActivity implements CalculaDistancia
         listaEstabelecimentos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> lista, View item, int position, long id) { //AdapterView<?> adapterView = tiposBebidas, View view = item, int i = posicao, long l = id
-                bar = (Bar) lista.getItemAtPosition(position);
+                barClicado = (Bar) lista.getItemAtPosition(position);
 
                 Intent intent = new Intent(ListaBaresActivity.this, VisualPerfilBarActivity.class);
-//                intent.putExtra("bar", (Serializable) bar);
+                intent.putExtra("flagOrigem", "ListaBares");
                 startActivity(intent);
             }
         });
@@ -137,8 +144,20 @@ public class ListaBaresActivity extends BaseActivity implements CalculaDistancia
     protected void onResume() {
         super.onResume();
 
-        if (bebidaSelecionada != null){
+        showProgressDialog();
 
+        //reseta a listaView de estabelecimentos com um adapter novo de acordo se o usuario filtrou ou nao
+        listaEstabelecimentos.setAdapter(null);
+        baresAdapter = null;
+        if(estabalecimentosFiltrados.size() != 0) {
+            baresAdapter = new BaresAdapter(this, estabalecimentosFiltrados);
+        }
+        else {
+            baresAdapter = new BaresAdapter(this, MapaFragment.estabelecimentos);
+        }
+        listaEstabelecimentos.setAdapter(baresAdapter);
+
+        if (bebidaSelecionada != null){
             List<String> listaBaresSelecionados = new ArrayList<>();
             for (Map.Entry<String, Boolean> r : mapaBaresSelecionados.entrySet()){
                 if (r.getValue().equals(true))
@@ -149,6 +168,8 @@ public class ListaBaresActivity extends BaseActivity implements CalculaDistancia
 
             aplicaFiltros(listaBaresSelecionados);
         }
+
+        hideProgressDialog();
     }
 
     @Override
@@ -157,7 +178,7 @@ public class ListaBaresActivity extends BaseActivity implements CalculaDistancia
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 
-        final Bar bar = (Bar) listaEstabelecimentos.getItemAtPosition(info.position);
+        barClicado = (Bar) listaEstabelecimentos.getItemAtPosition(info.position);
 
         //item site
         MenuItem itemPerfil = menu.add("Ver perfil");
@@ -166,7 +187,7 @@ public class ListaBaresActivity extends BaseActivity implements CalculaDistancia
             public boolean onMenuItemClick(MenuItem menuItem) {
 
                 Intent intent = new Intent(ListaBaresActivity.this, VisualPerfilBarActivity.class);
-                intent.putExtra("bar", bar);
+//                intent.putExtra("barClicado", bar);
                 startActivity(intent);
 
                 return false;
@@ -189,6 +210,13 @@ public class ListaBaresActivity extends BaseActivity implements CalculaDistancia
             public void onClick(View view) {
                 bebidaSelecionada = null;
                 mapaBaresSelecionados = null;
+
+                if(estabalecimentosFiltrados.size() != 0)
+                    estabalecimentosFiltrados.removeAll(estabalecimentosFiltrados);
+
+                baresAdapter = new BaresAdapter(ListaBaresActivity.this, MapaFragment.estabelecimentos);
+                listaEstabelecimentos.setAdapter(baresAdapter);
+
                 campoStatusFiltro.setVisibility(View.GONE);
                 botaoRemoverFiltros.setVisibility(View.GONE);
                 botaoSelecionarFiltros.setVisibility(View.VISIBLE);
@@ -198,18 +226,16 @@ public class ListaBaresActivity extends BaseActivity implements CalculaDistancia
     }
 
     private void aplicaFiltros(final List<String> listaBaresSelecionados) {
-
         Button botaoAplicarFiltros = (Button) findViewById(R.id.lista_bares_aplicarFiltros);
         botaoAplicarFiltros.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 showProgressDialog();
 
                 if(estabalecimentosFiltrados.size() != 0)
                     estabalecimentosFiltrados.removeAll(estabalecimentosFiltrados);
 
-                for (Bar bar : estabalecimentos) {
+                for (Bar bar : MapaFragment.estabelecimentos) {
                     if (listaBaresSelecionados.contains(bar.getTipoBar())) {
 
                         Log.i("entrou aqui 1", bar.getNome());

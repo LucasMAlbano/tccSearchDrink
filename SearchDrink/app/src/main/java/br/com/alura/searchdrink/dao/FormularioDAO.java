@@ -73,7 +73,7 @@ public class FormularioDAO {
                 FormularioDAO.this.helper = new FormularioHelper((FormularioActivity) context, tiposBares, uId);
 
                 barDAO.pegaBarEPreencheFormulario(FormularioDAO.this.helper);
-//                helper[0].preencheFormulario(bar);
+//                helper[0].preencheFormulario(barClicado);
 
                 hideProgressDialog();
 
@@ -112,9 +112,9 @@ public class FormularioDAO {
 //                String tipoBar = mapBar.get("tipoBar");
 //
 //
-//                Bar bar = new Bar(nome, endereco, telefone, site, email, tipoBar);
+//                Bar barClicado = new Bar(nome, endereco, telefone, site, email, tipoBar);
 //
-//                helper.preencheFormulario(bar);
+//                helper.preencheFormulario(barClicado);
 //            }
 //
 //            @Override

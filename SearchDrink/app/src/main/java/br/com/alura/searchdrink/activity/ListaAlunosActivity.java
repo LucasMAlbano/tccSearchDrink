@@ -64,7 +64,7 @@ public class ListaAlunosActivity extends AppCompatActivity {
                 Bar bar = (Bar) lista.getItemAtPosition(position);
 
                 Intent intent = new Intent(ListaAlunosActivity.this, FormularioActivity.class);
-                intent.putExtra("bar", bar);
+                intent.putExtra("barClicado", bar);
                 startActivity(intent);
             }
         });
@@ -88,7 +88,7 @@ public class ListaAlunosActivity extends AppCompatActivity {
         final Bar bar = (Bar) listaAlunos.getItemAtPosition(info.position);
 
         //item site
-        MenuItem itemSite = menu.add("Visitar site do bar");
+        MenuItem itemSite = menu.add("Visitar site do barClicado");
         Intent intentSite = new Intent(Intent.ACTION_VIEW);
         String site = bar.getSite();
         if (!site.startsWith("http://")){
@@ -98,7 +98,7 @@ public class ListaAlunosActivity extends AppCompatActivity {
         itemSite.setIntent(intentSite);
 
         //item ligação
-        MenuItem itemLigar = menu.add("Ligar para bar");
+        MenuItem itemLigar = menu.add("Ligar para barClicado");
         itemLigar.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
@@ -132,7 +132,7 @@ public class ListaAlunosActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
 //                BarDAO dao = new BarDAO(ListaAlunosActivity.this);
-//                dao.deleta(bar);
+//                dao.deleta(barClicado);
 //                dao.close();
 
                 Toast.makeText(ListaAlunosActivity.this, bar.getNome() + "removido(a)", Toast.LENGTH_SHORT).show();

@@ -2,6 +2,7 @@ package br.com.alura.searchdrink.task;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
@@ -9,8 +10,10 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -25,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.alura.searchdrink.R;
+import br.com.alura.searchdrink.activity.ListaBaresActivity;
+import br.com.alura.searchdrink.activity.VisualPerfilBarActivity;
 import br.com.alura.searchdrink.fragment.MapaFragment;
 import br.com.alura.searchdrink.modelo.Bar;
 import br.com.alura.searchdrink.modelo.Bebida;
@@ -38,7 +43,7 @@ public class DownloadLocalizacaoBaresTask extends AsyncTask<DatabaseReference, V
 
     private final Context context;
 
-    public static List<Bar> estabelecimentos;
+//    public static List<Bar> estabelecimentos;
 
     private ProgressDialog progresso;
 
@@ -58,18 +63,18 @@ public class DownloadLocalizacaoBaresTask extends AsyncTask<DatabaseReference, V
     protected List<Bar> doInBackground(DatabaseReference... dbs) {
         Log.i("AsyncTask", "doInbackground: " + Thread.currentThread().getName());
 
-        estabelecimentos = new ArrayList<>();
+        MapaFragment.estabelecimentos = new ArrayList<>();
 
         ValueEventListener postListener = pegaEstabelecimentos();
-        dbs[0].addValueEventListener(postListener);
+        dbs[0].addListenerForSingleValueEvent(postListener);
 
-        synchronized (estabelecimentos){
+        synchronized (MapaFragment.estabelecimentos){
             try {
-                estabelecimentos.wait();
+                MapaFragment.estabelecimentos.wait();
             } catch (InterruptedException e) {e.printStackTrace();}
         }
 
-        return estabelecimentos;
+        return MapaFragment.estabelecimentos;
     }
 
 
@@ -79,11 +84,11 @@ public class DownloadLocalizacaoBaresTask extends AsyncTask<DatabaseReference, V
         Toast.makeText(context, "tamanho da lista: " + bares.size(), Toast.LENGTH_LONG).show();
 
         if (bares.size() != 0) {
-            //adiciona local do bar
+            //adiciona local do barClicado
 //            int i = 0;
-            for (Bar bar : bares) {
+            for (final Bar bar : bares) {
 //            Toast.makeText(context, "dentro do for", Toast.LENGTH_LONG).show();
-//            Toast.makeText(context, bar.getNome() + " - " + bar.getEndereco(), Toast.LENGTH_LONG).show();
+//            Toast.makeText(context, barClicado.getNome() + " - " + barClicado.getEndereco(), Toast.LENGTH_LONG).show();
                 LatLng coordenada = pegaCoordenadaDoEndereco(bar.getEndereco());
                 if (coordenada != null) {
 
@@ -96,6 +101,18 @@ public class DownloadLocalizacaoBaresTask extends AsyncTask<DatabaseReference, V
                     marcador.snippet(String.valueOf(bar.getTelefone()));
                     marcador.icon(BitmapDescriptorFactory.fromResource(R.drawable.copocheio_mapa));
                     MapaFragment.mapa.addMarker(marcador);
+
+                    MapaFragment.mapa.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                        @Override
+                        public boolean onMarkerClick(Marker marker) {
+                            MapaFragment.barClicado = bar;
+                            Intent intent = new Intent(context, VisualPerfilBarActivity.class);
+                            intent.putExtra("flagOrigem", "Mapa");
+                            context.startActivity(intent);
+
+                            return false;
+                        }
+                    });
 
                 }
             }
@@ -130,7 +147,7 @@ public class DownloadLocalizacaoBaresTask extends AsyncTask<DatabaseReference, V
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.i("AsyncTask", "doInbackground 2: " + Thread.currentThread().getName());
 
-                synchronized (estabelecimentos) {
+                synchronized (MapaFragment.estabelecimentos) {
 
                     //pega os bares
                     for (DataSnapshot snapshotBares : dataSnapshot.getChildren()) {
@@ -169,7 +186,7 @@ public class DownloadLocalizacaoBaresTask extends AsyncTask<DatabaseReference, V
                                 String idNota = String.valueOf(mapNotas.get("uId"));
                                 String valorNota = String.valueOf(mapNotas.get("valorNota"));
 
-                                //adiciona ao mapa de notas do bar
+                                //adiciona ao mapa de notas do barClicado
                                 if (!valorNota.equals(null) && !valorNota.equals("null") && !valorNota.equals("")) {
                                     Nota nota = new Nota(Double.parseDouble(valorNota),idNota);
                                     bar.getNotas().put(idNota, nota);
@@ -183,11 +200,11 @@ public class DownloadLocalizacaoBaresTask extends AsyncTask<DatabaseReference, V
                             }
                             bar.setMediaNotas(media / bar.getNotas().size());
 
-                            estabelecimentos.add(bar);
+                            MapaFragment.estabelecimentos.add(bar);
                         }
                     }
 
-                    estabelecimentos.notifyAll();
+                    MapaFragment.estabelecimentos.notifyAll();
 
                 }
             }
@@ -225,8 +242,8 @@ public class DownloadLocalizacaoBaresTask extends AsyncTask<DatabaseReference, V
 //                            String email = String.valueOf(map.get("email"));
 //
 //                            if (endereco != null) {
-//                                Bar bar = new Bar(nome, endereco, telefone, site, email);
-//                                estabelecimentos.add(bar);
+//                                Bar barClicado = new Bar(nome, endereco, telefone, site, email);
+//                                estabelecimentos.add(barClicado);
 //                            }
 //                        }
 //

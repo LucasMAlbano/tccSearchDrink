@@ -182,7 +182,7 @@ public class PerfilBarActivity extends BaseActivity
 
         iniciaPerfil();
 
-        //        Picasso.with(this).load(bar.getUriFoto()).into(campoFotoPerfil);
+        //        Picasso.with(this).load(barClicado.getUriFoto()).into(campoFotoPerfil);
 
 
     }
@@ -222,7 +222,7 @@ public class PerfilBarActivity extends BaseActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Inflate the menu; this adds items to the action barClicado if it is present.
         getMenuInflater().inflate(R.menu.perfil, menu);
 
         return true;
@@ -230,7 +230,7 @@ public class PerfilBarActivity extends BaseActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
+        // Handle action barClicado item clicks here. The action barClicado will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
@@ -303,7 +303,8 @@ public class PerfilBarActivity extends BaseActivity
 
                 bar = new Bar(uId, nome, email, uriFotoPerfil, endereco, telefone, site, tipoBar);
 
-                new ImageLoadTask(uriFotoPerfil, campoFotoPerfil).execute();
+                if(!uriFotoPerfil.equals(null) && !uriFotoPerfil.equals("null") && !uriFotoPerfil.equals(""))
+                    new ImageLoadTask(uriFotoPerfil, campoFotoPerfil).execute();
             }
 
             @Override
@@ -425,8 +426,8 @@ public class PerfilBarActivity extends BaseActivity
 
         dialog.show();
 
-        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
+//        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                .setAction("Action", null).show();
     }
 
     private void cadastraBebidaFirebase(String nome, String quantidade, double preco) {

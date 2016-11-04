@@ -3,6 +3,7 @@ package br.com.alura.searchdrink.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -13,7 +14,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.clans.fab.FloatingActionButton;
@@ -23,18 +23,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.Serializable;
-import java.util.List;
-
 import br.com.alura.searchdrink.Localizador;
 import br.com.alura.searchdrink.fragment.MapaFragment;
 import br.com.alura.searchdrink.R;
-import br.com.alura.searchdrink.modelo.Bar;
 
 //import com.google.android.gms.maps.SupportMapFragment;
 
 
 public class MapaBarActivity extends BaseActivity {
+
+    public static boolean verificadorSeUsuarioEhBar = false;
 
     private static final int REQUEST_PERMISSOES = 1;
     private MapaFragment mapaFragment;
@@ -95,7 +93,7 @@ public class MapaBarActivity extends BaseActivity {
             public void onClick(View v) {
 //                boolean ehBar = verificaSeEhBar(uId);
 //                Toast.makeText(MapaBarActivity.this, String.valueOf(ehBar), Toast.LENGTH_SHORT).show();
-                vaiParaPerfil(uId);
+                vaiParaPerfil();
             }
         });
         floatingFiltrar.setOnClickListener(new View.OnClickListener() {
@@ -112,31 +110,41 @@ public class MapaBarActivity extends BaseActivity {
         });
     }
 
-    private void vaiParaPerfil(final String uId) {
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        verificaSeUsuarioEhBar();
+    }
+
+    private void vaiParaPerfil() {
+
+        if (verificadorSeUsuarioEhBar) {
+            Intent vaiParaPerfilBar = new Intent(MapaBarActivity.this, PerfilBarActivity.class);
+            startActivity(vaiParaPerfilBar);
+        } else {
+            Intent vaiParaPerfilUsuario = new Intent(MapaBarActivity.this, PerfilUsuarioActivity.class);
+            startActivity(vaiParaPerfilUsuario);
+        }
+    }
+
+    private void verificaSeUsuarioEhBar() {
 
         database.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                boolean verificador = false;
-
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    if (snapshot.getKey().equals(uId)){
-                        verificador = true;
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    if (snapshot.getKey().equals(uId)) {
+                        verificadorSeUsuarioEhBar = true;
                         break;
                     }
                 }
 
-                Toast.makeText(MapaBarActivity.this, String.valueOf(verificador), Toast.LENGTH_SHORT).show();
-
-                if (verificador) {
-                    Intent vaiParaPerfilBar = new Intent(MapaBarActivity.this, PerfilBarActivity.class);
-                    startActivity(vaiParaPerfilBar);
-                }
-                else{
-                    Intent vaiParaPerfilUsuario = new Intent(MapaBarActivity.this, PerfilUsuarioActivity.class);
-                    startActivity(vaiParaPerfilUsuario);
-                }
+                if (verificadorSeUsuarioEhBar)
+                    floatingLogin.setImageResource(R.mipmap.ic_perfilbar);
+                else
+                    floatingLogin.setImageResource(R.mipmap.ic_perfiluser);
             }
 
             @Override
@@ -153,8 +161,8 @@ public class MapaBarActivity extends BaseActivity {
 //            estabelecimentos = mapaFragment.getEstabelecimentos();
 //        }
 //
-//        for(Bar bar : estabelecimentos){
-//            if(bar.getuId().equals(uId))
+//        for(Bar barClicado : estabelecimentos){
+//            if(barClicado.getuId().equals(uId))
 //                return true;
 //        }
 //

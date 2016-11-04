@@ -62,8 +62,8 @@ public class FormularioActivity extends BaseActivity {
         Log.i("AsyncTask", "doInbackground 1: " + Thread.currentThread().getName());
         formularioDAO.inicializaFormularioHelper(this, barDAO);
         Log.i("AsyncTask", "doInbackground 8: " + Thread.currentThread().getName());
-//        Bar bar = barDAO.pegaBar();
-//        helper.preencheFormulario(bar);
+//        Bar barClicado = barDAO.pegaBar();
+//        helper.preencheFormulario(barClicado);
         Log.i("AsyncTask", "doInbackground 9: " + Thread.currentThread().getName());
 
 //        dbBar = FirebaseDatabase.getInstance().getReference().child("bares").child(uId);
@@ -136,7 +136,7 @@ public class FormularioActivity extends BaseActivity {
 //                    dbBar.addListenerForSingleValueEvent(new ValueEventListener() {
 //                        @Override
 //                        public void onDataChange(DataSnapshot dataSnapshot) {
-//                            enviaCadastroFirebase(bar);
+//                            enviaCadastroFirebase(barClicado);
 //                        }
 //
 //                        @Override
@@ -155,7 +155,7 @@ public class FormularioActivity extends BaseActivity {
                         startActivity(vaiParaPerfil);
                     }
 
-//                Toast.makeText(FormularioActivity.this, "Bar " + bar.getNome() + " salvo com sucesso!", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(FormularioActivity.this, "Bar " + barClicado.getNome() + " salvo com sucesso!", Toast.LENGTH_SHORT).show();
                     finish();
                 }
 
@@ -240,9 +240,9 @@ public class FormularioActivity extends BaseActivity {
 //                String tipoBar = mapBar.get("tipoBar");
 //
 //
-//                Bar bar = new Bar(nome, endereco, telefone, site, email, tipoBar);
+//                Bar barClicado = new Bar(nome, endereco, telefone, site, email, tipoBar);
 //
-//                helper.preencheFormulario(bar, mypath);
+//                helper.preencheFormulario(barClicado, mypath);
 //            }
 //
 //            @Override
