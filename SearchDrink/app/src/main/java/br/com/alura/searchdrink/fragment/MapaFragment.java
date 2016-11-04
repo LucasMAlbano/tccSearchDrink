@@ -1,5 +1,6 @@
 package br.com.alura.searchdrink.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -24,6 +25,7 @@ import java.util.List;
 
 import br.com.alura.searchdrink.Localizador;
 import br.com.alura.searchdrink.R;
+import br.com.alura.searchdrink.activity.VisualPerfilBarActivity;
 import br.com.alura.searchdrink.modelo.Bar;
 import br.com.alura.searchdrink.task.DownloadLocalizacaoBaresTask;
 
@@ -80,7 +82,6 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
     public void onResume() {
         super.onResume();
 
-
 //        bares = tarefaDownload.getEstabelecimentos();
     }
 
@@ -88,6 +89,22 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
     public void onMapReady(GoogleMap googleMap) {
 
         this.mapa = googleMap;
+
+        this.mapa.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+
+                final Bar bar = (Bar) marker.getTag();
+
+                barClicado = bar;
+
+                Intent intent = new Intent(getContext(), VisualPerfilBarActivity.class);
+                intent.putExtra("flagOrigem", "Mapa");
+                getContext().startActivity(intent);
+
+                return false;
+            }
+        });
 
 
         new Localizador(getContext(), MapaFragment.this);

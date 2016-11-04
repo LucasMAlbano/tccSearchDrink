@@ -108,14 +108,14 @@ public class VisualPerfilBarActivity extends BaseActivity {
 
         Toast.makeText(this, bar.getNome(), Toast.LENGTH_SHORT).show();
 
-//        if (!MapaBarActivity.verificadorSeUsuarioEhBar)
+        if (!MapaBarActivity.verificadorSeUsuarioEhBar)
             adicionaOuModificaNotaData();
-//        else{
-//            botaoDarNota.setText("usuários que possui bar, não pode dar nota");
-//            botaoDarNota.setTextColor(Color.RED);
-//            botaoDarNota.setTextSize(13);
-//            botaoDarNota.setEnabled(false);
-//        }
+        else{
+            botaoDarNota.setText("usuários que possui bar, não pode dar nota");
+            botaoDarNota.setTextColor(Color.RED);
+            botaoDarNota.setTextSize(13);
+            botaoDarNota.setEnabled(false);
+        }
 
 
         BebidasAdapter bebidasAdapter = new BebidasAdapter(VisualPerfilBarActivity.this, bar.getBebidas());

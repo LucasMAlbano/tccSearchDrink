@@ -81,7 +81,7 @@ public class DownloadLocalizacaoBaresTask extends AsyncTask<DatabaseReference, V
     @Override
     protected void onPostExecute(List<Bar> bares) {
 
-        Toast.makeText(context, "tamanho da lista: " + bares.size(), Toast.LENGTH_LONG).show();
+//        Toast.makeText(context, "tamanho da lista: " + bares.size(), Toast.LENGTH_LONG).show();
 
         if (bares.size() != 0) {
             //adiciona local do barClicado
@@ -95,24 +95,33 @@ public class DownloadLocalizacaoBaresTask extends AsyncTask<DatabaseReference, V
 //                    estabelecimentos.get(i).setCoordenada(coordenada.latitude+","+coordenada.longitude);
 //                    i++;
 
-                    MarkerOptions marcador = new MarkerOptions();
-                    marcador.position(coordenada);
-                    marcador.title(bar.getNome());
-                    marcador.snippet(String.valueOf(bar.getTelefone()));
-                    marcador.icon(BitmapDescriptorFactory.fromResource(R.drawable.copocheio_mapa));
-                    MapaFragment.mapa.addMarker(marcador);
 
-                    MapaFragment.mapa.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                        @Override
-                        public boolean onMarkerClick(Marker marker) {
-                            MapaFragment.barClicado = bar;
-                            Intent intent = new Intent(context, VisualPerfilBarActivity.class);
-                            intent.putExtra("flagOrigem", "Mapa");
-                            context.startActivity(intent);
+                    Marker marker = MapaFragment.mapa.addMarker(new MarkerOptions()
+                            .position(coordenada)
+                            .title(bar.getNome())
+                            .snippet(String.valueOf(bar.getTelefone()))
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.copocheio_mapa)));
+                    marker.setTag(bar);
 
-                            return false;
-                        }
-                    });
+
+//                    MarkerOptions marcador = new MarkerOptions();
+//                    marcador.position(coordenada);
+//                    marcador.title(bar.getNome());
+//                    marcador.snippet(String.valueOf(bar.getTelefone()));
+//                    marcador.icon(BitmapDescriptorFactory.fromResource(R.drawable.copocheio_mapa));
+//                    MapaFragment.mapa.addMarker(marcador);
+
+//                    MapaFragment.mapa.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+//                        @Override
+//                        public boolean onMarkerClick(Marker marker) {
+//                            MapaFragment.barClicado = bar;
+//                            Intent intent = new Intent(context, VisualPerfilBarActivity.class);
+//                            intent.putExtra("flagOrigem", "Mapa");
+//                            context.startActivity(intent);
+//
+//                            return false;
+//                        }
+//                    });
 
                 }
             }
@@ -198,7 +207,10 @@ public class DownloadLocalizacaoBaresTask extends AsyncTask<DatabaseReference, V
                             for (Map.Entry<String, Nota> r : bar.getNotas().entrySet()) {
                                 media += r.getValue().getValorNota();
                             }
+
                             bar.setMediaNotas(media / bar.getNotas().size());
+
+
 
                             MapaFragment.estabelecimentos.add(bar);
                         }
