@@ -25,13 +25,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import br.com.alura.searchdrink.BarHelper;
 import br.com.alura.searchdrink.R;
 import br.com.alura.searchdrink.adapter.BebidasAdapter;
 import br.com.alura.searchdrink.fragment.MapaFragment;
 import br.com.alura.searchdrink.modelo.Bar;
+import br.com.alura.searchdrink.modelo.Bebida;
 import br.com.alura.searchdrink.modelo.Nota;
 import br.com.alura.searchdrink.task.DownloadLocalizacaoBaresTask;
 import br.com.alura.searchdrink.task.ImageLoadTask;
@@ -117,8 +121,15 @@ public class VisualPerfilBarActivity extends BaseActivity {
             botaoDarNota.setEnabled(false);
         }
 
-
-        BebidasAdapter bebidasAdapter = new BebidasAdapter(VisualPerfilBarActivity.this, bar.getBebidas());
+        BebidasAdapter bebidasAdapter;
+        if (bar.getBebidas().size() != 0)
+             bebidasAdapter = new BebidasAdapter(VisualPerfilBarActivity.this, bar.getBebidas());
+        else {
+            List<Bebida> bs = new ArrayList<>();
+            final Bebida b = new Bebida("Este bar não possui bebida cadastrada", null, 0.0, null);
+            bs.add(b);
+            bebidasAdapter = new BebidasAdapter(VisualPerfilBarActivity.this, bs);
+        }
         listaBebidas.setAdapter(bebidasAdapter);
 
         if (!bar.getUriFoto().equals(null) && !bar.getUriFoto().equals("null")
@@ -126,7 +137,9 @@ public class VisualPerfilBarActivity extends BaseActivity {
             new ImageLoadTask(bar.getUriFoto(), campoFoto).execute();
 
         campoNome.setText(bar.getNome());
-        campoEndereco.setText(bar.getEndereco());
+        final Map<String, String> endCompleto = new BarHelper().devolveEndereco(bar.getEndereco());
+        campoEndereco.setText(endCompleto.get("rua") + ", " + endCompleto.get("numero") + " - " + endCompleto.get("bairro")
+                + " - " + endCompleto.get("cidade") + " - " + endCompleto.get("estado"));
         campoTipoBar.setText(bar.getTipoBar().toUpperCase());
 
         campoNotaBar.setRating((float) bar.getMediaNotas());
@@ -139,8 +152,11 @@ public class VisualPerfilBarActivity extends BaseActivity {
                         != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(VisualPerfilBarActivity.this, new String[]{Manifest.permission.CALL_PHONE}, CODIGO_LIGACAO);
                 } else {
+                    String telefone = bar.getTelefone();
+                    if(!telefone.startsWith("0"))
+                        telefone = "0" + telefone;
                     Intent intentLigar = new Intent(Intent.ACTION_CALL);
-                    intentLigar.setData(Uri.parse("tel:" + bar.getTelefone()));
+                    intentLigar.setData(Uri.parse("tel:" + telefone));
                     startActivity(intentLigar);
                 }
             }

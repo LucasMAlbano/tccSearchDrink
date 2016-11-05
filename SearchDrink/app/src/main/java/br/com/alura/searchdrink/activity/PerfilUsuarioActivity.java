@@ -50,14 +50,14 @@ public class PerfilUsuarioActivity extends BaseActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        Map<String, Object> mapBar = (HashMap<String, Object>)dataSnapshot.getValue();
-                        String nome = String.valueOf(mapBar.get("nome"));
-                        String email = String.valueOf(mapBar.get("email"));
-                        String uriFotoPerfil = String.valueOf(mapBar.get("uriFoto"));
-
-                        Bar bar = new Bar(dataSnapshot.getKey(), nome, email, uriFotoPerfil, null, null, null, null);
-
-                        dbBar.child(dataSnapshot.getKey()).setValue(bar);
+//                        Map<String, Object> mapBar = (HashMap<String, Object>)dataSnapshot.getValue();
+//                        String nome = String.valueOf(mapBar.get("nome"));
+//                        String email = String.valueOf(mapBar.get("email"));
+//                        String uriFotoPerfil = String.valueOf(mapBar.get("uriFoto"));
+//
+//                        Bar bar = new Bar(dataSnapshot.getKey(), nome, email, uriFotoPerfil, null, null, null, null);
+//
+//                        dbBar.child(dataSnapshot.getKey()).setValue(bar);
 
                         Intent intent = new Intent(PerfilUsuarioActivity.this, FormularioActivity.class);
                         intent.putExtra("tipo", "cadastro");

@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -117,6 +118,10 @@ public class FormularioHelper {
 
         this.bar = bar;
 
+        Log.i("testeBar", bar.getEndereco());
+
+        campoNome.setText(bar.getNome());
+
         final Map<String, String> enderecoCompleto;
         if (!bar.getEndereco().equals(null) && !bar.getEndereco().equals("null") && !bar.getEndereco().equals("")) {
             enderecoCompleto = barHelper.devolveEndereco(bar.getEndereco());
@@ -127,7 +132,6 @@ public class FormularioHelper {
             campoCidade.setText(enderecoCompleto.get("cidade"));
             campoEstado.setText(enderecoCompleto.get("estado"));
 
-            campoNome.setText(bar.getNome());
             campoTelefone.setText(bar.getTelefone());
             campoSite.setText(bar.getSite());
             spinnerBares.setPrompt(bar.getTipoBar());

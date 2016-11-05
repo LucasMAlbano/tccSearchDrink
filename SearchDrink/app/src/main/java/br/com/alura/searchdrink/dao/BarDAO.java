@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ import java.util.Map;
 
 import br.com.alura.searchdrink.FormularioHelper;
 import br.com.alura.searchdrink.activity.FormularioActivity;
+import br.com.alura.searchdrink.activity.MapaBarActivity;
 import br.com.alura.searchdrink.modelo.Bar;
 
 /**
@@ -40,6 +42,7 @@ public class BarDAO {
     private final Context context;
 
     private DatabaseReference dbBar;
+    private DatabaseReference dbUser;
     private StorageReference storageReference;
 
     private String uId;
@@ -51,6 +54,7 @@ public class BarDAO {
         this.uId = uId;
 
         dbBar = FirebaseDatabase.getInstance().getReference().child("bares").child(uId);
+        dbUser = FirebaseDatabase.getInstance().getReference().child("users").child(uId);
         storageReference = FirebaseStorage.getInstance().getReference().child(uId);
     }
 
@@ -77,30 +81,57 @@ public class BarDAO {
 
         final Bar[] bar = {null};
 
-        dbBar.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+        if (MapaBarActivity.verificadorSeUsuarioEhBar) {
 
-                Map <String, String> mapBar = (Map)dataSnapshot.getValue();
-                String nome = mapBar.get("nome");
-                String endereco = mapBar.get("endereco");
-                String telefone = mapBar.get("telefone");
-                String site = mapBar.get("site");
-                String email = mapBar.get("email");
-                String uriFotoPerfil = String.valueOf(mapBar.get("uriFoto"));
-                String tipoBar = mapBar.get("tipoBar");
+            dbBar.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    Map<String, String> mapBar = (Map) dataSnapshot.getValue();
+                    String nome = mapBar.get("nome");
+                    String endereco = mapBar.get("endereco");
+                    String telefone = mapBar.get("telefone");
+                    String site = mapBar.get("site");
+                    String email = mapBar.get("email");
+                    String uriFotoPerfil = String.valueOf(mapBar.get("uriFoto"));
+                    String tipoBar = mapBar.get("tipoBar");
 
 
-                bar[0] = new Bar(uId, nome, email, uriFotoPerfil, endereco, telefone, site, tipoBar);
+                    bar[0] = new Bar(uId, nome, email, uriFotoPerfil, endereco, telefone, site, tipoBar);
 
-                helper.preencheFormulario(bar[0]);
-            }
+                    helper.preencheFormulario(bar[0]);
+                }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        }
+
+        else{
+
+            dbUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    Map<String, String> mapBar = (Map) dataSnapshot.getValue();
+                    String nome = mapBar.get("nome");
+                    String email = mapBar.get("email");
+                    String uriFotoPerfil = String.valueOf(mapBar.get("uriFoto"));
+
+
+                    bar[0] = new Bar(uId, nome, email, uriFotoPerfil, "null", null, null, null);
+
+                    helper.preencheFormulario(bar[0]);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
 
 //        return barClicado[0];
 //        return helper[0];

@@ -16,6 +16,8 @@ import java.util.Map;
 public class Bar implements Serializable{
 
     private String uId;
+
+    @Exclude
     private long id;
 
     private String nome;
@@ -32,6 +34,7 @@ public class Bar implements Serializable{
 
     private Map<String, Nota> notas = new HashMap<>();
 
+    @Exclude
     private double mediaNotas;
 
 
@@ -174,10 +177,12 @@ public class Bar implements Serializable{
         return notas;
     }
 
+    @Exclude
     public void setMediaNotas(double mediaNotas){
         this.mediaNotas = mediaNotas;
     }
 
+    @Exclude
     public double getMediaNotas(){
         return this.mediaNotas;
     }

@@ -151,6 +151,7 @@ public class FormularioActivity extends BaseActivity {
 //                    uploadFotoPerfilFirebase();
 
                     if (tipo != null && tipo.equals("cadastro")) {
+                        MapaBarActivity.verificadorSeUsuarioEhBar = true;
                         Intent vaiParaPerfil = new Intent(FormularioActivity.this, PerfilBarActivity.class);
                         startActivity(vaiParaPerfil);
                     }
