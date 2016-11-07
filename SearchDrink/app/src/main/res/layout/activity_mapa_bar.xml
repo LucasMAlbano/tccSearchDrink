@@ -20,9 +20,9 @@
         android:layout_alignParentStart="true">
 
         <ImageButton
-            android:id="@+id/botao_centralizar"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:id="@+id/mapa_bar_botao_centralizar"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:textSize="40dp"
             android:textColor="#ffffff"
             android:layout_marginRight="36dp"
@@ -33,9 +33,36 @@
             android:elevation="6dp"
             android:stateListAnimator="@null"/>
 
+        <android.support.v7.widget.SearchView
+            android:id="@+id/mapa_bar_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/color_app"
+            android:visibility="gone">
+        </android.support.v7.widget.SearchView>
+
+        <ListView
+            android:id="@+id/mapa_bar_lista"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFF"
+            android:visibility="gone"
+            android:layout_below="@id/mapa_bar_search" />
+
+        <Button
+            android:id="@+id/mapa_bar_botao_fecharBusca"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:text="x"
+            android:textColor="#ff0000"
+            android:background="@color/color_app"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/mapa_bar_search"
+            android:visibility="gone"/>
+
 
         <com.github.clans.fab.FloatingActionMenu
-            android:id="@+id/button_menu"
+            android:id="@+id/mapa_bar_button_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -75,7 +102,7 @@
             app:menu_showShadow="true">
 
             <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/floating_filtrar"
+                android:id="@+id/mapa_bar_floating_filtrar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/ic_filtrar"
@@ -83,7 +110,7 @@
                 app:fab_size="mini" />
 
             <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/floating_pesquisar"
+                android:id="@+id/mapa_bar_floating_pesquisar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/ic_pesquisar"
@@ -91,7 +118,7 @@
                 app:fab_size="mini" />
 
             <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/floating_login"
+                android:id="@+id/mapa_bar_floating_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/ic_perfiluser"

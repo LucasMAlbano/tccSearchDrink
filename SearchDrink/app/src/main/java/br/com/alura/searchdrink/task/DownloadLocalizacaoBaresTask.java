@@ -85,16 +85,15 @@ public class DownloadLocalizacaoBaresTask extends AsyncTask<DatabaseReference, V
 
         if (bares.size() != 0) {
             //adiciona local do barClicado
-//            int i = 0;
+            int i = 0;
             for (final Bar bar : bares) {
 //            Toast.makeText(context, "dentro do for", Toast.LENGTH_LONG).show();
 //            Toast.makeText(context, barClicado.getNome() + " - " + barClicado.getEndereco(), Toast.LENGTH_LONG).show();
                 LatLng coordenada = pegaCoordenadaDoEndereco(bar.getEndereco());
                 if (coordenada != null) {
 
-//                    estabelecimentos.get(i).setCoordenada(coordenada.latitude+","+coordenada.longitude);
-//                    i++;
-
+                    MapaFragment.estabelecimentos.get(i).setCoordenada(coordenada);
+                    i++;
 
                     Marker marker = MapaFragment.mapa.addMarker(new MarkerOptions()
                             .position(coordenada)

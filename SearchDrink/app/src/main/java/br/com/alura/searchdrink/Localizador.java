@@ -54,7 +54,7 @@ public class Localizador implements GoogleApiClient.ConnectionCallbacks, Locatio
     public void onLocationChanged(Location location) {
 
         coordenada = new LatLng(location.getLatitude(), location.getLongitude());
-        mapaFragment.centralizaEm(coordenada);
+        mapaFragment.centralizaEm(coordenada, "localizacao");
     }
 }
 

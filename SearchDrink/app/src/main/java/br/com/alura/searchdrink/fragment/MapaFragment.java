@@ -111,7 +111,7 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
     }
 
 
-    public void centralizaEm(LatLng coordenada){
+    public static void centralizaEm(LatLng coordenada, String origem){
         if(mapa != null){
             CameraUpdate update = CameraUpdateFactory.newLatLngZoom(coordenada, 17);
             mapa.moveCamera(update);
@@ -121,12 +121,15 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
 //                    .anchor(0.5f, 0.5f)
 //                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.copovazio)));
 
-            MarkerOptions marcador = new MarkerOptions();
-            marcador.position(coordenada);
-            marcador.icon(BitmapDescriptorFactory.fromResource(R.drawable.copovazio));
-            mapa.addMarker(marcador);
+            if (!origem.equals("busca")) {
+                MarkerOptions marcador = new MarkerOptions();
+                marcador.position(coordenada);
+                marcador.icon(BitmapDescriptorFactory.fromResource(R.drawable.copovazio));
+                mapa.addMarker(marcador);
+            }
         }
     }
+
 
 
     //    public List<Bar> getEstabelecimentos(){

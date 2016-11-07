@@ -1,5 +1,6 @@
 package br.com.alura.searchdrink.modelo;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -28,7 +29,8 @@ public class Bar implements Serializable{
     private String email;
     private String tipoBar;
 
-    private String coordenada;
+    @Exclude
+    private LatLng coordenada;
 
     private List<Bebida> bebidas = new ArrayList<>();
 
@@ -84,14 +86,6 @@ public class Bar implements Serializable{
 //        this.uriFoto = uriFoto;
 //    }
 
-
-    public String getCoordenada() {
-        return coordenada;
-    }
-
-    public void setCoordenada(String coordenada) {
-        this.coordenada = coordenada;
-    }
 
     public String getTipoBar() {
         return tipoBar;
@@ -163,6 +157,16 @@ public class Bar implements Serializable{
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Exclude
+    public LatLng getCoordenada() {
+        return coordenada;
+    }
+
+    @Exclude
+    public void setCoordenada(LatLng coordenada) {
+        this.coordenada = coordenada;
     }
 
     @Exclude

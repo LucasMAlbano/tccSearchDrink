@@ -3,17 +3,20 @@ package br.com.alura.searchdrink.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListView;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.clans.fab.FloatingActionButton;
@@ -23,9 +26,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.alura.searchdrink.Localizador;
+import br.com.alura.searchdrink.adapter.BaresAdapter;
 import br.com.alura.searchdrink.fragment.MapaFragment;
 import br.com.alura.searchdrink.R;
+import br.com.alura.searchdrink.modelo.Bar;
 
 //import com.google.android.gms.maps.SupportMapFragment;
 
@@ -41,10 +49,18 @@ public class MapaBarActivity extends BaseActivity {
 
     FloatingActionMenu botaoMenu;
     FloatingActionButton floatingLogin, floatingFiltrar, floatingPesquisar;/*, floatingListar*/
-    ImageButton centralizar;
+    ImageButton botaoCentralizar;
 
     private String uId;
     private String uriFoto;
+
+
+    final List<Bar> bares = new ArrayList<>();
+    BaresAdapter baresAdapter;
+
+    private SearchView searchView;
+    private ListView listView;
+    private Button botaoFecharBusca;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,22 +70,16 @@ public class MapaBarActivity extends BaseActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_mapa_bar);
 
-
         uId = getUid();
-
-//        DatasHelper dataHelper = new DatasHelper();
-//        uId = dataHelper.pegauId(getIntent());
-//        uriFoto = dataHelper.pegaUrlFoto(getIntent());
-
 
         database = FirebaseDatabase.getInstance().getReference().child("bares");
 
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction tx = manager.beginTransaction();
 
-        centralizar = (ImageButton) findViewById(R.id.botao_centralizar);
+        botaoCentralizar = (ImageButton) findViewById(R.id.mapa_bar_botao_centralizar);
 
-        mapaFragment = new MapaFragment(/*database, */centralizar);
+        mapaFragment = new MapaFragment(/*database, */botaoCentralizar);
 
         tx.replace(R.id.frame_mapa, mapaFragment);
         tx.commit();
@@ -82,39 +92,33 @@ public class MapaBarActivity extends BaseActivity {
             }
         }
 
+        inicializaBuscaBaresPorNome();
 
-        botaoMenu = (FloatingActionMenu) findViewById(R.id.button_menu);
-        floatingLogin = (FloatingActionButton) findViewById(R.id.floating_login);
-        floatingFiltrar = (FloatingActionButton) findViewById(R.id.floating_filtrar);
-        floatingPesquisar = (FloatingActionButton) findViewById(R.id.floating_pesquisar);
-//        floatingListar = (FloatingActionButton) findViewById(R.id.floating_listar);
-
-        floatingLogin.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-//                boolean ehBar = verificaSeEhBar(uId);
-//                Toast.makeText(MapaBarActivity.this, String.valueOf(ehBar), Toast.LENGTH_SHORT).show();
-                vaiParaPerfil();
-            }
-        });
-        floatingFiltrar.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent vaiParaLista = new Intent(MapaBarActivity.this, ListaBaresActivity.class);
-//                vaiParaLista.putExtra("estabelecimentos", (Serializable) mapaFragment.getEstabelecimentos());
-                startActivity(vaiParaLista);
-            }
-        });
-        floatingPesquisar.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-
-            }
-        });
+        inicializaBotoesFlutuantes();
     }
+
+
+
+
 
     @Override
     protected void onStart() {
         super.onStart();
 
         verificaSeUsuarioEhBar();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        if(requestCode == REQUEST_PERMISSOES){
+
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                    grantResults[1] == PackageManager.PERMISSION_GRANTED){
+
+                new Localizador(this, mapaFragment);
+            }
+        }
     }
 
     private void vaiParaPerfil() {
@@ -154,31 +158,113 @@ public class MapaBarActivity extends BaseActivity {
         });
     }
 
-//    private boolean verificaSeEhBar(String uId) {
-//
-//        List<Bar> estabelecimentos = null;
-//        while (estabelecimentos == null) {
-//            estabelecimentos = mapaFragment.getEstabelecimentos();
-//        }
-//
-//        for(Bar barClicado : estabelecimentos){
-//            if(barClicado.getuId().equals(uId))
-//                return true;
-//        }
-//
-//        return false;
-//    }
+    private void inicializaBuscaBaresPorNome() {
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        searchView = (SearchView) findViewById(R.id.mapa_bar_search);
+        listView = (ListView) findViewById(R.id.mapa_bar_lista);
+        botaoFecharBusca = (Button) findViewById(R.id.mapa_bar_botao_fecharBusca);
 
-        if(requestCode == REQUEST_PERMISSOES){
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-            if(grantResults[0] == PackageManager.PERMISSION_GRANTED &&
-                    grantResults[1] == PackageManager.PERMISSION_GRANTED){
-
-                new Localizador(this, mapaFragment);
+                Bar barClicaco = (Bar) adapterView.getItemAtPosition(i);
+                MapaFragment.centralizaEm(barClicaco.getCoordenada(), "busca");
+                listView.setVisibility(View.GONE);
+                searchView.setVisibility(View.GONE);
+                botaoMenu.setVisibility(View.VISIBLE);
+                botaoCentralizar.setVisibility(View.VISIBLE);
+                botaoFecharBusca.setVisibility(View.GONE);
             }
-        }
+        });
+
+        botaoFecharBusca.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listView.setVisibility(View.GONE);
+                searchView.setVisibility(View.GONE);
+                botaoFecharBusca.setVisibility(View.GONE);
+                botaoMenu.setVisibility(View.VISIBLE);
+                botaoCentralizar.setVisibility(View.VISIBLE);
+            }
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                bares.removeAll(bares);
+
+                for (Bar bar : MapaFragment.estabelecimentos) {
+                    if (bar.getNome().toUpperCase().contains(query.toUpperCase())) {
+                        bares.add(bar);
+                    }
+                }
+
+                if (bares.size()!= 0){
+                    listView.setAdapter(null);
+                    baresAdapter = new BaresAdapter(MapaBarActivity.this, bares);
+                    listView.setAdapter(baresAdapter);
+                }
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                bares.removeAll(bares);
+
+                for (Bar bar : MapaFragment.estabelecimentos) {
+                    if (!bares.contains(bar)) {
+                        if (bar.getNome().toUpperCase().contains(newText.toUpperCase())) {
+                            bares.add(bar);
+                        }
+                    }
+                }
+
+                if (bares.size()!= 0){
+                    listView.setAdapter(null);
+                    baresAdapter = new BaresAdapter(MapaBarActivity.this, bares);
+                    listView.setAdapter(baresAdapter);
+                }
+
+                return false;
+            }
+        });
+    }
+
+    private void inicializaBotoesFlutuantes() {
+        botaoMenu = (FloatingActionMenu) findViewById(R.id.mapa_bar_button_menu);
+        floatingLogin = (FloatingActionButton) findViewById(R.id.mapa_bar_floating_login);
+        floatingFiltrar = (FloatingActionButton) findViewById(R.id.mapa_bar_floating_filtrar);
+        floatingPesquisar = (FloatingActionButton) findViewById(R.id.mapa_bar_floating_pesquisar);
+//        floatingListar = (FloatingActionButton) findViewById(R.id.floating_listar);
+
+        floatingLogin.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+//                boolean ehBar = verificaSeEhBar(uId);
+//                Toast.makeText(MapaBarActivity.this, String.valueOf(ehBar), Toast.LENGTH_SHORT).show();
+                vaiParaPerfil();
+            }
+        });
+        floatingFiltrar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent vaiParaLista = new Intent(MapaBarActivity.this, ListaBaresActivity.class);
+//                vaiParaLista.putExtra("estabelecimentos", (Serializable) mapaFragment.getEstabelecimentos());
+                startActivity(vaiParaLista);
+            }
+        });
+        floatingPesquisar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                searchView.setVisibility(View.VISIBLE);
+                searchView.onActionViewExpanded();
+                listView.setVisibility(View.VISIBLE);
+                botaoFecharBusca.setVisibility(View.VISIBLE);
+                botaoMenu.setVisibility(View.GONE);
+                botaoMenu.close(true);
+                botaoCentralizar.setVisibility(View.GONE);
+            }
+        });
     }
 }
