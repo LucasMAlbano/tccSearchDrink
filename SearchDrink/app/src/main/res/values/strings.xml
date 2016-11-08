@@ -41,6 +41,16 @@
         <item>2000 ml</item>
     </string-array>
 
+    <string-array name="tipos_bares">
+        <item>selecione uma opção</item>
+        <item>botecão</item>
+        <item>bar americano</item>
+        <item>bar dançante</item>
+        <item>pub</item>
+        <item>wine bar</item>
+        <item>bar restaurante</item>
+    </string-array>
+
 
     <string name="facebook_app_id">208226142943702</string>
 </resources>

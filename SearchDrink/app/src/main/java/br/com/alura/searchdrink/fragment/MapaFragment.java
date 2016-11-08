@@ -69,14 +69,12 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
             }
         });
 
-
-        tarefaDownload = new DownloadLocalizacaoBaresTask(getContext()/*, bares*/);
-        Log.i("AsyncTask", "AsyncTask senado chamado Thread: " + Thread.currentThread().getName());
-        tarefaDownload.execute(database);
-        Log.i("AsyncTask", "AsyncTask senado chamado Thread: " + Thread.currentThread().getName());
+        baixaEstabelecimentosFirebase();
 
         getMapAsync(this);
     }
+
+
 
     @Override
     public void onResume() {
@@ -96,11 +94,13 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
 
                 final Bar bar = (Bar) marker.getTag();
 
-                barClicado = bar;
+                if (bar != null) {
+                    barClicado = bar;
 
-                Intent intent = new Intent(getContext(), VisualPerfilBarActivity.class);
-                intent.putExtra("flagOrigem", "Mapa");
-                getContext().startActivity(intent);
+                    Intent intent = new Intent(getContext(), VisualPerfilBarActivity.class);
+                    intent.putExtra("flagOrigem", "Mapa");
+                    getContext().startActivity(intent);
+                }
 
                 return false;
             }
@@ -128,6 +128,15 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
                 mapa.addMarker(marcador);
             }
         }
+    }
+
+
+    public void baixaEstabelecimentosFirebase() {
+
+        tarefaDownload = new DownloadLocalizacaoBaresTask(getContext()/*, bares*/);
+        Log.i("AsyncTask", "AsyncTask senado chamado Thread: " + Thread.currentThread().getName());
+        tarefaDownload.execute(database);
+        Log.i("AsyncTask", "AsyncTask senado chamado Thread: " + Thread.currentThread().getName());
     }
 
 

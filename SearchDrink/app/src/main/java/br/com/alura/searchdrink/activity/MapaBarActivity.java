@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.clans.fab.FloatingActionButton;
@@ -48,7 +49,7 @@ public class MapaBarActivity extends BaseActivity {
     DatabaseReference database;
 
     FloatingActionMenu botaoMenu;
-    FloatingActionButton floatingLogin, floatingFiltrar, floatingPesquisar;/*, floatingListar*/
+    FloatingActionButton floatingLogin, floatingFiltrar, floatingPesquisar, floatingReflesh;/*, floatingListar*/
     ImageButton botaoCentralizar;
 
     private String uId;
@@ -239,7 +240,7 @@ public class MapaBarActivity extends BaseActivity {
         floatingLogin = (FloatingActionButton) findViewById(R.id.mapa_bar_floating_login);
         floatingFiltrar = (FloatingActionButton) findViewById(R.id.mapa_bar_floating_filtrar);
         floatingPesquisar = (FloatingActionButton) findViewById(R.id.mapa_bar_floating_pesquisar);
-//        floatingListar = (FloatingActionButton) findViewById(R.id.floating_listar);
+        floatingReflesh = (FloatingActionButton) findViewById(R.id.mapa_bar_floating_reflesh);
 
         floatingLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -264,6 +265,12 @@ public class MapaBarActivity extends BaseActivity {
                 botaoMenu.setVisibility(View.GONE);
                 botaoMenu.close(true);
                 botaoCentralizar.setVisibility(View.GONE);
+            }
+        });
+        floatingReflesh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mapaFragment.baixaEstabelecimentosFirebase();
             }
         });
     }

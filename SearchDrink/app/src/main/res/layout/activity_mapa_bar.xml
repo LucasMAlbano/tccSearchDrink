@@ -122,7 +122,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/ic_perfiluser"
-                app:fab_colorNormal="#2ffadb"
+                app:fab_colorNormal="#2ffa4d"
+                android:layout_margin="5dp"
+                app:fab_size="mini"
+                android:scaleType="fitCenter"/>
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/mapa_bar_floating_reflesh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_reflesh"
+                app:fab_colorNormal="#39b29d"
                 android:layout_margin="5dp"
                 app:fab_size="mini"
                 android:scaleType="fitCenter"/>

@@ -56,12 +56,15 @@ import java.util.Map;
 
 import br.com.alura.searchdrink.R;
 import br.com.alura.searchdrink.adapter.BebidasAdapter;
+import br.com.alura.searchdrink.fragment.MapaFragment;
 import br.com.alura.searchdrink.modelo.Bar;
 import br.com.alura.searchdrink.modelo.Bebida;
 import br.com.alura.searchdrink.task.ImageLoadTask;
 
 public class PerfilBarActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    public static Bar bar;
 
     private ListView campoListaBebidas;
     private TextView campoBemVindo;
@@ -76,10 +79,10 @@ public class PerfilBarActivity extends BaseActivity
 
     private String uId;
 
-    private List<Bebida> bebidas;
+//    private List<Bebida> bebidas;
     private BebidasAdapter bebidasAdapter;
 
-    private Bar bar;
+    private int indexBar;
 
 //    private Bitmap bitmap = null;
 //    private File mypath;
@@ -151,8 +154,8 @@ public class PerfilBarActivity extends BaseActivity
                 animation.setDuration(200);
                 novaBebida.startAnimation(animation);
                 cadastraNovaBebida(view);
-                showProgressDialog();
-                carregaListaBebidas();
+//                showProgressDialog();
+//                carregaListaBebidas();
             }
         });
 
@@ -163,11 +166,13 @@ public class PerfilBarActivity extends BaseActivity
     protected void onStart() {
         super.onStart();
 
-        bar = new Bar();
+//        bar = new Bar();
 
-        bebidas = new ArrayList<>();
-        bebidasAdapter = new BebidasAdapter(this, bebidas);
-        campoListaBebidas.setAdapter(bebidasAdapter);
+//        bebidas = new ArrayList<>();
+//        bebidasAdapter = new BebidasAdapter(this, bebidas);
+//        campoListaBebidas.setAdapter(bebidasAdapter);
+
+
 
 //        ImageView profilePicture = (ImageView) findViewById(R.id.perfil_foto);
 //        String imageUrl = getIntent().getExtras().getString("profile_picture");
@@ -211,13 +216,13 @@ public class PerfilBarActivity extends BaseActivity
 //        final Bebida bebida = (Bebida) campoListaBebidas.getItemAtPosition(info.position);
 
         final int index = info.position;
-        final Bebida bebida = bebidas.get(index);
+//        final Bebida bebida = MapaFragment.estabelecimentos.get(indexBar).getBebidas().get(index);
 
         MenuItem itemEditar = menu.add("Editar Bebida");
-        editaBebida(bebida, itemEditar);
+        editaBebida(index, itemEditar);
 
         MenuItem itemDeletar = menu.add("Deletar Bebida");
-        deletaBebida(bebida, itemDeletar);
+        deletaBebida(index, itemDeletar);
     }
 
     @Override
@@ -284,68 +289,88 @@ public class PerfilBarActivity extends BaseActivity
 
     private void carregaBar() {
 
-        dbBar.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+        for (Bar b : MapaFragment.estabelecimentos){
+            if (b.getuId().equals(uId)){
+                bar = b;
+                indexBar = MapaFragment.estabelecimentos.indexOf(b);
 
-                Map <String, Object> mapBar = (HashMap<String, Object>)dataSnapshot.getValue();
-                String nome = String.valueOf(mapBar.get("nome"));
-                String email = String.valueOf(mapBar.get("email"));
-                String endereco = String.valueOf(mapBar.get("endereco"));
-                String site = String.valueOf(mapBar.get("site"));
-                String telefone = String.valueOf(mapBar.get("telefone"));
-                String uriFotoPerfil = String.valueOf(mapBar.get("uriFoto"));
-                String tipoBar = String.valueOf(mapBar.get("tipoBar"));
+                campoBemVindo.setText("Bem vindo(a) " + b.getNome() + "!");
+                campoNomeBar.setText(b.getNome());
+                campoEmailBar.setText(b.getEmail());
 
-                campoBemVindo.setText("Bem vindo(a) " + nome + "!");
-                campoNomeBar.setText(nome);
-                campoEmailBar.setText(email);
+                if(!b.getUriFoto().equals(null) && !b.getUriFoto().equals("null") && !b.getUriFoto().equals(""))
+                    new ImageLoadTask(MapaFragment.estabelecimentos.get(indexBar).getUriFoto(), campoFotoPerfil).execute();
 
-                bar = new Bar(uId, nome, email, uriFotoPerfil, endereco, telefone, site, tipoBar);
-
-                if(!uriFotoPerfil.equals(null) && !uriFotoPerfil.equals("null") && !uriFotoPerfil.equals(""))
-                    new ImageLoadTask(uriFotoPerfil, campoFotoPerfil).execute();
+                break;
             }
+        }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+//        dbBar.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                Map <String, Object> mapBar = (HashMap<String, Object>)dataSnapshot.getValue();
+//                String nome = String.valueOf(mapBar.get("nome"));
+//                String email = String.valueOf(mapBar.get("email"));
+//                String endereco = String.valueOf(mapBar.get("endereco"));
+//                String site = String.valueOf(mapBar.get("site"));
+//                String telefone = String.valueOf(mapBar.get("telefone"));
+//                String uriFotoPerfil = String.valueOf(mapBar.get("uriFoto"));
+//                String tipoBar = String.valueOf(mapBar.get("tipoBar"));
+//
+//                campoBemVindo.setText("Bem vindo(a) " + nome + "!");
+//                campoNomeBar.setText(nome);
+//                campoEmailBar.setText(email);
+//
+//                bar = new Bar(uId, nome, email, uriFotoPerfil, endereco, telefone, site, tipoBar);
+//
+//                if(!uriFotoPerfil.equals(null) && !uriFotoPerfil.equals("null") && !uriFotoPerfil.equals(""))
+//                    new ImageLoadTask(uriFotoPerfil, campoFotoPerfil).execute();
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
     }
 
     private void carregaListaBebidas() {
 
-        dbBar.child("bebidas").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+        bebidasAdapter = new BebidasAdapter(this, MapaFragment.estabelecimentos.get(indexBar).getBebidas());
+        campoListaBebidas.setAdapter(bebidasAdapter);
+//        hideProgressDialog();
 
-                bebidas.removeAll(bebidas);
-
-                for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
-                    Map <String, Object> mapBebidas = (HashMap<String, Object>)snapshot.getValue();
-                    String nome = String.valueOf(mapBebidas.get("nome"));
-                    String quantidade = String.valueOf(mapBebidas.get("quantidade"));
-                    double preco = Double.parseDouble(String.valueOf(mapBebidas.get("preco")));
-                    String idBebida = snapshot.getKey();
-                    Bebida bebida = new Bebida(nome, quantidade, preco, idBebida);
-
-                    bebidas.add(bebida);
-                }
-//                Toast.makeText(PerfilBarActivity.this, bebidas.get(0).getIdFirebase(), Toast.LENGTH_LONG).show();
-                if(bebidas.size() == 0)
-                    bebidas.add(new Bebida("Você não possui bebida cadastrada", "", 0.0, ""));
-
-                    bebidasAdapter.notifyDataSetChanged();
-
-                hideProgressDialog();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+//        dbBar.child("bebidas").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                bebidas.removeAll(bebidas);
+//
+//                for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+//                    Map <String, Object> mapBebidas = (HashMap<String, Object>)snapshot.getValue();
+//                    String nome = String.valueOf(mapBebidas.get("nome"));
+//                    String quantidade = String.valueOf(mapBebidas.get("quantidade"));
+//                    double preco = Double.parseDouble(String.valueOf(mapBebidas.get("preco")));
+//                    String idBebida = snapshot.getKey();
+//                    Bebida bebida = new Bebida(nome, quantidade, preco, idBebida);
+//
+//                    bebidas.add(bebida);
+//                }
+////                Toast.makeText(PerfilBarActivity.this, bebidas.get(0).getIdFirebase(), Toast.LENGTH_LONG).show();
+//                if(bebidas.size() == 0)
+//                    bebidas.add(new Bebida("Você não possui bebida cadastrada", "", 0.0, ""));
+//
+//                    bebidasAdapter.notifyDataSetChanged();
+//
+//                hideProgressDialog();
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
     }
 
     private void cadastraNovaBebida(View view) {
@@ -409,12 +434,18 @@ public class PerfilBarActivity extends BaseActivity
         dialogSalvar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String nome = String.valueOf(dialogNome.getSelectedItem());
-                String quantidade = String.valueOf(dialogQuantidade.getSelectedItem());
-                double preco = Double.parseDouble(dialogPreco.getText().toString());
+
+                if (dialogPreco.getText().toString().isEmpty())
+                    dialogPreco.setError("Obrigatório");
+                else {
+                    dialogPreco.setError(null);
+                    String nome = String.valueOf(dialogNome.getSelectedItem());
+                    String quantidade = String.valueOf(dialogQuantidade.getSelectedItem());
+                    double preco = Double.parseDouble(dialogPreco.getText().toString());
 //                Bebida bebida = new Bebida(nome, preco);
-                cadastraBebidaFirebase(nome, quantidade, preco);
-                dialog.dismiss();
+                    cadastraBebidaFirebase(nome, quantidade, preco);
+                    dialog.dismiss();
+                }
             }
         });
         dialogCancelar.setOnClickListener(new View.OnClickListener() {
@@ -434,7 +465,9 @@ public class PerfilBarActivity extends BaseActivity
 
         String idBebida = dbBar.child("bebidas").push().getKey();
         Bebida bebida = new Bebida(nome, quantidade, preco, idBebida);
-        bebidas.add(bebida);
+
+        MapaFragment.estabelecimentos.get(indexBar).getBebidas().add(bebida);
+        bebidasAdapter.notifyDataSetChanged();
 
         Map<String, Object> valoresBebida = bebida.toMap();
 
@@ -447,7 +480,7 @@ public class PerfilBarActivity extends BaseActivity
         dbBar.updateChildren(childUpdates);
     }
 
-    private void editaBebida(final Bebida bebida, MenuItem itemEditar) {
+    private void editaBebida(final int indexBebida, MenuItem itemEditar) {
         itemEditar.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
@@ -456,22 +489,21 @@ public class PerfilBarActivity extends BaseActivity
                 dialog.setContentView(R.layout.dialog_editar_bebida);
                 dialog.setTitle("Editar Bebida");
 
-//                final TextView dialogId = (TextView) dialog.findViewById(R.id.dialog_bebida_id);
-//                dialogId.setText(bebida.getIdFirebase());
+                final Bebida b = MapaFragment.estabelecimentos.get(indexBar).getBebidas().get(indexBebida);
 
                 final TextView dialogNome = (TextView) dialog.findViewById(R.id.dialog_bebida_nome);
-                dialogNome.setText(bebida.getNome());
+                dialogNome.setText(b.getNome());
 
                 final Spinner dialogQuantidade = (Spinner) dialog.findViewById(R.id.dialog_spinner_bebida_quantidade);
 
                 final EditText dialogPreco = (EditText) dialog.findViewById(R.id.dialog_bebida_preco);
-                dialogPreco.setText(String.valueOf(bebida.getPreco()));
+                dialogPreco.setText(String.valueOf(b.getPreco()));
 
                 Button dialogSalvar = (Button) dialog.findViewById(R.id.dialog_bebida_salvar);
                 Button dialogCancelar = (Button) dialog.findViewById(R.id.dialog_bebida_cancelar);
 
 //                Toast.makeText(PerfilBarActivity.this, String.valueOf(index), Toast.LENGTH_SHORT).show();
-                Toast.makeText(PerfilBarActivity.this, bebida.getIdFirebase(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(PerfilBarActivity.this, b.getIdFirebase(), Toast.LENGTH_SHORT).show();
 
                 dialogSalvar.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -479,7 +511,12 @@ public class PerfilBarActivity extends BaseActivity
                         String nome = dialogNome.getText().toString();
                         double preco = Double.parseDouble(dialogPreco.getText().toString());
                         String quantidade = String.valueOf(dialogQuantidade.getSelectedItem());
-                        Bebida bebidaEditada = new Bebida(nome, quantidade, preco, bebida.getIdFirebase());
+
+                        Bebida bebidaEditada = new Bebida(nome, quantidade, preco, b.getIdFirebase());
+
+                        MapaFragment.estabelecimentos.get(indexBar).getBebidas().set(indexBebida, bebidaEditada);
+                        bebidasAdapter.notifyDataSetChanged();
+
                         editaBebidaFirebase(bebidaEditada);
                         dialog.dismiss();
                     }
@@ -510,7 +547,7 @@ public class PerfilBarActivity extends BaseActivity
         dbBar.updateChildren(childUpdates);
     }
 
-    private void deletaBebida(final Bebida bebida, MenuItem itemDeletar) {
+    private void deletaBebida(final int indexBebida, MenuItem itemDeletar) {
         itemDeletar.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
@@ -519,11 +556,13 @@ public class PerfilBarActivity extends BaseActivity
                 dialog.setContentView(R.layout.dialog_deletar_bebida);
                 dialog.setTitle("Confirmar para deletar...");
 
+                final Bebida b = MapaFragment.estabelecimentos.get(indexBar).getBebidas().get(indexBebida);
+
                 final TextView dialogNome = (TextView) dialog.findViewById(R.id.dialog_bebida_nome);
-                dialogNome.setText(bebida.getNome() + " - " + bebida.getQuantidade());
+                dialogNome.setText(b.getNome() + " - " + b.getQuantidade());
 
                 final TextView dialogPreco = (TextView) dialog.findViewById(R.id.dialog_bebida_preco);
-                dialogPreco.setText("R$ " + String.valueOf(bebida.getPreco()));
+                dialogPreco.setText("R$ " + String.valueOf(b.getPreco()));
 
                 Button dialogSalvar = (Button) dialog.findViewById(R.id.dialog_bebida_salvar);
                 Button dialogCancelar = (Button) dialog.findViewById(R.id.dialog_bebida_cancelar);
@@ -531,7 +570,9 @@ public class PerfilBarActivity extends BaseActivity
                 dialogSalvar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        deletaBebidaFirebase(bebida);
+                        deletaBebidaFirebase(b);
+                        MapaFragment.estabelecimentos.get(indexBar).getBebidas().remove(indexBebida);
+                        bebidasAdapter.notifyDataSetChanged();
                         dialog.dismiss();
                     }
                 });
@@ -612,9 +653,14 @@ public class PerfilBarActivity extends BaseActivity
 
 
     private void iniciaPerfil() {
+
+        showProgressDialog();
+
         carregaBar();
         carregaListaBebidas();
-        carregaFotoPerfil();
+//        carregaFotoPerfil();
+
+        hideProgressDialog();
     }
 
 }

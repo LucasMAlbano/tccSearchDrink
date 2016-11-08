@@ -64,6 +64,8 @@ public class DownloadLocalizacaoBaresTask extends AsyncTask<DatabaseReference, V
         Log.i("AsyncTask", "doInbackground: " + Thread.currentThread().getName());
 
         MapaFragment.estabelecimentos = new ArrayList<>();
+//        if (MapaFragment.estabelecimentos.size() != 0)
+//            MapaFragment.estabelecimentos.removeAll(MapaFragment.estabelecimentos);
 
         ValueEventListener postListener = pegaEstabelecimentos();
         dbs[0].addListenerForSingleValueEvent(postListener);
@@ -181,7 +183,7 @@ public class DownloadLocalizacaoBaresTask extends AsyncTask<DatabaseReference, V
                                 String nomeBebida = String.valueOf(mapBebidas.get("nome"));
                                 String quantidade = String.valueOf(mapBebidas.get("quantidade"));
                                 double preco = Double.parseDouble(String.valueOf(mapBebidas.get("preco")));
-                                String idBebida = snapshotBares.getKey();
+                                String idBebida = snapshotBebidas.getKey();
                                 Bebida bebida = new Bebida(nomeBebida, quantidade, preco, idBebida);
 
                                 bar.getBebidas().add(bebida);

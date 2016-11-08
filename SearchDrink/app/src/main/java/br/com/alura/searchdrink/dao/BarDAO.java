@@ -83,6 +83,8 @@ public class BarDAO {
 
         if (MapaBarActivity.verificadorSeUsuarioEhBar) {
 
+//            helper.preencheFormulario();
+
             dbBar.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {

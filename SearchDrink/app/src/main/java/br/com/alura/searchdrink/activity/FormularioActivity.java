@@ -11,6 +11,7 @@ import android.view.WindowManager;
 
 import com.google.firebase.database.DatabaseReference;
 
+import br.com.alura.searchdrink.FormularioHelper;
 import br.com.alura.searchdrink.R;
 import br.com.alura.searchdrink.dao.BarDAO;
 import br.com.alura.searchdrink.dao.FormularioDAO;
@@ -21,7 +22,8 @@ public class FormularioActivity extends BaseActivity {
     public static final int CODIGO_CAMERA = 567;
     public static final int CODIGO_GALERIA = 1;
 
-//    private FormularioHelper helper;
+    private FormularioHelper helper;
+
     private String caminhoFoto = "";
 
 //    private DatabaseReference dbBar;
@@ -59,12 +61,12 @@ public class FormularioActivity extends BaseActivity {
 
         formularioDAO = new FormularioDAO(this, uId);
 
-        Log.i("AsyncTask", "doInbackground 1: " + Thread.currentThread().getName());
         formularioDAO.inicializaFormularioHelper(this, barDAO);
-        Log.i("AsyncTask", "doInbackground 8: " + Thread.currentThread().getName());
+
+        helper = new FormularioHelper(this, )
+
 //        Bar barClicado = barDAO.pegaBar();
 //        helper.preencheFormulario(barClicado);
-        Log.i("AsyncTask", "doInbackground 9: " + Thread.currentThread().getName());
 
 //        dbBar = FirebaseDatabase.getInstance().getReference().child("bares").child(uId);
 //        dbFiltrosBar = FirebaseDatabase.getInstance().getReference().child("filtros").child("tipoBar");
