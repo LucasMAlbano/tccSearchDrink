@@ -337,7 +337,13 @@ public class PerfilBarActivity extends BaseActivity
 
     private void carregaListaBebidas() {
 
-        bebidasAdapter = new BebidasAdapter(this, MapaFragment.estabelecimentos.get(indexBar).getBebidas());
+        if (MapaFragment.estabelecimentos.get(indexBar).getBebidas().size() != 0)
+            bebidasAdapter = new BebidasAdapter(this, MapaFragment.estabelecimentos.get(indexBar).getBebidas());
+        else {
+            List<Bebida> bs = new ArrayList<>();
+            bs.add(new Bebida("Você não possui bebida cadastrada", " ", 0, " "));
+            bebidasAdapter = new BebidasAdapter(this, bs);
+        }
         campoListaBebidas.setAdapter(bebidasAdapter);
 //        hideProgressDialog();
 
@@ -466,6 +472,11 @@ public class PerfilBarActivity extends BaseActivity
         String idBebida = dbBar.child("bebidas").push().getKey();
         Bebida bebida = new Bebida(nome, quantidade, preco, idBebida);
 
+        if(MapaFragment.estabelecimentos.get(indexBar).getBebidas().size() == 0){
+            bebidasAdapter = new BebidasAdapter(this, MapaFragment.estabelecimentos.get(indexBar).getBebidas());
+            campoListaBebidas.setAdapter(bebidasAdapter);
+        }
+
         MapaFragment.estabelecimentos.get(indexBar).getBebidas().add(bebida);
         bebidasAdapter.notifyDataSetChanged();
 
@@ -570,9 +581,20 @@ public class PerfilBarActivity extends BaseActivity
                 dialogSalvar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+
                         deletaBebidaFirebase(b);
+
                         MapaFragment.estabelecimentos.get(indexBar).getBebidas().remove(indexBebida);
+
+                        if (MapaFragment.estabelecimentos.get(indexBar).getBebidas().size() == 0) {
+                            List<Bebida> bs = new ArrayList<>();
+                            bs.add(new Bebida("Você não possui bebida cadastrada", " ", 0, " "));
+                            bebidasAdapter = new BebidasAdapter(PerfilBarActivity.this, bs);
+                            campoListaBebidas.setAdapter(bebidasAdapter);
+                        }
+
                         bebidasAdapter.notifyDataSetChanged();
+
                         dialog.dismiss();
                     }
                 });

@@ -60,7 +60,7 @@ public class PerfilUsuarioActivity extends BaseActivity {
 //                        dbBar.child(dataSnapshot.getKey()).setValue(bar);
 
                         Intent intent = new Intent(PerfilUsuarioActivity.this, FormularioActivity.class);
-                        intent.putExtra("tipo", "cadastro");
+//                        intent.putExtra("tipo", "cadastro");
                         startActivity(intent);
 
                         finish();

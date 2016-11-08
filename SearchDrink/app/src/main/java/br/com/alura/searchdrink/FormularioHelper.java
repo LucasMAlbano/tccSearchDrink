@@ -40,6 +40,9 @@ public class FormularioHelper {
     private final EditText campoEstado;
     private final EditText campoTelefone;
     private final EditText campoSite;
+
+    private Spinner spinnerBares;
+
 //    private final ImageView campoFoto;
 
     private final FormularioActivity activity;
@@ -48,20 +51,14 @@ public class FormularioHelper {
 //    private final File mypath;
 
     private Bar bar;
-    private List<String> tiposBar;
 
     private static String OBRIGATORIO = "Obrigatório.";
 
-    private Spinner spinnerBares;
-
-    private ArrayAdapter<String> spinnerAdapter;
-
     private BarHelper barHelper = new BarHelper();
 
-    public FormularioHelper(final FormularioActivity activity, List<String> tiposBar, String uId) {
+    public FormularioHelper(final FormularioActivity activity, String uId) {
 
         this.activity = activity;
-        this.tiposBar = tiposBar;
         this.uId = uId;
         this.bar = new Bar();
 
@@ -75,7 +72,8 @@ public class FormularioHelper {
         this.campoSite = (EditText) activity.findViewById(R.id.formulario_site);
 //        this.campoFoto = (ImageView) activity.findViewById(R.id.formulario_foto);
 
-        addItensEmSpinnerBares();
+        spinnerBares = (Spinner) activity.findViewById(R.id.spinnerBares);
+
 
 //        ContextWrapper cw = new ContextWrapper(activity.getApplicationContext());
 //        File directory = cw.getDir("profile", Context.MODE_PRIVATE);
@@ -83,16 +81,6 @@ public class FormularioHelper {
 //            directory.mkdir();
 //        }
 //        mypath = new File(directory, "perfil" + uId + ".jpg");
-    }
-
-    public void addItensEmSpinnerBares() {
-        spinnerBares = (Spinner) activity.findViewById(R.id.spinnerBares);
-
-        spinnerAdapter = new ArrayAdapter<String>(activity,
-                android.R.layout.simple_spinner_item, tiposBar);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerBares.setAdapter(spinnerAdapter);
-
     }
 
     public Bar pegaBar() {

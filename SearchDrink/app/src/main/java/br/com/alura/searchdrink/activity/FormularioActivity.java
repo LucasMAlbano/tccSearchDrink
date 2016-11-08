@@ -37,7 +37,7 @@ public class FormularioActivity extends BaseActivity {
 
 //    private File mypath;
 
-    private String tipo;
+//    private String tipo;
 
 //    private List<String> tiposBares;
 
@@ -52,18 +52,21 @@ public class FormularioActivity extends BaseActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_formulario);
 
-        Intent intent = getIntent();
-        tipo = (String) intent.getSerializableExtra("tipo");
+//        Intent intent = getIntent();
+//        tipo = (String) intent.getSerializableExtra("tipo");
 
         uId = getUid();
 
         barDAO = new BarDAO(this, uId);
 
-        formularioDAO = new FormularioDAO(this, uId);
+        helper = new FormularioHelper(this, uId);
 
-        formularioDAO.inicializaFormularioHelper(this, barDAO);
 
-        helper = new FormularioHelper(this, )
+        //Preenche formulário de cadastro
+        if (MapaBarActivity.verificadorSeUsuarioEhBar)
+            helper.preencheFormulario(PerfilBarActivity.bar);
+        else
+            barDAO.pegaBarEPreencheFormulario(helper);
 
 //        Bar barClicado = barDAO.pegaBar();
 //        helper.preencheFormulario(barClicado);
@@ -131,7 +134,7 @@ public class FormularioActivity extends BaseActivity {
         switch (item.getItemId()){
             case R.id.menu_formulario_ok:
 
-                final Bar bar = formularioDAO.getHelper().pegaBar();
+                final Bar bar = helper.pegaBar();
 
                 if (bar != null) {
 
@@ -152,7 +155,7 @@ public class FormularioActivity extends BaseActivity {
 //                    barDAO.uploadFotoPerfilFirebase(uriFoto);
 //                    uploadFotoPerfilFirebase();
 
-                    if (tipo != null && tipo.equals("cadastro")) {
+                    if (MapaBarActivity.verificadorSeUsuarioEhBar == false) {
                         MapaBarActivity.verificadorSeUsuarioEhBar = true;
                         Intent vaiParaPerfil = new Intent(FormularioActivity.this, PerfilBarActivity.class);
                         startActivity(vaiParaPerfil);

@@ -28,8 +28,6 @@ public class FormularioDAO {
     private final Context context;
     private final String uId;
 
-    private FormularioHelper helper;
-
     DatabaseReference dbFiltrosBar = FirebaseDatabase.getInstance().getReference().child("filtros").child("tipoBar");
 
     @VisibleForTesting
@@ -40,62 +38,6 @@ public class FormularioDAO {
     public FormularioDAO(Context context, String uId){
         this.context = context;
         this.uId = uId;
-    }
-
-    public FormularioHelper getHelper(){
-        return this.helper;
-    }
-
-    public void inicializaFormularioHelper(final Context context, final BarDAO barDAO){
-
-//        final FormularioHelper[] helper = new FormularioHelper[1];
-
-        showProgressDialog();
-
-        final List<String> tiposBares = new ArrayList<>();
-
-        dbFiltrosBar.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-//                synchronized (tiposBares) {
-
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        Map<String, Object> map = (HashMap<String, Object>) snapshot.getValue();
-                        String tipo = String.valueOf(map.get("nome"));
-                        tiposBares.add(tipo);
-                    }
-                    tiposBares.add(0, "selecione uma opção");
-
-//                    tiposBares.notifyAll();
-
-//                }
-                FormularioDAO.this.helper = new FormularioHelper((FormularioActivity) context, tiposBares, uId);
-
-                barDAO.pegaBarEPreencheFormulario(FormularioDAO.this.helper);
-//                helper[0].preencheFormulario(barClicado);
-
-                hideProgressDialog();
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w("AsyncTask", "loadPost:onCancelled", databaseError.toException());
-            }
-        });
-
-
-//        synchronized (tiposBares){
-//            try {
-//                Log.i("AsyncTask", "doInbackground 6: " + Thread.currentThread().getName());
-//                tiposBares.wait();
-//            } catch (InterruptedException e) {e.printStackTrace();}
-//
-//            Log.i("AsyncTask", "doInbackground 7: " + Thread.currentThread().getName());
-//        }
-
-//        return helper[0];
     }
 
 //    private void preencheFormulario(final FormularioHelper helper) {

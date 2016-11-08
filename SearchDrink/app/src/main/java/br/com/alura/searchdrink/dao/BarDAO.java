@@ -77,66 +77,30 @@ public class BarDAO {
         });
     }
 
-    public void pegaBarEPreencheFormulario(final FormularioHelper helper){
+    public void pegaBarEPreencheFormulario(final FormularioHelper helper) {
 
         final Bar[] bar = {null};
 
-        if (MapaBarActivity.verificadorSeUsuarioEhBar) {
+        dbUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-//            helper.preencheFormulario();
-
-            dbBar.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-
-                    Map<String, String> mapBar = (Map) dataSnapshot.getValue();
-                    String nome = mapBar.get("nome");
-                    String endereco = mapBar.get("endereco");
-                    String telefone = mapBar.get("telefone");
-                    String site = mapBar.get("site");
-                    String email = mapBar.get("email");
-                    String uriFotoPerfil = String.valueOf(mapBar.get("uriFoto"));
-                    String tipoBar = mapBar.get("tipoBar");
+                Map<String, String> mapBar = (Map) dataSnapshot.getValue();
+                String nome = mapBar.get("nome");
+                String email = mapBar.get("email");
+                String uriFotoPerfil = String.valueOf(mapBar.get("uriFoto"));
 
 
-                    bar[0] = new Bar(uId, nome, email, uriFotoPerfil, endereco, telefone, site, tipoBar);
+                bar[0] = new Bar(uId, nome, email, uriFotoPerfil, "null", null, null, null);
 
-                    helper.preencheFormulario(bar[0]);
-                }
+                helper.preencheFormulario(bar[0]);
+            }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-                }
-            });
-        }
-
-        else{
-
-            dbUser.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-
-                    Map<String, String> mapBar = (Map) dataSnapshot.getValue();
-                    String nome = mapBar.get("nome");
-                    String email = mapBar.get("email");
-                    String uriFotoPerfil = String.valueOf(mapBar.get("uriFoto"));
-
-
-                    bar[0] = new Bar(uId, nome, email, uriFotoPerfil, "null", null, null, null);
-
-                    helper.preencheFormulario(bar[0]);
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-        }
-
-//        return barClicado[0];
-//        return helper[0];
+            }
+        });
     }
 
 //    public void uploadFotoPerfilFirebase(Uri uriFoto) {
