@@ -97,16 +97,16 @@ public class BebidasAdapter extends BaseAdapter {
                 tipoBebida.equals("vodka") || tipoBebida.equals("wisky"))
             campoFoto.setBackgroundResource(R.mipmap.ic_wisky);
 
-        else if (tipoBebida.equals("drinks"))
+        else if (tipoBebida.equals("drink"))
             campoFoto.setBackgroundResource(R.mipmap.ic_drink);
 
-        else if (tipoBebida.equals("isotonicos"))
+        else if (tipoBebida.equals("isotônico") || tipoBebida.equals("energético"))
             campoFoto.setBackgroundResource(R.mipmap.ic_isotonico);
 
-        else if (tipoBebida.equals("refrigerantes"))
+        else if (tipoBebida.equals("refrigerante"))
             campoFoto.setBackgroundResource(R.mipmap.ic_refri);
 
-        else if (tipoBebida.equals("sucos"))
+        else if (tipoBebida.equals("suco"))
             campoFoto.setBackgroundResource(R.mipmap.ic_suco);
     }
 }

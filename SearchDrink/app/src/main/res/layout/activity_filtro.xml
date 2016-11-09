@@ -6,7 +6,8 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_margin="16dp">
 
         <LinearLayout
             android:orientation="vertical"
@@ -17,9 +18,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Selecione o tipo de bebida desejada"
+                android:text="Selecione o tipo de bebida desejada:"
                 android:textSize="18sp"
                 android:layout_gravity="center_horizontal" />
 
@@ -66,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="20dp">
                 <TextView
                     android:layout_width="wrap_content"
@@ -86,6 +87,15 @@
             </LinearLayout>
         </LinearLayout>
 
+        <Button
+            android:id="@+id/filtro_button_selecionar_bebida"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Selecionar Bebida"
+            android:textColor="@color/color_app"
+            android:background="#000"/>
+
 
         <LinearLayout
             android:orientation="vertical"
@@ -96,10 +106,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="20dp"
                 android:textSize="18sp"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Selecione o(s) tipo(s) de bar desejado"
+                android:text="Selecione o(s) tipo(s) de bar desejado:"
                 android:layout_gravity="center_horizontal" />
 
             <!--<CheckBox-->

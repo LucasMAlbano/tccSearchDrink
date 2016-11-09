@@ -1,7 +1,7 @@
 package br.com.alura.searchdrink.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -23,14 +23,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import br.com.alura.searchdrink.R;
-import br.com.alura.searchdrink.adapter.BaresAdapter;
 import br.com.alura.searchdrink.modelo.Bar;
 
 /**
@@ -43,22 +42,28 @@ public class FiltroActivity extends BaseActivity{
 
     private TextView campoBebidaSelecianada;
     private Button buttonRemoverBebidaSelecionada;
+    private Button buttonSelecionarBebida;
     private Button buttonOk;
 
     private LinearLayout linearBebidas;
     private LinearLayout linearBares;
 
-    private DatabaseReference dbFiltrosBar;
-    private DatabaseReference dbFiltroBebidas;
+//    private DatabaseReference dbFiltrosBar;
+//    private DatabaseReference dbFiltroBebidas;
 
     private List<String> listaTiposBares = new ArrayList<>();
     private HashMap<String, List<String>> mapaTiposBebidas = new HashMap<>();
 
-    private HashMap<String, Spinner> filtroBebidas = new HashMap<>();
+//    private HashMap<String, Spinner> filtroBebidas = new HashMap<>();
 
     private List<CheckBox> checksBares = new ArrayList<>();
     private HashMap<String, Boolean> mapaBaresChecados = new HashMap<>();
     private List<Bar> estabelecimentos;
+
+    private ArrayList<String> chavesBebidas;
+
+    private Spinner spinnerTipo;
+    private Spinner spinnerNome;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +73,8 @@ public class FiltroActivity extends BaseActivity{
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_filtro);
 
-        dbFiltrosBar = FirebaseDatabase.getInstance().getReference().child("filtros").child("tipoBar");
-        dbFiltroBebidas = FirebaseDatabase.getInstance().getReference().child("filtros").child("tipoBebida");
+//        dbFiltrosBar = FirebaseDatabase.getInstance().getReference().child("filtros").child("tipoBar");
+//        dbFiltroBebidas = FirebaseDatabase.getInstance().getReference().child("filtros").child("tipoBebida");
 
 //        estabelecimentos = (List<Bar>) getIntent().getSerializableExtra("estabelecimentos");
 
@@ -82,19 +87,40 @@ public class FiltroActivity extends BaseActivity{
 
         carregaTipoBares();
 
+        buttonSelecionarBebida = (Button) findViewById(R.id.filtro_button_selecionar_bebida);
+        buttonSelecionarBebida.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                buttonSelecionarBebida.setVisibility(View.GONE);
+                campoBebidaSelecianada.setText(String.valueOf(spinnerNome.getSelectedItem()));
+                campoBebidaSelecianada.setVisibility(View.VISIBLE);
+                buttonRemoverBebidaSelecionada.setVisibility(View.VISIBLE);
+                spinnerTipo.setVisibility(View.GONE);
+                spinnerNome.setVisibility(View.GONE);
+                spinnerTipo.setEnabled(false);
+                spinnerTipo.setEnabled(false);
+            }
+        });
+
         buttonRemoverBebidaSelecionada = (Button) findViewById(R.id.filtro_button_removerBebidaSelecionada);
         buttonRemoverBebidaSelecionada.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (buttonRemoverBebidaSelecionada.getVisibility() == View.VISIBLE){
+                    buttonSelecionarBebida.setVisibility(View.VISIBLE);
                     campoBebidaSelecianada.setVisibility(View.GONE);
                     campoBebidaSelecianada.setText(null);
                     buttonRemoverBebidaSelecionada.setVisibility(View.GONE);
 
-                    for (Map.Entry<String, Spinner> p : filtroBebidas.entrySet()) {
-                        p.getValue().setEnabled(true);
-                        p.getValue().setVisibility(View.VISIBLE);
-                    }
+                    spinnerTipo.setVisibility(View.VISIBLE);
+                    spinnerNome.setVisibility(View.VISIBLE);
+
+                    spinnerTipo.setEnabled(true);
+                    spinnerNome.setEnabled(true);
+//                    for (Map.Entry<String, Spinner> p : filtroBebidas.entrySet()) {
+//                        p.getValue().setEnabled(true);
+//                        p.getValue().setVisibility(View.VISIBLE);
+//                    }
                 }
             }
         });
@@ -121,7 +147,7 @@ public class FiltroActivity extends BaseActivity{
 
     }
 
-    private void adicionaViewsBares(LinearLayout linearBares) {
+    private void adicionaViewsBares() {
 
         for(String tipoBar : listaTiposBares){
             CheckBox cb = new CheckBox(this);
@@ -138,29 +164,97 @@ public class FiltroActivity extends BaseActivity{
 
     private void adicionaViewsBebidas(LinearLayout linearBebidas) {
 
-        for(Map.Entry<String,List<String>> pair : mapaTiposBebidas.entrySet()){
-
-            pair.getValue().add(0, pair.getKey());
-
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.setMargins(0, 30, 0, 20);
+            params.setMargins(0, 0, 0, 10);
 
-            Spinner s = new Spinner(this);
-            s.setLayoutParams(params);
+        spinnerTipo = new Spinner(this);
+        spinnerNome = new Spinner(this);
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                    android.R.layout.simple_spinner_item, pair.getValue());
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerTipo.setLayoutParams(params);
+        spinnerNome.setLayoutParams(params);
 
-            s.setAdapter(adapter);
+        final ArrayAdapter<String> adapterTipo = new ArrayAdapter<String>(FiltroActivity.this,
+                android.R.layout.simple_spinner_item, chavesBebidas);
+        adapterTipo.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-            linearBebidas.addView(s);
-            filtroBebidas.put(pair.getKey() ,s);
-        }
 
-        carregaBebidaSelecionada();
+        spinnerTipo.setAdapter(adapterTipo);
+
+        spinnerTipo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                if (mapaTiposBebidas.containsKey(adapterView.getSelectedItem())){
+                    final ArrayAdapter<String> adapterNome = new ArrayAdapter<String>(FiltroActivity.this,
+                            android.R.layout.simple_spinner_item, mapaTiposBebidas.get(adapterView.getSelectedItem()));
+                    adapterNome.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                    spinnerNome.setAdapter(adapterNome);
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+//        spinnerNome.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//
+//                    campoBebidaSelecianada.setText(String.valueOf(adapterView.getSelectedItem()));
+//                    campoBebidaSelecianada.setVisibility(View.VISIBLE);
+//                    buttonRemoverBebidaSelecionada.setVisibility(View.VISIBLE);
+//
+//                    spinnerTipo.setVisibility(View.GONE);
+//                    spinnerNome.setVisibility(View.GONE);
+//
+//                    spinnerTipo.setEnabled(false);
+//                    spinnerTipo.setEnabled(false);
+//
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//        });
+
+        linearBebidas.addView(spinnerTipo);
+        linearBebidas.addView(spinnerNome);
+
+
+
+
+//
+//
+//        for(Map.Entry<String,List<String>> pair : mapaTiposBebidas.entrySet()){
+//
+//            pair.getValue().add(0, pair.getKey());
+//
+//            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+//                    LinearLayout.LayoutParams.MATCH_PARENT,
+//                    LinearLayout.LayoutParams.WRAP_CONTENT);
+//            params.setMargins(0, 30, 0, 20);
+//
+//            Spinner s = new Spinner(this);
+//            s.setLayoutParams(params);
+//
+//            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+//                    android.R.layout.simple_spinner_item, pair.getValue());
+//            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//
+//            s.setAdapter(adapter);
+//
+//            linearBebidas.addView(s);
+//            filtroBebidas.put(pair.getKey() ,s);
+//        }
+//
+//        carregaBebidaSelecionada();
     }
 
     private void carregaBaresChecados() {
@@ -175,103 +269,156 @@ public class FiltroActivity extends BaseActivity{
         }
     }
 
-    private void carregaBebidaSelecionada() {
-
-        for(final Map.Entry<String, Spinner> pair : filtroBebidas.entrySet()){
-
-            pair.getValue().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    if (!String.valueOf(pair.getValue().getSelectedItem()).equals(pair.getKey())) {
-//                        Toast.makeText(FiltroActivity.this, "sim aqui", Toast.LENGTH_LONG).show();
-                        campoBebidaSelecianada.setText(String.valueOf(pair.getValue().getSelectedItem()));
-                        campoBebidaSelecianada.setVisibility(View.VISIBLE);
-                        buttonRemoverBebidaSelecionada.setVisibility(View.VISIBLE);
-
-                        for (Map.Entry<String, Spinner> p : filtroBebidas.entrySet()) {
-                            p.getValue().setEnabled(false);
-                            p.getValue().setVisibility(View.GONE);
-                        }
-                    }
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-
-                }
-            });
-        }
-    }
+//    private void carregaBebidaSelecionada() {
+//
+//        for(final Map.Entry<String, Spinner> pair : filtroBebidas.entrySet()){
+//
+//            pair.getValue().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//                @Override
+//                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                    if (!String.valueOf(pair.getValue().getSelectedItem()).equals(pair.getKey())) {
+////                        Toast.makeText(FiltroActivity.this, "sim aqui", Toast.LENGTH_LONG).show();
+//                        campoBebidaSelecianada.setText(String.valueOf(pair.getValue().getSelectedItem()));
+//                        campoBebidaSelecianada.setVisibility(View.VISIBLE);
+//                        buttonRemoverBebidaSelecionada.setVisibility(View.VISIBLE);
+//
+//                        for (Map.Entry<String, Spinner> p : filtroBebidas.entrySet()) {
+//                            p.getValue().setEnabled(false);
+//                            p.getValue().setVisibility(View.GONE);
+//                        }
+//                    }
+//                }
+//
+//                @Override
+//                public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//                }
+//            });
+//        }
+//    }
 
     private void carregaTipoBebidas() {
 
         showProgressDialog();
 
-        dbFiltroBebidas.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+        final String[] cervejasChopps = getResources().getStringArray(R.array.cervejas_chopps);
+        final String[] bebidasQuentes = getResources().getStringArray(R.array.bebidas_quentes);
+        final String[] drinks = getResources().getStringArray(R.array.drinks);
+        final String[] isotonicos = getResources().getStringArray(R.array.isotonicos);
+        final String[] refrigerantes = getResources().getStringArray(R.array.refrigerantes);
+        final String[] sucos = getResources().getStringArray(R.array.sucos);
 
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-
-                    List<String> tiposBebidas = new ArrayList<>();
-                    String nomeTitulo = snapshot.getKey();
-
-                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-
-                        if (snapshot.getKey().equals("bebidas geladas") || snapshot.getKey().equals("bebidas quentes")) {
-                            for (DataSnapshot snapshot2 : snapshot1.getChildren()) {
-                                Map<String, Object> map = (HashMap<String, Object>) snapshot2.getValue();
-                                String nome = String.valueOf(snapshot1.getKey() + ": " + map.get("nome"));
-
-                                tiposBebidas.add(nome);
-                            }
-
-                        } else {
-                            Map<String, Object> map = (HashMap<String, Object>) snapshot1.getValue();
-                            String nome = String.valueOf(snapshot.getKey() + ": " + map.get("nome"));
-
-                            tiposBebidas.add(nome);
-                        }
-                    }
-
-                    mapaTiposBebidas.put(nomeTitulo, tiposBebidas);
-                }
+        final List<List<String>> filtrosBebidas = new ArrayList<>();
+        filtrosBebidas.add(Arrays.asList(cervejasChopps));
+        filtrosBebidas.add(Arrays.asList(bebidasQuentes));
+        filtrosBebidas.add(Arrays.asList(drinks));
+        filtrosBebidas.add(Arrays.asList(isotonicos));
+        filtrosBebidas.add(Arrays.asList(refrigerantes));
+        filtrosBebidas.add(Arrays.asList(sucos));
 
 
+        chavesBebidas = new ArrayList<>();
+
+        for (List<String> filtro : filtrosBebidas){
+
+            String chave = filtro.get(0).split(":")[0];
+
+            if (chave.equals("cerveja"))
+                chave = "Cervejas e Chopps";
+
+            else if (chave.equals("catuaba"))
+                chave = "Bebidas quentes";
+
+            else if (chave.equals("drink"))
+                chave = "Drinks";
+
+            else if (chave.equals("energético"))
+                chave = "Energéticos e Isotônicos";
+
+            else if (chave.equals("refrigerante"))
+                chave = "Refrigerantes";
+
+            else if (chave.equals("suco"))
+                chave = "Sucos";
+
+
+            chavesBebidas.add(chave);
+
+            mapaTiposBebidas.put(chave, filtro);
+        }
+
+//        dbFiltroBebidas.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//
+//                    List<String> tiposBebidas = new ArrayList<>();
+//                    String nomeTitulo = snapshot.getKey();
+//
+//                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+//
+//                        if (snapshot.getKey().equals("bebidas geladas") || snapshot.getKey().equals("bebidas quentes")) {
+//                            for (DataSnapshot snapshot2 : snapshot1.getChildren()) {
+//                                Map<String, Object> map = (HashMap<String, Object>) snapshot2.getValue();
+//                                String nome = String.valueOf(snapshot1.getKey() + ": " + map.get("nome"));
+//
+//                                tiposBebidas.add(nome);
+//                            }
+//
+//                        } else {
+//                            Map<String, Object> map = (HashMap<String, Object>) snapshot1.getValue();
+//                            String nome = String.valueOf(snapshot.getKey() + ": " + map.get("nome"));
+//
+//                            tiposBebidas.add(nome);
+//                        }
+//                    }
+//
+//                    mapaTiposBebidas.put(nomeTitulo, tiposBebidas);
+//                }
+//
+//
                 adicionaViewsBebidas(linearBebidas);
 
                 hideProgressDialog();
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-            }
-        });
+//            }
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+//            }
+//        });
     }
 
     private void carregaTipoBares() {
 
         showProgressDialog();
 
-        dbFiltrosBar.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+        final List<String> strings = Arrays.asList(getResources().getStringArray(R.array.tipos_bares));
+        listaTiposBares.addAll(strings);
+        listaTiposBares.remove("selecione uma opção");
+        adicionaViewsBares();
 
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Map<String, Object> map = (HashMap<String, Object>) snapshot.getValue();
-                    String tipo = String.valueOf(map.get("nome"));
-                    listaTiposBares.add(tipo);
-                }
+        hideProgressDialog();
 
-                adicionaViewsBares(linearBares);
-
-                hideProgressDialog();
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-            }
-        });
+//        dbFiltrosBar.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                    Map<String, Object> map = (HashMap<String, Object>) snapshot.getValue();
+//                    String tipo = String.valueOf(map.get("nome"));
+//                    listaTiposBares.add(tipo);
+//                }
+//
+//                adicionaViewsBares(linearBares);
+//
+//                hideProgressDialog();
+//            }
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+//            }
+//        });
     }
 }
 

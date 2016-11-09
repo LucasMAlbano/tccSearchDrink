@@ -1,16 +1,8 @@
 package br.com.alura.searchdrink.activity;
 
 import android.app.Dialog;
-import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -29,27 +21,20 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -384,77 +369,166 @@ public class PerfilBarActivity extends BaseActivity
         dialog.setContentView(R.layout.dialog_cadastrar_bebida);
         dialog.setTitle("Adicionar Bebida");
 
-        final Spinner dialogNome = (Spinner) dialog.findViewById(R.id.dialog_spinner_bebida_nome);
+//        LinearLayout linearBebidas = (LinearLayout)dialog.findViewById(R.id.dialog_cadastrar_linearBebidas);
 
-        showProgressDialog();
+//        final TextView bebidaSelecionada = (TextView) dialog.findViewById(R.id.dialog_cadastrar_bebidaSelecionada);
+//
+//        final Button removerBebidaSelecionada = (Button) dialog.findViewById(R.id.dialog_cadastrar_removerBebidaSelecionada);
 
-        Map<String, List<String>> mapNomesBebidas = new HashMap<>();
-        final List<String> b = new ArrayList<>();
+        final Spinner dialogSpinnerTipo = (Spinner) dialog.findViewById(R.id.dialog_cadastrar_spinner_bebida_tipo);
+        final Spinner dialogSpinnerNome = (Spinner) dialog.findViewById(R.id.dialog_cadastrar_spinner_bebida_nome);
 
-        dbFiltroBebidas.addListenerForSingleValueEvent(new ValueEventListener() {
+        final Spinner dialogSpinnerQuantidade = (Spinner) dialog.findViewById(R.id.dialog_cadastrar_spinner_bebida_quantidade);
+
+        final EditText dialogCampoPreco = (EditText) dialog.findViewById(R.id.dialog_cadastrar_bebida_preco);
+        final Button dialogBotaoSalvar = (Button) dialog.findViewById(R.id.dialog_cadastrar_bebida_salvar);
+        final Button dialogBotaoCancelar = (Button) dialog.findViewById(R.id.dialog_cadastrar_bebida_cancelar);
+
+//        final Spinner dialogNome = (Spinner) dialog.findViewById(R.id.dialog_spinner_bebida_nome);
+
+//        showProgressDialog();
+
+
+        final String[] cervejasChopps = getResources().getStringArray(R.array.cervejas_chopps);
+        final String[] bebidasQuentes = getResources().getStringArray(R.array.bebidas_quentes);
+        final String[] drinks = getResources().getStringArray(R.array.drinks);
+        final String[] isotonicos = getResources().getStringArray(R.array.isotonicos);
+        final String[] refrigerantes = getResources().getStringArray(R.array.refrigerantes);
+        final String[] sucos = getResources().getStringArray(R.array.sucos);
+
+        final List<List<String>> filtrosBebidas = new ArrayList<>();
+        filtrosBebidas.add(Arrays.asList(cervejasChopps));
+        filtrosBebidas.add(Arrays.asList(bebidasQuentes));
+        filtrosBebidas.add(Arrays.asList(drinks));
+        filtrosBebidas.add(Arrays.asList(isotonicos));
+        filtrosBebidas.add(Arrays.asList(refrigerantes));
+        filtrosBebidas.add(Arrays.asList(sucos));
+
+
+        final Map<String, List<String>> mapaTiposBebidas = new HashMap<>();
+        List<String> chaves = new ArrayList<>();
+
+        for (List<String> filtro : filtrosBebidas){
+
+            String chave = filtro.get(0).split(":")[0];
+
+            if (chave.equals("cerveja"))
+                chave = "Cervejas e Chopps";
+
+            else if (chave.equals("catuaba"))
+                chave = "Bebidas quentes";
+
+            else if (chave.equals("drink"))
+                chave = "Drinks";
+
+            else if (chave.equals("energético"))
+                chave = "Energéticos e Isotônicos";
+
+            else if (chave.equals("refrigerante"))
+                chave = "Refrigerantes";
+
+            else if (chave.equals("suco"))
+                chave = "Sucos";
+
+
+            chaves.add(chave);
+
+            mapaTiposBebidas.put(chave, filtro);
+        }
+
+
+        final ArrayAdapter<String> adapterTipo = new ArrayAdapter<String>(PerfilBarActivity.this,
+                android.R.layout.simple_spinner_item, chaves);
+        adapterTipo.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        dialogSpinnerTipo.setAdapter(adapterTipo);
+
+        dialogSpinnerTipo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-//                    Map<String, Object> mapBebidas = (HashMap<String, Object>) snapshot.getValue();
+                if (mapaTiposBebidas.containsKey(adapterView.getSelectedItem())){
+                    final ArrayAdapter<String> adapterNome = new ArrayAdapter<String>(PerfilBarActivity.this,
+                            android.R.layout.simple_spinner_item, mapaTiposBebidas.get(adapterView.getSelectedItem()));
+                    adapterNome.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-                    Log.i("teste", snapshot.getKey());
-
-                    for(DataSnapshot snapshot1 : snapshot.getChildren()) {
-
-                        if (snapshot.getKey().equals("bebidas geladas") || snapshot.getKey().equals("bebidas quentes")) {
-                            for (DataSnapshot snapshot2 : snapshot1.getChildren()) {
-                                Map<String, Object> map = (HashMap<String, Object>) snapshot2.getValue();
-                                String nome = String.valueOf(snapshot1.getKey() + ": " + map.get("nome"));
-                                b.add(nome);
-                            }
-
-                        } else {
-                            Map<String, Object> map = (HashMap<String, Object>) snapshot1.getValue();
-                            String nome = String.valueOf(snapshot.getKey() + ": " + map.get("nome"));
-                            b.add(nome);
-                        }
-                    }
+                    dialogSpinnerNome.setAdapter(adapterNome);
                 }
-
-                ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(PerfilBarActivity.this,
-                        android.R.layout.simple_spinner_item, b);
-                spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                dialogNome.setAdapter(spinnerAdapter);
-
-                hideProgressDialog();
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
         });
 
 
-        final Spinner dialogQuantidade = (Spinner) dialog.findViewById(R.id.dialog_spinner_bebida_quantidade);
-        final EditText dialogPreco = (EditText) dialog.findViewById(R.id.dialog_bebida_preco);
-        Button dialogSalvar = (Button) dialog.findViewById(R.id.dialog_bebida_salvar);
-        Button dialogCancelar = (Button) dialog.findViewById(R.id.dialog_bebida_cancelar);
 
-        dialogSalvar.setOnClickListener(new View.OnClickListener() {
+
+//        Map<String, List<String>> mapNomesBebidas = new HashMap<>();
+//        final List<String> b = new ArrayList<>();
+//
+//        dbFiltroBebidas.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+//
+////                    Map<String, Object> mapBebidas = (HashMap<String, Object>) snapshot.getValue();
+//
+//                    Log.i("teste", snapshot.getKey());
+//
+//                    for(DataSnapshot snapshot1 : snapshot.getChildren()) {
+//
+//                        if (snapshot.getKey().equals("bebidas geladas") || snapshot.getKey().equals("bebidas quentes")) {
+//                            for (DataSnapshot snapshot2 : snapshot1.getChildren()) {
+//                                Map<String, Object> map = (HashMap<String, Object>) snapshot2.getValue();
+//                                String nome = String.valueOf(snapshot1.getKey() + ": " + map.get("nome"));
+//                                b.add(nome);
+//                            }
+//
+//                        } else {
+//                            Map<String, Object> map = (HashMap<String, Object>) snapshot1.getValue();
+//                            String nome = String.valueOf(snapshot.getKey() + ": " + map.get("nome"));
+//                            b.add(nome);
+//                        }
+//                    }
+//                }
+//
+//                ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(PerfilBarActivity.this,
+//                        android.R.layout.simple_spinner_item, b);
+//                spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                dialogNome.setAdapter(spinnerAdapter);
+//
+//                hideProgressDialog();
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+
+
+
+        dialogBotaoSalvar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if (dialogPreco.getText().toString().isEmpty())
-                    dialogPreco.setError("Obrigatório");
+                if (dialogCampoPreco.getText().toString().isEmpty())
+                    dialogCampoPreco.setError("Obrigatório");
                 else {
-                    dialogPreco.setError(null);
-                    String nome = String.valueOf(dialogNome.getSelectedItem());
-                    String quantidade = String.valueOf(dialogQuantidade.getSelectedItem());
-                    double preco = Double.parseDouble(dialogPreco.getText().toString());
+                    dialogCampoPreco.setError(null);
+                    String nome = String.valueOf(dialogSpinnerNome.getSelectedItem());
+                    String quantidade = String.valueOf(dialogSpinnerQuantidade.getSelectedItem());
+                    double preco = Double.parseDouble(dialogCampoPreco.getText().toString());
 //                Bebida bebida = new Bebida(nome, preco);
                     cadastraBebidaFirebase(nome, quantidade, preco);
                     dialog.dismiss();
                 }
             }
         });
-        dialogCancelar.setOnClickListener(new View.OnClickListener() {
+        dialogBotaoCancelar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
@@ -505,13 +579,13 @@ public class PerfilBarActivity extends BaseActivity
                 final TextView dialogNome = (TextView) dialog.findViewById(R.id.dialog_bebida_nome);
                 dialogNome.setText(b.getNome());
 
-                final Spinner dialogQuantidade = (Spinner) dialog.findViewById(R.id.dialog_spinner_bebida_quantidade);
+                final Spinner dialogQuantidade = (Spinner) dialog.findViewById(R.id.dialog_cadastrar_spinner_bebida_quantidade);
 
-                final EditText dialogPreco = (EditText) dialog.findViewById(R.id.dialog_bebida_preco);
+                final EditText dialogPreco = (EditText) dialog.findViewById(R.id.dialog_cadastrar_bebida_preco);
                 dialogPreco.setText(String.valueOf(b.getPreco()));
 
-                Button dialogSalvar = (Button) dialog.findViewById(R.id.dialog_bebida_salvar);
-                Button dialogCancelar = (Button) dialog.findViewById(R.id.dialog_bebida_cancelar);
+                Button dialogSalvar = (Button) dialog.findViewById(R.id.dialog_cadastrar_bebida_salvar);
+                Button dialogCancelar = (Button) dialog.findViewById(R.id.dialog_cadastrar_bebida_cancelar);
 
 //                Toast.makeText(PerfilBarActivity.this, String.valueOf(index), Toast.LENGTH_SHORT).show();
 //                Toast.makeText(PerfilBarActivity.this, b.getIdFirebase(), Toast.LENGTH_SHORT).show();
@@ -572,11 +646,11 @@ public class PerfilBarActivity extends BaseActivity
                 final TextView dialogNome = (TextView) dialog.findViewById(R.id.dialog_bebida_nome);
                 dialogNome.setText(b.getNome() + " - " + b.getQuantidade());
 
-                final TextView dialogPreco = (TextView) dialog.findViewById(R.id.dialog_bebida_preco);
+                final TextView dialogPreco = (TextView) dialog.findViewById(R.id.dialog_cadastrar_bebida_preco);
                 dialogPreco.setText("R$ " + String.valueOf(b.getPreco()));
 
-                Button dialogSalvar = (Button) dialog.findViewById(R.id.dialog_bebida_salvar);
-                Button dialogCancelar = (Button) dialog.findViewById(R.id.dialog_bebida_cancelar);
+                Button dialogSalvar = (Button) dialog.findViewById(R.id.dialog_cadastrar_bebida_salvar);
+                Button dialogCancelar = (Button) dialog.findViewById(R.id.dialog_cadastrar_bebida_cancelar);
 
                 dialogSalvar.setOnClickListener(new View.OnClickListener() {
                     @Override

@@ -51,6 +51,90 @@
         <item>bar restaurante</item>
     </string-array>
 
+        <string-array name="cervejas_chopps">
+            <item>cerveja: Brahma</item>
+            <item>cerveja: Original</item>
+            <item>cerveja: Skol</item>
+            <item>cerveja: Proibida</item>
+            <item>cerveja: Kaiser</item>
+            <item>cerveja: Devassa</item>
+            <item>cerveja: Heineken</item>
+            <item>cerveja: Budweiser</item>
+            <item>cerveja: Amstel</item>
+            <item>cerveja: Stella Artois"</item>
+            <item>cerveja: Sol</item>
+            <item>cerveja: Desperados</item>
+            <item>chopp: Brahma</item>
+            <item>chopp: Germany</item>
+            <item>chopp: Kaiser</item>
+            <item>chopp: Itaipava</item>
+            <item>chopp: Heineken</item>
+            <item>chopp: Mont Beer</item>
+            <item>chopp: SerraMalte</item>
+        </string-array>
+
+        <string-array name="bebidas_quentes">
+            <item>catuaba: Selvagem</item>
+            <item>pinga: 51</item>
+            <item>pinga: Velho Barreiro</item>
+            <item>pinga: Dose Amburana</item>
+            <item>pinga: Agua Doce</item>
+            <item>pinga: Na Bunda</item>
+            <item>pinga: Salinas</item>
+            <item>pinga: Cura Veado</item>
+            <item>pinga: Consola Corno</item>
+            <item>tequila: Jose Cuervo</item>
+            <item>tequila: Centenario Anégio</item>
+            <item>tequila: Sierra</item>
+            <item>vodka: Ciroc</item>
+            <item>vodka: Smirnoff</item>
+            <item>vodka: Askov</item>
+            <item>vodka: Balalaika</item>
+            <item>wisky: Red Label</item>
+            <item>wisky: Jack Daniels</item>
+            <item>wisky: White Horse</item>
+            <item>wisky: Shivas</item>
+        </string-array>
+
+        <string-array name="drinks">
+            <item>drink: Caipirinha</item>
+            <item>drink: Sex on the beat</item>
+            <item>drink: Mojito</item>
+            <item>drink: Margarita</item>
+            <item>drink: Dry Martini</item>
+            <item>drink: Cuba Libre</item>
+            <item>drink: Manhattan</item>
+            <item>drink: Cosmopolitan</item>
+            <item>drink: Lafayette</item>
+            <item>drink: Tiki Martini</item>
+        </string-array>
+
+        <string-array name="isotonicos">
+            <item>energético: RedBull</item>
+            <item>energético: Monster</item>
+            <item>energético: Burn</item>
+            <item>isotônico: Gatorade</item>
+            <item>isotônico: PowerAge</item>
+            <item>isotônico: i9</item>
+        </string-array>
+
+        <string-array name="refrigerantes">
+            <item>refrigerante: Coca-Cola</item>
+            <item>refrigerante: Fanta</item>
+            <item>refrigerante: Pepsi</item>
+            <item>refrigerante: Dolly</item>
+            <item>refrigerante: Sprite</item>
+            <item>refrigerante: Guaraná Antartica</item>
+        </string-array>
+
+        <string-array name="sucos">
+            <item>suco: Laranja</item>
+            <item>suco: Limão</item>
+            <item>suco: Uva</item>
+            <item>suco: Abacaxi</item>
+            <item>suco: Morango</item>
+            <item>suco: Maracujá</item>
+        </string-array>
 
     <string name="facebook_app_id">208226142943702</string>
 </resources>

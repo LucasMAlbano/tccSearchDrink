@@ -17,7 +17,7 @@
         android:textSize="20dp"/>
 
     <TextView
-        android:id="@+id/dialog_bebida_preco"
+        android:id="@+id/dialog_cadastrar_bebida_preco"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/dialog_bebida_nome"
@@ -33,13 +33,13 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/dialog_bebida_preco"
+        android:layout_below="@+id/dialog_cadastrar_bebida_preco"
         android:orientation="horizontal"
         android:paddingTop="4dp"
         android:layout_marginTop="10dp">
 
         <Button
-            android:id="@+id/dialog_bebida_salvar"
+            android:id="@+id/dialog_cadastrar_bebida_salvar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -47,7 +47,7 @@
             android:text="Confirmar" />
 
         <Button
-            android:id="@+id/dialog_bebida_cancelar"
+            android:id="@+id/dialog_cadastrar_bebida_cancelar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

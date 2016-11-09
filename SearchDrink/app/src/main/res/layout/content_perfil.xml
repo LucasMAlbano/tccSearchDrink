@@ -35,13 +35,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textStyle="italic"
             android:text="Bem vindo(a)!"
             android:textSize="20sp"
+            android:textStyle="italic"
             android:paddingTop="15dp"
             android:id="@+id/perfil_bemvindo"
             android:textColor="#000"
-            android:fontFamily="casual"/>
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
 
         <ImageView
             android:id="@+id/perfil_foto"
