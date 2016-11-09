@@ -21,7 +21,7 @@
     <!--android:background="?attr/colorPrimary"-->
 
 
-    <include layout="@layout/content_perfil" />
+    <include layout="@layout/content_perfil_bar" />
 
     <Button
         android:id="@+id/nova_bebida"
@@ -29,11 +29,11 @@
         android:layout_height="56dp"
         android:text="+"
         android:textSize="40dp"
-        android:textColor="#F1C332"
+        android:textColor="#000"
         android:layout_gravity="bottom|end"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/fundo"
+        android:layout_marginRight="26dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/fundo_addbebida"
         android:elevation="6dp"
         android:stateListAnimator="@null"/>
     <!--<android.support.design.widget.FloatingActionButton-->

@@ -3,11 +3,11 @@ package br.com.alura.searchdrink.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -37,6 +37,8 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
     public static List<Bar> estabelecimentos;
 
     public static Bar barClicado;
+
+    private static Marker markerLocalizacao;
 
     private DatabaseReference database;
 
@@ -92,7 +94,15 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
             @Override
             public boolean onMarkerClick(Marker marker) {
 
-                final Bar bar = (Bar) marker.getTag();
+                Bar bar = null;
+                String localizacao = null;
+
+                try{
+                    bar = (Bar) marker.getTag();
+                }catch (ClassCastException e){
+                    localizacao = (String) marker.getTag();
+                }
+
 
                 if (bar != null) {
                     barClicado = bar;
@@ -101,6 +111,9 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
                     intent.putExtra("flagOrigem", "Mapa");
                     getContext().startActivity(intent);
                 }
+
+                else if (localizacao != null)
+                    Toast.makeText(getContext(), "Esse é você", Toast.LENGTH_SHORT).show();
 
                 return false;
             }
@@ -122,10 +135,16 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
 //                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.copovazio)));
 
             if (!origem.equals("busca")) {
-                MarkerOptions marcador = new MarkerOptions();
-                marcador.position(coordenada);
-                marcador.icon(BitmapDescriptorFactory.fromResource(R.drawable.copovazio));
-                mapa.addMarker(marcador);
+
+                if (markerLocalizacao == null) {
+                    markerLocalizacao = mapa.addMarker(new MarkerOptions()
+                            .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_copovazio))
+                            .position(coordenada));
+                    markerLocalizacao.setTag(origem);
+                }
+
+                markerLocalizacao.setPosition(coordenada);
+
             }
         }
     }

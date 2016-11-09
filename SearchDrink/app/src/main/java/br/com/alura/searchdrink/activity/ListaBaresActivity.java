@@ -314,7 +314,7 @@ public class ListaBaresActivity extends BaseActivity implements CalculaDistancia
             estabalecimentosFiltrados.add(bar);
         }
 //        Toast.makeText(this, "Duration= " + (int) (min / 60) + " hr " + (int) (min % 60) + " mins", Toast.LENGTH_LONG).show();
-        Toast.makeText(this, "Distance= " + dist + " kilometers", Toast.LENGTH_LONG).show();
+//        Toast.makeText(this, "Distance= " + dist + " kilometers", Toast.LENGTH_LONG).show();
 
     }
 

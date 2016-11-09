@@ -33,32 +33,49 @@
             android:elevation="6dp"
             android:stateListAnimator="@null"/>
 
-        <android.support.v7.widget.SearchView
-            android:id="@+id/mapa_bar_search"
+        <LinearLayout
+            android:id="@+id/mapa_linear_b"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/color_app"
-            android:visibility="gone">
-        </android.support.v7.widget.SearchView>
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal"
+            android:weightSum="8">
+
+            <android.support.v7.widget.SearchView
+                android:id="@+id/mapa_bar_search"
+                android:layout_width="fill_parent"
+                android:layout_height="60dp"
+                android:background="@color/color_app"
+                android:visibility="gone"
+                android:layout_weight="7" />
+
+            <Button
+                android:id="@+id/mapa_bar_botao_fecharBusca"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="5dp"
+                android:text="x"
+                android:textColor="@color/color_app"
+                android:background="#000"
+                android:layout_gravity="right"
+                android:visibility="gone"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
 
         <ListView
             android:id="@+id/mapa_bar_lista"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
             android:background="#FFF"
             android:visibility="gone"
-            android:layout_below="@id/mapa_bar_search" />
-
-        <Button
-            android:id="@+id/mapa_bar_botao_fecharBusca"
-            android:layout_width="60dp"
-            android:layout_height="40dp"
-            android:text="x"
-            android:textColor="#ff0000"
-            android:background="@color/color_app"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/mapa_bar_search"
-            android:visibility="gone"/>
+            android:layout_below="@id/mapa_linear_b" />
 
 
         <com.github.clans.fab.FloatingActionMenu

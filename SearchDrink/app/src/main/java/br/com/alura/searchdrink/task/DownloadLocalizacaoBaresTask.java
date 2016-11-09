@@ -101,7 +101,7 @@ public class DownloadLocalizacaoBaresTask extends AsyncTask<DatabaseReference, V
                             .position(coordenada)
                             .title(bar.getNome())
                             .snippet(String.valueOf(bar.getTelefone()))
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.copocheio_mapa)));
+                            .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_copocheio)));
                     marker.setTag(bar);
 
 

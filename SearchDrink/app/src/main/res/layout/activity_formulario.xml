@@ -1,15 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:background="#000000">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".fragment.DetalhesProvaFragment"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="10dp"
+        app:cardUseCompatPadding="true"
+        android:background="#FFF">
 
 <ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_margin="16dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:weightSum="1">
+        android:orientation="vertical">
 
         <!--<RelativeLayout-->
             <!--android:layout_width="match_parent"-->
@@ -42,6 +56,19 @@
             android:layout_marginTop="10dp"
             android:hint="@string/campo_nome"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tipo de bar:"
+            android:textSize="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="5dp"/>
+        <Spinner
+            android:id="@+id/spinnerBares"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/tipos_bares"/>
+
 
         <TextView
             android:layout_width="wrap_content"
@@ -51,25 +78,27 @@
             android:layout_marginLeft="5dp"
             android:textSize="15dp"/>
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            android:weightSum="13">
         <EditText
             android:id="@+id/formulario_endereco"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:hint="@string/campo_endereco" />
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:hint="@string/campo_endereco"
+            android:layout_weight="10"/>
         <EditText
             android:id="@+id/formulario_numero"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
             android:inputType="number"
-            android:layout_marginTop="5dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="5dp"
-            android:hint="número" />
-        </RelativeLayout>
+            android:layout_gravity="right"
+            android:hint="número"
+            android:layout_weight="3"/>
+        </LinearLayout>
 
         <EditText
             android:id="@+id/formulario_bairro"
@@ -97,11 +126,19 @@
                 android:hint="estado"/>
         </RelativeLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Contato:"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="5dp"
+            android:textSize="15dp"/>
+
         <EditText
             android:id="@+id/formulario_telefone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:inputType="phone"
             android:hint="(DDD) Tefone"/>
 
@@ -128,18 +165,7 @@
             <!--android:dividerHeight="0.5dp"-->
             <!--android:layout_weight="1.16" />-->
 
-        <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tipo de bar:"
-        android:textSize="15dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="5dp"/>
-        <Spinner
-            android:id="@+id/spinnerBares"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:entries="@array/tipos_bares"/>
+
 
 
 
@@ -161,3 +187,6 @@
 
     </LinearLayout>
 </ScrollView>
+
+    </android.support.v7.widget.CardView>
+</RelativeLayout>

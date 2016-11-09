@@ -21,11 +21,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -57,6 +56,7 @@ public class PerfilBarActivity extends BaseActivity
     private TextView campoNomeBar;
     private TextView campoEmailBar;
 //    private ProgressBar progressBar;
+    private RatingBar campoNotaBar;
 
     private DatabaseReference dbBar;
     private DatabaseReference dbFiltroBebidas;
@@ -108,12 +108,14 @@ public class PerfilBarActivity extends BaseActivity
 
 
 
-        campoFotoPerfil = (ImageView) findViewById(R.id.perfil_foto);
+        campoFotoPerfil = (ImageView) findViewById(R.id.perfil_bar_foto);
 //        campoFotoPerfil.setVisibility(View.GONE);
 
-        campoBemVindo = (TextView) findViewById(R.id.perfil_bemvindo);
+        campoBemVindo = (TextView) findViewById(R.id.perfil_bar_bemvindo);
 
-        campoListaBebidas = (ListView) findViewById(R.id.perfil_lista_bebidas);
+        campoNotaBar = (RatingBar) findViewById(R.id.perfil_bar_nota);
+
+        campoListaBebidas = (ListView) findViewById(R.id.perfil_bar_lista_bebidas);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -282,6 +284,9 @@ public class PerfilBarActivity extends BaseActivity
                 campoBemVindo.setText("Bem vindo(a) " + b.getNome() + "!");
                 campoNomeBar.setText(b.getNome());
                 campoEmailBar.setText(b.getEmail());
+
+                campoNotaBar.setRating((float) b.getMediaNotas());
+                campoNotaBar.setEnabled(false);
 
                 if(!b.getUriFoto().equals(null) && !b.getUriFoto().equals("null") && !b.getUriFoto().equals(""))
                     new ImageLoadTask(MapaFragment.estabelecimentos.get(indexBar).getUriFoto(), campoFotoPerfil).execute();
@@ -593,17 +598,22 @@ public class PerfilBarActivity extends BaseActivity
                 dialogSalvar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        String nome = dialogNome.getText().toString();
-                        double preco = Double.parseDouble(dialogPreco.getText().toString());
-                        String quantidade = String.valueOf(dialogQuantidade.getSelectedItem());
+                        if (dialogPreco.getText().toString().isEmpty())
+                            dialogPreco.setError("Obrigatório");
+                        else {
+                            String nome = dialogNome.getText().toString();
+                            double preco = Double.parseDouble(dialogPreco.getText().toString());
+                            String quantidade = String.valueOf(dialogQuantidade.getSelectedItem());
 
-                        Bebida bebidaEditada = new Bebida(nome, quantidade, preco, b.getIdFirebase());
+                            Bebida bebidaEditada = new Bebida(nome, quantidade, preco, b.getIdFirebase());
 
-                        MapaFragment.estabelecimentos.get(indexBar).getBebidas().set(indexBebida, bebidaEditada);
-                        bebidasAdapter.notifyDataSetChanged();
+                            MapaFragment.estabelecimentos.get(indexBar).getBebidas().set(indexBebida, bebidaEditada);
+                            bebidasAdapter.notifyDataSetChanged();
 
-                        editaBebidaFirebase(bebidaEditada);
-                        dialog.dismiss();
+                            editaBebidaFirebase(bebidaEditada);
+
+                            dialog.dismiss();
+                        }
                     }
                 });
                 dialogCancelar.setOnClickListener(new View.OnClickListener() {

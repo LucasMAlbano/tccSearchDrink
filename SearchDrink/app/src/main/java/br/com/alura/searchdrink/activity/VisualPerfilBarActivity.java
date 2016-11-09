@@ -110,7 +110,7 @@ public class VisualPerfilBarActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
 
-        Toast.makeText(this, bar.getNome(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, bar.getNome(), Toast.LENGTH_SHORT).show();
 
         if (!MapaBarActivity.verificadorSeUsuarioEhBar)
             adicionaOuModificaNotaData();
