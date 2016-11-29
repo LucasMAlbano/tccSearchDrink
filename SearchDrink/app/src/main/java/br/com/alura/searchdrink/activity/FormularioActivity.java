@@ -17,6 +17,7 @@ import br.com.alura.searchdrink.FormularioHelper;
 import br.com.alura.searchdrink.R;
 import br.com.alura.searchdrink.dao.BarDAO;
 import br.com.alura.searchdrink.dao.FormularioDAO;
+import br.com.alura.searchdrink.fragment.MapaFragment;
 import br.com.alura.searchdrink.modelo.Bar;
 
 public class FormularioActivity extends BaseActivity {
@@ -184,6 +185,7 @@ public class FormularioActivity extends BaseActivity {
 
                     if (MapaBarActivity.verificadorSeUsuarioEhBar == false) {
                         MapaBarActivity.verificadorSeUsuarioEhBar = true;
+                        MapaFragment.estabelecimentos.add(bar);
                         Intent vaiParaPerfil = new Intent(FormularioActivity.this, PerfilBarActivity.class);
                         startActivity(vaiParaPerfil);
                     }

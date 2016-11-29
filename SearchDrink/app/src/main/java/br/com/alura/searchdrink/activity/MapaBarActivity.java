@@ -46,7 +46,7 @@ public class MapaBarActivity extends BaseActivity {
     public static boolean verificadorSeUsuarioEhBar = false;
 
     private static final int REQUEST_PERMISSOES = 1;
-    private MapaFragment mapaFragment;
+    private static MapaFragment mapaFragment;
 
     DatabaseReference database;
 
@@ -300,8 +300,12 @@ public class MapaBarActivity extends BaseActivity {
         floatingReflesh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mapaFragment.baixaEstabelecimentosFirebase();
+                refleshEstabelecimentos();
             }
         });
+    }
+
+    public static void refleshEstabelecimentos(){
+        mapaFragment.baixaEstabelecimentosFirebase();
     }
 }

@@ -98,7 +98,7 @@ public class BarDAO {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                databaseError.toException().printStackTrace();
             }
         });
     }
@@ -166,19 +166,5 @@ public class BarDAO {
 //        childUpdates.put("bares/" + uId, valoresBar);
 
         dbBar.updateChildren(valoresBar);
-    }
-
-
-    @NonNull
-    private ContentValues pegaDadosDoAluno(Bar bar) {
-        ContentValues dados = new ContentValues();
-        dados.put("nome", bar.getNome());
-        dados.put("endereco", bar.getEndereco());
-        dados.put("telefone", bar.getTelefone());
-        dados.put("site", bar.getSite());
-//        dados.put("caminhoFoto", barClicado.getUriFoto());
-        dados.put("email", bar.getEmail());
-//        dados.put("senha", barClicado.getSenha());
-        return dados;
     }
 }

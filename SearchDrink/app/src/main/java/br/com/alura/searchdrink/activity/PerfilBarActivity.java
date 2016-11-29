@@ -60,7 +60,7 @@ public class PerfilBarActivity extends BaseActivity
 
     private DatabaseReference dbBar;
     private DatabaseReference dbFiltroBebidas;
-    private StorageReference storageRef;
+//    private StorageReference storageRef;
 
     private String uId;
 
@@ -89,7 +89,7 @@ public class PerfilBarActivity extends BaseActivity
         dbBar = FirebaseDatabase.getInstance().getReference().child("bares").child(uId);
         dbFiltroBebidas = FirebaseDatabase.getInstance().getReference().child("filtros").child("tipoBebida");
 
-        storageRef = FirebaseStorage.getInstance().getReference().child(uId);
+//        storageRef = FirebaseStorage.getInstance().getReference().child(uId);
 
 
 //        bebidasRecicler = (RecyclerView) findViewById(R.id.recycler_comments);
@@ -327,14 +327,16 @@ public class PerfilBarActivity extends BaseActivity
 
     private void carregaListaBebidas() {
 
-        if (MapaFragment.estabelecimentos.get(indexBar).getBebidas().size() != 0)
-            bebidasAdapter = new BebidasAdapter(this, MapaFragment.estabelecimentos.get(indexBar).getBebidas());
-        else {
-            List<Bebida> bs = new ArrayList<>();
-            bs.add(new Bebida("Você não possui bebida cadastrada", " ", 0, " "));
-            bebidasAdapter = new BebidasAdapter(this, bs);
-        }
-        campoListaBebidas.setAdapter(bebidasAdapter);
+
+            if (MapaFragment.estabelecimentos.get(indexBar).getBebidas().size() != 0)
+                bebidasAdapter = new BebidasAdapter(this, MapaFragment.estabelecimentos.get(indexBar).getBebidas());
+            else {
+                List<Bebida> bs = new ArrayList<>();
+                bs.add(new Bebida("Você não possui bebida cadastrada", " ", 0, " "));
+                bebidasAdapter = new BebidasAdapter(this, bs);
+            }
+            campoListaBebidas.setAdapter(bebidasAdapter);
+
 //        hideProgressDialog();
 
 //        dbBar.child("bebidas").addValueEventListener(new ValueEventListener() {
